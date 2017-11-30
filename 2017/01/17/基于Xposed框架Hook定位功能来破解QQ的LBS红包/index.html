@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>基于Xposed框架Hook定位功能来破解QQ的LBS红包 | 许庆富的小黑屋</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文首发于 http://littleRich.top，原文地址：http://littlerich.top/2017/01/17/%E5%9F%BA%E4%BA%8EXposed%E6%A1%86%E6%9E%B6Hook%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E6%9D%A5%E7">
+<meta name="keywords" content="Hook进阶,逆向分析,Xposed插件开发,虚拟定位,Xposed教程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Xposed框架Hook定位功能来破解QQ的LBS红包">
+<meta property="og:url" content="http://littleRich.github.io/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/index.html">
+<meta property="og:site_name" content="许庆富的小黑屋">
+<meta property="og:description" content="本文首发于 http://littleRich.top，原文地址：http://littlerich.top/2017/01/17/%E5%9F%BA%E4%BA%8EXposed%E6%A1%86%E6%9E%B6Hook%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E6%9D%A5%E7%A0%B4%E8%A7%A3QQ%E7%9A%84LBS%E7%BA%A2%E">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_beijing.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_hangzhou.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_chengdu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/set_as.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/multi_dex.png">
+<meta property="og:updated_time" content="2017-04-28T09:10:40.470Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Xposed框架Hook定位功能来破解QQ的LBS红包">
+<meta name="twitter:description" content="本文首发于 http://littleRich.top，原文地址：http://littlerich.top/2017/01/17/%E5%9F%BA%E4%BA%8EXposed%E6%A1%86%E6%9E%B6Hook%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E6%9D%A5%E7%A0%B4%E8%A7%A3QQ%E7%9A%84LBS%E7%BA%A2%E">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_beijing.png">
+  
+    <link rel="alternative" href="/atom.xml" title="许庆富的小黑屋" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/images/aboutme/headportrait.jpeg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">littleRich</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Read The Fucking Code</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/tags/随笔">随笔</a></li>
+	        
+				<li><a href="http://littleRich.github.io/resume/index.html">关于我</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">更多</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://www.github.com/littleRich" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/littleRicher" title="weibo">weibo</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xuqingfu" title="zhihu">zhihu</a>
+		        
+					<a class="mail" target="_blank" href="Mailto:bugbye@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">littleRich</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/images/aboutme/headportrait.jpeg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">littleRich</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Read The Fucking Code</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/tags/随笔">随笔</a></li>
+		        
+					<li><a href="http://littleRich.github.io/resume/index.html">关于我</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://www.github.com/littleRich" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/littleRicher" title="weibo">weibo</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xuqingfu" title="zhihu">zhihu</a>
+			        
+						<a class="mail" target="_blank" href="Mailto:bugbye@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-基于Xposed框架Hook定位功能来破解QQ的LBS红包" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      基于Xposed框架Hook定位功能来破解QQ的LBS红包
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>摘要:<br>&emsp;&emsp;今年的LBS+AR红包无疑是过年的一大热点。刚好最近在研究利用Xposed框架Hook抢群红包的外挂，就试试利用Hook技术来实现虚拟定位，这样就可以随意到处寻找AR红包了。QQ上基于LBS的红包不需要实物扫描，这个与支付宝的LBS红包策略不一样，所以只需要定位到红包地点即可领取。其实支付宝刚出来扫描红包时是可以用PS破解的，现在支付宝这个BUG已经被修复了。下面三张截图就是Hook定位QQ程序分别定位北京、杭州、成都，是不是很有意思。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_beijing.png" alt="北京定位"> <img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_hangzhou.png" alt="杭州定位"> <img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/location_chengdu.png" alt="成都定位"><br><a id="more"></a></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;最先开始打算用Android设备上的开发者选项里的虚拟定位功能，但经过测试这个已被QQ微信检测过滤掉了，并不能欺骗QQ微信定位到我们设定的位置。所以就通过Hook系统定位模块，还加上反编译QQ，Hook了QQ特定的基于基站定位的代码。<br>下面给出Xposed相关的网址，相信对你使用Xposed插件开发肯定有用，也有利于理解Android上Hook的实现原理。<br>xposed官网：<a href="http://repo.xposed.info/" target="_blank" rel="noopener">http://repo.xposed.info/</a><br>xposed javadoc地址：<a href="http://api.xposed.info" target="_blank" rel="noopener">http://api.xposed.info</a><br>xda论坛的xposed版块：<a href="http://forum.xda-developers.com/xposed" target="_blank" rel="noopener">http://forum.xda-developers.com/xposed</a><br>XposedBridgeApi地址：<a href="https://jcenter.bintray.com/de/robv/android/xposed/api/" target="_blank" rel="noopener">https://jcenter.bintray.com/de/robv/android/xposed/api/</a><br>&emsp;&emsp;注：其实最初是我女朋友问我能不能实现这个功能，所以打算集成百度地图获取经纬度，省的手动输入经纬度，便于使用。</p>
+<hr>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文:"></a>正文:</h3><p>要实现Hook虚拟定位，得要先知道定位功能的实现原理，再进一步会正常定位功能的代码实现，接着就可以针对定位代码进行Hook修改定位返回的经纬度值。下面我也是按照这个顺序分析本程序的实现，写的不清楚的地方可以给我留言，探讨探讨。</p>
+<h4 id="一、常用定位技术原理"><a href="#一、常用定位技术原理" class="headerlink" title="一、常用定位技术原理"></a>一、常用定位技术原理</h4><p>动手之前，先了解下定位原理，这样就可以有针对性的Hook定位模块代码。<br>地理定位有常用的4中方式：GPS定位、基站定位、WiFi辅助定位、AGPS辅助全球卫星定位系统；<br>（1）需要GPS硬件支持，直接和卫星交互来获取当前经纬度，通过GPS方式准确度是最高的，GPS走的是卫星通信的通道，在没有网络连接的情况下也能用。<br>（2）<a href="http://blog.csdn.net/qq_15807167/article/details/51899388" title="基站定位技术" target="_blank" rel="noopener">基站定位</a>：本程序里就是Hook基站定位的代码，所以这个你可以好好看看实现原理。移动设备在GSM网络中通信，实际上就是通过某一个蜂窝基站接入GSM网络，然后通过GSM网络进行数据（语音数据、文本数据、多媒体数据等）传输的。也就是说我们在GSM中通信时，总是需要和某一个蜂窝基站连接的，或者说是处于某一个蜂窝小区中的。那么GSM定位，就是借助这些蜂窝基站进行定位。基站定位一般有几种，第一种是利用手机附近的三个基站进行三角定位，由于每个基站的位置是固定的，利用电磁波在这三个基站间中转所需要时间来算出手机所在的坐标；第二种则是利用获取最近的基站的信息，其中包括基站 id，location area code、mobile country code、mobile network code和信号强度，将这些数据发送到google的定位web服务里，就能拿到当前所在的位置信息，误差一般在几十米到几百米之内。其中信号强度这个数据很重要。下面前两个参数，必须通过Hook修改掉，分别是基站ID和基站所在地编号。<br>&emsp;&emsp;”cell_id” → cid<br>&emsp;&emsp;”location_area_code” → lac<br>&emsp;&emsp;”mobile_country_code” → mcc<br>&emsp;&emsp;”mobile_network_code” → mnc<br>（3）<a href="https://www.zhihu.com/question/20593603" title="WIFI的原理" target="_blank" rel="noopener">WIFI定位</a>：根据一个固定的WifiMAC地址，通过收集到的该Wifi热点的位置，然后访问网络上的定位服务以获得经纬度坐标，原理也和基站定位一样，必须要拿到WIFI路由器的SSID和信号强度。因为它和基站定位其实都需要使用网络，所以在Android也统称为Network方式。<br>（4）<a href="http://www.cnblogs.com/magicboy110/archive/2010/12/12/1903927.html" title="AGPS定位基本原理浅析" target="_blank" rel="noopener">AGPS定位</a>：结合GSM或GPRS与传统卫星定位，利用基地台代送辅助卫星信息，以缩减GPS芯片获取卫星信号的延迟时间，受遮盖的室内也能借基地台讯号弥补，减轻GPS芯片对卫星的依赖度。  </p>
+<hr>
+<h5 id="二、Xposed插件开发流程"><a href="#二、Xposed插件开发流程" class="headerlink" title="二、Xposed插件开发流程"></a>二、Xposed插件开发流程</h5><p>1、将jar复制到app下的libs目录中，并右键选择As a library。在gradle.build文件中将compile files(‘jar/XposedBridgeApi-54.jar’)改成provided files(‘jar/XposedBridgeApi-54.jar’)<br>2、在AndroidManifest.xml中添加标识为Xposed插件程序：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- xposed模块开关，默认true就行 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">meta-data</span>  </span></span><br><span class="line"><span class="tag">     <span class="attr">android:name</span>=<span class="string">"xposedmodule"</span>  </span></span><br><span class="line"><span class="tag">     <span class="attr">android:value</span>=<span class="string">"true"</span> /&gt;</span>             </span><br><span class="line"> <span class="comment">&lt;!-- 提示文字 --&gt;</span> </span><br><span class="line"> <span class="tag">&lt;<span class="name">meta-data</span>  </span></span><br><span class="line"><span class="tag">     <span class="attr">android:name</span>=<span class="string">"xposeddescription"</span>  </span></span><br><span class="line"><span class="tag">     <span class="attr">android:value</span>=<span class="string">"本程序描述，会在Xposed上显示"</span> /&gt;</span> </span><br><span class="line"><span class="comment">&lt;!-- 最低版本支持 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">meta-data</span>  </span></span><br><span class="line"><span class="tag">     <span class="attr">android:name</span>=<span class="string">"xposedminversion"</span>  </span></span><br><span class="line"><span class="tag">     <span class="attr">android:value</span>=<span class="string">"54"</span> /&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>3、新建一个类HookApk.java，并实现IXposedHookLoadPackage接口，并实现IXposedHookLoadPackage接口中的handleLoadPackage方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HookApk</span> <span class="keyword">implements</span> <span class="title">IXposedHookLoadPackage</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleLoadPackage</span><span class="params">(XC_LoadPackage.LoadPackageParam loadPackageParam)</span> <span class="keyword">throws</span> Throwable </span>&#123; </span><br><span class="line">        <span class="comment">//这里测试Hook静态变量,修改手机机型和厂商       </span></span><br><span class="line">		XposedHelpers.setStaticObjectField(android.os.Build.class, <span class="string">"MODEL"</span>, <span class="string">"7 plus 256G(全球预售)"</span>);<span class="comment">//机型</span></span><br><span class="line">        <span class="comment">//XposedHelpers.setStaticObjectField(android.os.Build.class, "BOARD", "Apple");</span></span><br><span class="line">       XposedHelpers.setStaticObjectField(android.os.Build.class, <span class="string">"MANUFACTURER"</span>, <span class="string">"iPhone"</span>);<span class="comment">//厂商</span></span><br><span class="line">       XposedHelpers.setStaticObjectField(android.os.Build.class, <span class="string">"BRAND"</span>, <span class="string">"Apple"</span>);<span class="comment">//品牌</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>4、在assets中创建一个新的文件，命名为xposed_init，在里面添加你刚才创建的类名top.littlerich.HookApk<br>5、运行应用，在xposed框架中勾选你刚才编写的模块，重启手机，我们写的Xposed插件就开始运行了。<br>【注：本程序是用Android Studio开发，Eclipse已许久不开发Android了】<br>如果只是单纯的Hook，不需要Activity，那么编译打包的时候会报android studio default activity not found异常，这时就要把AS默认打开Activity配置改了，如下图：<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/set_as.png" alt="修改android studio default activity not found问题"></p>
+<hr>
+<h5 id="三、Hook-GPS定位模块代码"><a href="#三、Hook-GPS定位模块代码" class="headerlink" title="三、Hook GPS定位模块代码"></a>三、Hook GPS定位模块代码</h5><p>先要知道GPS定位代码是如何写，GPS获取经纬度如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getLocation</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">    <span class="comment">// 获取位置管理服务  </span></span><br><span class="line">    LocationManager locationManager;  </span><br><span class="line">    String serviceName = Context.LOCATION_SERVICE;  </span><br><span class="line">    locationManager = (LocationManager)<span class="keyword">this</span>.getSystemService(serviceName);  </span><br><span class="line">    <span class="comment">// 查找到服务信息  </span></span><br><span class="line">    Criteria criteria = <span class="keyword">new</span> Criteria();  </span><br><span class="line">    criteria.setAccuracy(Criteria.ACCURACY_FINE); <span class="comment">// 高精度  </span></span><br><span class="line">    criteria.setAltitudeRequired(<span class="keyword">false</span>);  </span><br><span class="line">    criteria.setBearingRequired(<span class="keyword">false</span>);  </span><br><span class="line">    criteria.setCostAllowed(<span class="keyword">true</span>);  </span><br><span class="line">    criteria.setPowerRequirement(Criteria.POWER_LOW); <span class="comment">// 低功耗  </span></span><br><span class="line">    String provider =locationManager.getBestProvider(criteria, <span class="keyword">true</span>); <span class="comment">// 获取GPS信息  </span></span><br><span class="line">    Location location =locationManager.getLastKnownLocation(provider); <span class="comment">// 通过GPS获取位置  </span></span><br><span class="line">    updateToNewLocation(location);  </span><br><span class="line">    <span class="comment">// 设置监听器，自动更新的最小时间为间隔N秒(1秒为1*1000，这样写主要为了方便)或最小位移变化超过N米  </span></span><br><span class="line">    locationManager.requestLocationUpdates(provider,<span class="number">100</span> * <span class="number">1000</span>, <span class="number">500</span>,locationListener);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//到这里就可以获取到地理位置信息了：</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateToNewLocation</span><span class="params">(Location location)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">if</span> (location != <span class="keyword">null</span>) &#123;  </span><br><span class="line">        <span class="keyword">double</span> latitude = location.getLatitude();<span class="comment">//维度</span></span><br><span class="line">        <span class="keyword">double</span> longitude=location.getLongitude();<span class="comment">//经度 </span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">        tv1.setText( 无法获取地理信息 );  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过上述GPS定位代码可知，注意第14行代码处，Location对象封装了经纬度数据，我们首先hook住LocationManager类的方法getLastKnownLocation()，修改返回结果为我们自己定义的Location对象。Hook代码如下：</p>
+<pre><code>XposedHelpers.findAndHookMethod(LocationManager.class, &quot;getLastKnownLocation&quot;, String.class, new     XC_MethodHook()     {
+        @Override
+        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            Location l = new Location(LocationManager.GPS_PROVIDER);
+            l.setLatitude(latitude);
+            l.setLongitude(longtitude);
+            l.setAccuracy(100f);
+            l.setTime(System.currentTimeMillis());
+            if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                l.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+            }
+            param.setResult(l);
+        }
+});
+</code></pre><p>参数说明：<br>    1、首先判断包名，一般我们要先判断哪个程序需要Hook<br>    2、调用findAndHookMethod(“包名 + 类名”, lpparam.classLoader, “要Hook的函数名称”, 被Hook函数的第一个参数类型，被Hook函数的第二个参数类型…，new XC_MethodHook{<br>        protected void afterHookedMethod(MethodHookParam param)<br>        {<br>            //函数执行之后要做的操作<br>            param.setResult(“修改函数的返回值”);  //设置返回值  </p>
+<pre><code>    }  
+
+    protected void beforeHookedMethod(MethodHookParam param)   
+    {  
+        //函数执行之前要做的操作
+        param.args[0] = 修改函数参数的值;  //设置参数1  
+    }  
+
+});  
+</code></pre><p>上面针对的是Hook系统API以及APK程序的第一个classes.dex内的代码，还有一点需要注意的是，如果方法位于默认dex中是可以的正常hook,但是如果方法位于dex分包中xposed就会报错提示所要hook的方法所在类无法找到。</p>
+<p>要分析这个问题的原因以及解决办法,就要先了解multidex的载入过程以及xposed的hook时机，大致原理如下：<br>dex分包加载大致流程如下,可以得出分包是滞后主包不少时间加载的:<br>1.检测是否有分包需要安装,系统是否支持multidex<br>2.从apk中解压出分包<br>3.通过反射将分包注入到当前classloader<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170117/multi_dex.png" alt="DEX分包加载策略"><br>而xposed为了能让module及时载入执行所以得尽快调用handleLoadPackage(),所以此时获取的context的classloader中只要默认dex主的包的类。因此我们得想法得到完整的上下文context,比较明显的获取完整context的hook时机有如下两处:<br>1、MultiDex.install()<br>2、MultiDexApplication.attachBaseContext()<br>而xposed的作者建议是选择android.app.Application.attach(),因为attachBaseContext是有概率被重写的不稳定.所以选择方法内调用了attachBaseContext的Application.attach()。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@hide</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context)</span></span>&#123;</span><br><span class="line">	attachBaseContext(context);  </span><br><span class="line">    mLoadedApk = ContextImpl.getImpl(context).mPackageInfo;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据上面分析，所有我们可以根据APP的ApplicationContext来加载Dex分包中的字节码文件。总结一点：如果Hook Apk中类代码（SDK自带的API不用），我们就先获取APP的Context上下文，再加载类加载器。示例代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">findAndHookMethod(<span class="string">"android.app.Application"</span>, loadPackageParam.classLoader, <span class="string">"attach"</span>, Context.class, <span class="keyword">new</span> XC_MethodHook()&#123;  </span><br><span class="line">	<span class="meta">@override</span>  </span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">afterHookedMethod</span><span class="params">(MethodHookParam param)</span> <span class="keyword">throws</span> Throwable </span>&#123;  </span><br><span class="line">		Context context = (Context)param.args[<span class="number">0</span>];  </span><br><span class="line">		hookMultiDex(context.getClassLoader());  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 执行Hook应用内代码  </span></span><br><span class="line"><span class="comment"> * /  </span></span><br><span class="line"><span class="comment">private void hookMultiDex(ClassLoader classLoader) &#123;  </span></span><br><span class="line"><span class="comment">        Class&lt;?&gt; pluginNearby = null;  </span></span><br><span class="line"><span class="comment">        try &#123;  </span></span><br><span class="line"><span class="comment">            pluginNearby = classLoader.loadClass("com.tencent.mm.plugin.nearby.ui.NearbyFriendsUI");  </span></span><br><span class="line"><span class="comment">        &#125;catch (Exception e)&#123;  </span></span><br><span class="line"><span class="comment">            e.printStackTrace();  </span></span><br><span class="line"><span class="comment">        &#125;  </span></span><br><span class="line"><span class="comment">        XposedHelpers.findAndHookMethod(pluginNearby, "Gy", new XC_MethodHook() &#123;  </span></span><br><span class="line"><span class="comment">            <span class="doctag">@Override</span>  </span></span><br><span class="line"><span class="comment">            protected void afterHookedMethod(MethodHookParam param) throws Throwable &#123;  </span></span><br><span class="line"><span class="comment">                super.afterHookedMethod(param);  </span></span><br><span class="line"><span class="comment">                Log.e(TAG, "com.tencent.mm.plugin.nearby.ui.NearbyFriendsUI");  </span></span><br><span class="line"><span class="comment">                for (int i = 0; i &lt; param.args.length; i++)&#123;  </span></span><br><span class="line"><span class="comment">                    parseObject(param.args[i]);  </span></span><br><span class="line"><span class="comment">                &#125;  </span></span><br><span class="line"><span class="comment">            &#125;  </span></span><br><span class="line"><span class="comment">        &#125;);  </span></span><br><span class="line"><span class="comment">    &#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;这个只是Hook系统的GPS定位返回的经纬度，相应的可以Hook系统的基站定位、WIFI定位和AGPS定位模块代码，这里我给出这些要Hook位置的类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">android.telephony.TelephonyManager</span><br><span class="line">android.telephony.PhoneStateListener</span><br><span class="line">android.net.wifi.WifiManager</span><br><span class="line">android.net.wifi.WifiInfo</span><br><span class="line">android.net.NetworkInfo</span><br><span class="line">android.telephony.CellInfo</span><br><span class="line">LocationManager.class</span><br><span class="line">android.location.LocationManager</span><br></pre></td></tr></table></figure></p>
+<p>只要知道定位的实现代码，就可以Hook修改定位的返回值，跟上面Hook修改GPS定位的类似，就不粘代码了，省的贴太多代码不好看，不懂的可以跟我要源码一起探讨探讨。  </p>
+<p>安装包下载：<a href="https://github.com/littleRich/littleRich.github.io/blob/images/20170117/hooklocation-debug.apk" target="_blank" rel="noopener">抢LBS红包.apk</a></p>
+<p>下面推荐几篇分析Xposed的不错文章：<br>Xposed (一) Android hook框架入门<a href="https://my.oschina.net/wisedream/blog/471292" title="Xposed框架使用入门" target="_blank" rel="noopener">https://my.oschina.net/wisedream/blog/471292</a></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/" class="archive-article-date">
+  	<time datetime="2017-01-17T02:01:17.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-17</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hook进阶/">Hook进阶</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xposed插件开发/">Xposed插件开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xposed教程/">Xposed教程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟定位/">虚拟定位</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向分析/">逆向分析</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/Android安全/">Android安全</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/04/01/Android安全：Smali从入门到疯狂/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Android安全：Smali从入门到疯狂
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/12/05/Android自动化模拟操作开源库/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android自动化模拟操作开源库源码解析(持续维护中...)</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="基于Xposed框架Hook定位功能来破解QQ的LBS红包" data-title="基于Xposed框架Hook定位功能来破解QQ的LBS红包" data-url="http://littleRich.github.io/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"littlerich"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 littleRich
+    	</div>
+      	<div class="footer-right">
+      		<!-- <a href="http://hexo.io/" target="_blank">原创文章，转载请注明出处</a>  Theme <a href="https://github.com/littleRich" target="_blank">xuqingfu</a> by 许庆富 -->
+      		原创文章，转载请注明出处 by <a href="https://github.com/littleRich" target="_blank">许庆富</a>
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android源码编译/" style="font-size: 10px;">Android源码编译</a> <a href="/tags/Android逆向分析/" style="font-size: 10px;">Android逆向分析</a> <a href="/tags/Git之旅/" style="font-size: 20px;">Git之旅</a> <a href="/tags/Hook进阶/" style="font-size: 10px;">Hook进阶</a> <a href="/tags/Smali语法/" style="font-size: 10px;">Smali语法</a> <a href="/tags/Xposed插件开发/" style="font-size: 10px;">Xposed插件开发</a> <a href="/tags/Xposed教程/" style="font-size: 10px;">Xposed教程</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/octopress/" style="font-size: 10px;">octopress</a> <a href="/tags/源码审计/" style="font-size: 10px;">源码审计</a> <a href="/tags/自动化开源库/" style="font-size: 10px;">自动化开源库</a> <a href="/tags/虚拟定位/" style="font-size: 10px;">虚拟定位</a> <a href="/tags/逆向分析/" style="font-size: 10px;">逆向分析</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://www.codota.com/">Codota:代码搜索引擎</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/android/">Java源码搜索引擎</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.iconfont.cn/">Icon搜索库</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://android-arsenal.com/free">Android军火库：开发工具及依赖库</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.javadecompilers.com/apk">APK在线反编译</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://apps.evozi.com/apk-downloader/">快速下载Google Play应用</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.colorspire.com/rgb-color-wheel/">RGB工具</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://json.parser.online.fr/">JSON在线格式化</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://caniuse.com/">检测HTML5，JS，CSS的适配性</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://gank.io/">干货集中营:各种开源项目</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.android-doc.com/">Android中文API</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.mvnrepository.com/">Maven Repository</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br/&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br&gt;&lt;br&gt;喜欢开源软件，乐于知识分享，热爱阅读各类技术书籍&lt;br&gt;谢谢大家&lt;br/&gt;...</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

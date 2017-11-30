@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android安全：Smali从入门到疯狂 | 许庆富的小黑屋</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;对于从事Android安全工程师职业来说，熟悉Smali是基本技能，这样就可以修改Smali代码来逆向分析破解APP程序，又或者二次打包发布【当然这样做不是很好】。然而，目前市面上却没有专门一门系统讲解Smali语法及实战的书籍教程，所以觉得有必要连载几篇关于Android">
+<meta name="keywords" content="Smali语法,Android逆向分析,源码审计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android安全：Smali从入门到疯狂">
+<meta property="og:url" content="http://littleRich.github.io/2017/04/01/Android安全：Smali从入门到疯狂/index.html">
+<meta property="og:site_name" content="许庆富的小黑屋">
+<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;对于从事Android安全工程师职业来说，熟悉Smali是基本技能，这样就可以修改Smali代码来逆向分析破解APP程序，又或者二次打包发布【当然这样做不是很好】。然而，目前市面上却没有专门一门系统讲解Smali语法及实战的书籍教程，所以觉得有必要连载几篇关于Android逆向分析之Smali语法讲解及实战教程。有什么笔误的地方还望指正，欢迎搅基！">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170401/smalidemo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170401/decodeSmali.png">
+<meta property="og:updated_time" content="2017-04-19T06:00:26.879Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android安全：Smali从入门到疯狂">
+<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;对于从事Android安全工程师职业来说，熟悉Smali是基本技能，这样就可以修改Smali代码来逆向分析破解APP程序，又或者二次打包发布【当然这样做不是很好】。然而，目前市面上却没有专门一门系统讲解Smali语法及实战的书籍教程，所以觉得有必要连载几篇关于Android逆向分析之Smali语法讲解及实战教程。有什么笔误的地方还望指正，欢迎搅基！">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170401/smalidemo.png">
+  
+    <link rel="alternative" href="/atom.xml" title="许庆富的小黑屋" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/images/aboutme/headportrait.jpeg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">littleRich</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Read The Fucking Code</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/tags/随笔">随笔</a></li>
+	        
+				<li><a href="http://littleRich.github.io/resume/index.html">关于我</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">更多</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://www.github.com/littleRich" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/littleRicher" title="weibo">weibo</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xuqingfu" title="zhihu">zhihu</a>
+		        
+					<a class="mail" target="_blank" href="Mailto:bugbye@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">littleRich</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/images/aboutme/headportrait.jpeg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">littleRich</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Read The Fucking Code</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/tags/随笔">随笔</a></li>
+		        
+					<li><a href="http://littleRich.github.io/resume/index.html">关于我</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://www.github.com/littleRich" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/littleRicher" title="weibo">weibo</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xuqingfu" title="zhihu">zhihu</a>
+			        
+						<a class="mail" target="_blank" href="Mailto:bugbye@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Android安全：Smali从入门到疯狂" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android安全：Smali从入门到疯狂
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>摘要:<br>&emsp;&emsp;对于从事Android安全工程师职业来说，熟悉Smali是基本技能，这样就可以修改Smali代码来逆向分析破解APP程序，又或者二次打包发布【当然这样做不是很好】。然而，目前市面上却没有专门一门系统讲解Smali语法及实战的书籍教程，所以觉得有必要连载几篇关于Android逆向分析之Smali语法讲解及实战教程。有什么笔误的地方还望指正，欢迎搅基！<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170401/smalidemo.png" alt="Smali例子"><br><a id="more"></a></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;先来说说怎么拿到Smali代码，对于初学者来说，可以使用APKTool工具来反编译APK，即可将DEX反编译成Smali中间文件。命令如下：<br><figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//xxx.apk就是在E:/apktool目录下欲反编译的apk文件</span><br><span class="line">apktool d xxx.apk</span><br><span class="line">  </span><br><span class="line">//回编译命令[二次打包]。xxx就是反编译后的文件所在文件夹，这个文件夹一般是以之前反编译的文件名为名称  </span><br><span class="line">apktool b xxx</span><br></pre></td></tr></table></figure></p>
+<p>但是每次都这样反编译也挺麻烦的，这里给大家推荐几个工具及在线反编译网站，用于反编译apk包，得到smali代码：<br>1、JEB<br>2、APK改之理<br>3、android killer<br>4、在线反编译站点：<a href="http://www.javadecompilers.com/apk" title="在线反编译站点" target="_blank" rel="noopener">Android Apk decompiler</a><br>注：文中涉及到的工具可以百度上下，也可以私信我分享。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170401/decodeSmali.png" alt="APKTool反编译"><br>其中android下存放所调用库的smali文件，com才是我们自己写的代码的smali文件。</p>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文:"></a>正文:</h3><p>&emsp;&emsp;对比Java和smali代码，可能对smali的第一印象有点懵逼，原来只有几行的代码反编译成smali，代码量大大扩充了。smali还原了Java隐藏的代码，同时显示地指定了很多代码细节，当然IDE很多时候也帮我们省了很多重复代码。所以反编译一个成熟的APK，smali代码量应该是很大的，可能有些复杂，但其实smali语法并不难。不信的话，咱们先来反编译一个编程之路上的第一个程序HelloWorld，翻译一下smali代码,下面我贴出了默认MainActivity.java的smali代码：</p>
+<pre><code>.class public Ltop/littlerich/smalisyntax/MainActivity; #类名
+.super Landroid/support/v7/app/AppCompatActivity; #父类名
+.source &quot;MainActivity.java&quot; #源文件名
+
+# direct methods
+.method public constructor &lt;init&gt;()V #.method与.end method对应源码中的{}，包含了方法的实现代码段
+    .locals 0 #指明了这个方法用到的寄存器数量，当然寄存器可以重复利用，从V0起算
+
+    .prologue #标记代码开始处
+       .line 6 #标识这是在Java源码中的第几行
+    invoke-direct {p0}, Landroid/support/v7/app/AppCompatActivity;-&gt;&lt;init&gt;()V #对方法的调用，这里调用了Android.app.Activity的init方法
+
+    return-void #该方法的返回值类型
+.end method
+
+
+# virtual methods
+.method protected onCreate(Landroid/os/Bundle;)V #结尾V表示该函数返回值为void
+    .locals 1 #指明了这个方法用到的寄存器数量，当然寄存器可以重复利用，从V0起算
+    .param p1, &quot;savedInstanceState&quot;    # Landroid/os/Bundle; .param指明了参数名
+
+    .prologue
+    .line 10 # p0代表this，p1开始代表函数参数，静态函数没有this，所以从p0开始就代表参数
+    invoke-super {p0, p1}, Landroid/support/v7/app/AppCompatActivity;-&gt;onCreate(Landroid/os/Bundle;)V
+
+    .line 11 # 把值赋给寄存器v0，然后调用使用传递进去的值，所有的值必须通过寄存器来中转（这个很汇编类似）
+    const v0, 0x7f04001b
+
+    invoke-virtual {p0, v0}, Ltop/littlerich/smalisyntax/MainActivity;-&gt;setContentView(I)V #调用setContentView(I)
+
+    .line 12
+    return-void
+.end method
+</code></pre><p>一个新建的Activity代码就如上所示，具体如何读smali代码，上面注释写的很清楚了，注意在smali中注释是用#打头。<br>通过上面一个小Demo，可以发现smali还是很简单吧，文件的大致基本结构如下：</p>
+<p>类基本信息<br>.class &lt;访问权限&gt; &lt;类名&gt;<br>.super &lt;父类名&gt;<br>.source &lt;源文件名&gt;<br># eg.<br>.class public Ltop/littlerich/smalisyntax/MainActivity;    </p>
+<p>.super Landroid/support/v7/app/AppCompatActivity;                               </p>
+<p>.source “MainActivity.java”  //经过混淆后这项可能为空</p>
+<p>类变量声明<br>.field &lt;访问权限&gt; &lt;变量名&gt;:&lt;变量类型&gt;<br># eg.<br>.field actionBar:Landroid/app/ActionBar; &lt;=对应源码=&gt; ActionBar actionBar;<br>局部变量声明：<br>.local &lt;初始值&gt;,&lt;变量名&gt;:&lt;变量类型&gt;<br># eg.<br>.local v0, “ans”:Ljava/lang/String; &lt;=对应源码=&gt; String ans=””;</p>
+<p>类方法声明<br>.method &lt;访问权限&gt; &lt;方法名&gt;(参数原型) &lt;方法返回值原型&gt;<br>    [.prologue]    // 指定代码开始位置<br>    [.param]       // 指定方法参数<br>    [.line]        // 指定代码在源代码中的行数，混淆后可能不存在<br>    [.locals]  // 使用的局部变量个数<br>    &lt;代码体&gt;<br>.end method<br># eg.<br>.method public onTabReselected(Landroid/app/ActionBar$Tab;Landroid/app/FragmentTransaction;)V<br>    .locals 0<br>    .param p1, “tab”    # Landroid/app/ActionBar$Tab;<br>    .param p2, “fragmentTransaction”    # Landroid/app/FragmentTransaction;<br>    .prologue<br>    .line 55     //可能经过混淆后不存在<br>    return-void<br>.end method<br>&lt;=对应源码=&gt;<br>public void onTabReselected(ActionBar$Tab tab, FragmentTransaction fragmentTransaction){<br>}  </p>
+<hr>
+<p>下面我再系统的归纳smali各个模块的代码。<br>java中的数据类型在smali中的表示符号：Java smali<br>void        V  </p>
+<p>boolean        Z  </p>
+<p>byte        B    </p>
+<p>short        S     </p>
+<p>char        C     </p>
+<p>int            I      </p>
+<p>long        J     </p>
+<p>float        F    </p>
+<p>double        D  </p>
+<p>对象            Lpackage/name/ObjName  </p>
+<p>数组            [xxx                      </p>
+<p>dalvik字节码有两种类型，原始类型和引用类型。对象和数组是引用类型，其它都是原始类型。而且很多是通过Java中类型的首字母表示，最后面两个是引用类型，对象以Lpackage/name/ObjectName;的形式表示，前面的L表示这是一个对象类型，package/name/是该对象所在的包，ObjectName是对象的名字，“;”表示对象名称的结束。<br>例如：Ljava/lang/String;相当于java.lang.String所声明的对象<br>再来说说引用类型的数组表示，[I——表示一个整型一维数组，相当于java中的int[]。对于多维数组，只要增加[就行了。[[I相当于int[][]，[[[I相当于int[][][]。注意每一维的最多255个。另外对象数组的表示，[Ljava/lang/String;表示一个String对象数组。<br>另外还有个注意点：Android是基于寄存器存储的，一个寄存器占32位，java中long和double占8个字节，每一字节占8位，所以要用2个寄存器存储。传入的参数寄存器由p表示，而函数内的本地寄存器则由v表示，多个的话则在后面加上0,1,2…。值得注意的是，在非static函数中，p0表示`this`，p1才表示第一个参数。</p>
+<hr>
+<p>可以看出smali都是通过寄存器来进行变量间接赋值，这个几乎跟汇编一毛一样，那么就来归纳下寄存器的一些操作吧。<br>1、常量赋值<br>主要是各种const<br>const                   v0, 0x7F030018  # R.layout.activity_login   #从R中取出静态值<br>const/4                 v3, 0x2   #4也可以换成16或者high16，表示取整数值<br>const-string            v2, “littleRich”  # 取字符串<br>const-class             v2, Context    #把类对象取出  </p>
+<p>2、变量间赋值<br>move  vx,vy   # 将vy的值赋值给vx，也可以是move-object等<br>move-result  vx  # 将上个方法调用后的结果赋值给vx，也可以是move-result-object<br>return-object  vx # 将vx的对象作为函数返回值<br>new-instance  v0, SimpleBean  # 实例化一个对象存入v0中  </p>
+<p>3、对象赋值<br>iput-object  a,(this),b   将a的值给b，一般用于b的初始化<br>iget-object  a,(this),b   将b的值给a，一般用于获取b的地址，接着调用它<br># eg.<br>iput-object   v0, p0, MainActivity-&gt;actionBar:ActionBar<br>iget-object   v0, p0, MainActivity-&gt;actionBar:ActionBar  </p>
+<p>4、函数操作<br>基本调用形式：invoke-xxx {参数},类;-&gt;函数(参数原型)函数返回值类型<br>最基础的函数操作一般有以下四个：  </p>
+<ul>
+<li>private：invoke-direct  </li>
+<li>public|protected： invoke-virtual  </li>
+<li>static：invoke-static  </li>
+<li>parent:  invoke-super<br># eg.<br>invoke-super {p0, p1}, Landroid/support/v7/app/AppCompatActivity;-&gt;onCreate(Landroid/os/Bundle;)V<br>&lt;=对应源码=&gt;<br>super.onCreate(savedInstanceState);  // 其中p0是this，其父类是AppCompatActivity，p1,是savedInstanceState</li>
+</ul>
+<hr>
+<p>小结：通过上面对smali的一些基本语法分析，暂时还没涉及到程序内的逻辑代码语法。初印象smali里是没有大括号圈中代码块，但它也不像Python通过相同的空格来标识同一个代码块，smali是通过.XXX来标识的语法，这一点有点类似汇编的语法。总结上面说到的几个比较重要的标签：<br>.field 　定义变量</p>
+<p>.method　　方法</p>
+<p>.parameter　　方法参数</p>
+<p>.prologue　　方法开始</p>
+<p>.line 12　　此方法位于第12行</p>
+<p>invoke-super　　调用父函数</p>
+<p>const/high16  v0, 0x7fo3　　把0x7fo3赋值给v0</p>
+<p>invoke-direct　　调用函数</p>
+<p>return-void　　函数返回void</p>
+<p>.end method　　函数结束</p>
+<p>new-instance　　创建实例</p>
+<p>iput-object　　对象赋值</p>
+<p>iget-object　　调用对象</p>
+<p>invoke-static　　调用静态函数  </p>
+<hr>
+<p>以下介绍smali中逻辑代码部分，不用说这部分肯定很重要的啦，不然怎么逆向分析破解[坏笑]。<br>1、判断语句：    </p>
+<pre><code>“if-eq vA, vB, :cond_**” 如果vA等于vB则跳转到:cond_**
+
+“if-ne vA, vB, :cond_**” 如果vA不等于vB则跳转到:cond_**
+
+“if-lt vA, vB, :cond_**” 如果vA小于vB则跳转到:cond_**
+
+“if-ge vA, vB, :cond_**” 如果vA大于等于vB则跳转到:cond_**
+
+“if-gt vA, vB, :cond_**” 如果vA大于vB则跳转到:cond_**
+
+“if-le vA, vB, :cond_**” 如果vA小于等于vB则跳转到:cond_**
+
+“if-eqz vA, :cond_**” 如果vA等于0则跳转到:cond_**  //z 既可以表示zero（0） 也可以是null、或者false;具体看逻辑。
+
+“if-nez vA, :cond_**” 如果vA不等于0则跳转到:cond_**
+
+“if-ltz vA, :cond_**” 如果vA小于0则跳转到:cond_**
+
+“if-gez vA, :cond_**” 如果vA大于等于0则跳转到:cond_**
+
+“if-gtz vA, :cond_**” 如果vA大于0则跳转到:cond_**
+
+“if-lez vA, :cond_**” 如果vA小于等于0则跳转到:cond_** 
+</code></pre><p># eg.<br>贴个Java逻辑判断代码的栗子：  </p>
+<pre><code>public boolean matchSize(int a, int b) {
+    if (a &gt; b) {
+        return true;
+    }
+    if (a &gt; 0) {
+        return false;
+    }
+    if (b &lt;= 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+</code></pre><p>对应的smali代码：  </p>
+<pre><code># virtual methods
+.method public matchSize(II)Z
+    .registers 5
+    .param p1, &quot;a&quot;    # I
+    .param p2, &quot;b&quot;    # I
+
+    .prologue
+    const/4 v0, 0x1
+
+    const/4 v1, 0x0
+
+    .line 11
+    if-le p1, p2, :cond_5
+
+    .line 20
+    :cond_4
+    :goto_4
+    return v0
+
+    .line 14
+    :cond_5
+    if-lez p1, :cond_9
+
+    move v0, v1
+
+    .line 15
+    goto :goto_4
+
+    .line 17
+    :cond_9
+    if-lez p2, :cond_4
+
+    move v0, v1
+
+    .line 20
+    goto :goto_4
+.end method
+</code></pre><p>2、switch<br>  由于时间原因，后续再写。。。</p>
+<hr>
+<p>如果觉得看的还不够爽，再推荐几篇不错的文章：<br><a href="http://www.blogjava.net/midea0978/archive/2012/01/04/367847.html" target="_blank" rel="noopener">http://www.blogjava.net/midea0978/archive/2012/01/04/367847.html</a><br><a href="https://liuzhichao.com/p/912.html" target="_blank" rel="noopener">https://liuzhichao.com/p/912.html</a><br><a href="http://lib.csdn.net/article/android/7043" target="_blank" rel="noopener">http://lib.csdn.net/article/android/7043</a><br><a href="http://devxeo.lofter.com/post/2da37d_cd7c69" target="_blank" rel="noopener">http://devxeo.lofter.com/post/2da37d_cd7c69</a></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/04/01/Android安全：Smali从入门到疯狂/" class="archive-article-date">
+  	<time datetime="2017-04-01T08:36:26.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-04-01</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android逆向分析/">Android逆向分析</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smali语法/">Smali语法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码审计/">源码审计</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/Android安全/">Android安全</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/11/29/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">基于Xposed框架Hook定位功能来破解QQ的LBS红包</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android安全：Smali从入门到疯狂" data-title="Android安全：Smali从入门到疯狂" data-url="http://littleRich.github.io/2017/04/01/Android安全：Smali从入门到疯狂/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"littlerich"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 littleRich
+    	</div>
+      	<div class="footer-right">
+      		<!-- <a href="http://hexo.io/" target="_blank">原创文章，转载请注明出处</a>  Theme <a href="https://github.com/littleRich" target="_blank">xuqingfu</a> by 许庆富 -->
+      		原创文章，转载请注明出处 by <a href="https://github.com/littleRich" target="_blank">许庆富</a>
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android源码编译/" style="font-size: 10px;">Android源码编译</a> <a href="/tags/Android逆向分析/" style="font-size: 10px;">Android逆向分析</a> <a href="/tags/Git之旅/" style="font-size: 20px;">Git之旅</a> <a href="/tags/Hook进阶/" style="font-size: 10px;">Hook进阶</a> <a href="/tags/Smali语法/" style="font-size: 10px;">Smali语法</a> <a href="/tags/Xposed插件开发/" style="font-size: 10px;">Xposed插件开发</a> <a href="/tags/Xposed教程/" style="font-size: 10px;">Xposed教程</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/octopress/" style="font-size: 10px;">octopress</a> <a href="/tags/源码审计/" style="font-size: 10px;">源码审计</a> <a href="/tags/自动化开源库/" style="font-size: 10px;">自动化开源库</a> <a href="/tags/虚拟定位/" style="font-size: 10px;">虚拟定位</a> <a href="/tags/逆向分析/" style="font-size: 10px;">逆向分析</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://www.codota.com/">Codota:代码搜索引擎</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/android/">Java源码搜索引擎</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.iconfont.cn/">Icon搜索库</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://android-arsenal.com/free">Android军火库：开发工具及依赖库</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.javadecompilers.com/apk">APK在线反编译</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://apps.evozi.com/apk-downloader/">快速下载Google Play应用</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.colorspire.com/rgb-color-wheel/">RGB工具</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://json.parser.online.fr/">JSON在线格式化</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://caniuse.com/">检测HTML5，JS，CSS的适配性</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://gank.io/">干货集中营:各种开源项目</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.android-doc.com/">Android中文API</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.mvnrepository.com/">Maven Repository</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br/&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br&gt;&lt;br&gt;喜欢开源软件，乐于知识分享，热爱阅读各类技术书籍&lt;br&gt;谢谢大家&lt;br/&gt;...</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

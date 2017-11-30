@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Category: 模块编译 | 许庆富的小黑屋</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="专心致志，方能成功">
+<meta property="og:type" content="website">
+<meta property="og:title" content="许庆富的小黑屋">
+<meta property="og:url" content="http://littleRich.github.io/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/模块编译/index.html">
+<meta property="og:site_name" content="许庆富的小黑屋">
+<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="许庆富的小黑屋">
+<meta name="twitter:description" content="专心致志，方能成功">
+  
+    <link rel="alternative" href="/atom.xml" title="许庆富的小黑屋" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/images/aboutme/headportrait.jpeg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">littleRich</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Read The Fucking Code</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/tags/随笔">随笔</a></li>
+	        
+				<li><a href="http://littleRich.github.io/resume/index.html">关于我</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">更多</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://www.github.com/littleRich" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/littleRicher" title="weibo">weibo</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xuqingfu" title="zhihu">zhihu</a>
+		        
+					<a class="mail" target="_blank" href="Mailto:bugbye@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">littleRich</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/images/aboutme/headportrait.jpeg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">littleRich</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Read The Fucking Code</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/tags/随笔">随笔</a></li>
+		        
+					<li><a href="http://littleRich.github.io/resume/index.html">关于我</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://www.github.com/littleRich" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/littleRicher" title="weibo">weibo</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xuqingfu" title="zhihu">zhihu</a>
+			        
+						<a class="mail" target="_blank" href="Mailto:bugbye@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        
+  
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2016" class="archive-year">2016</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2016/11/05/在Ubuntu-14.04.3X64编译Android6_r1源码/" class="archive-article-date">
+  	<time datetime="2016-11-05T08:45:24.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-05</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/11/05/在Ubuntu-14.04.3X64编译Android6_r1源码/">在Ubuntu14.04_X64编译官方Android6.0.0_r1源码(完整版)</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码编译/">Android源码编译</a></li></ul>
+	</div>
+
+          
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/AOSP源码下载/">AOSP源码下载</a><a class="article-category-link" href="/categories/AOSP源码下载/OpenJdk8/">OpenJdk8</a><a class="article-category-link" href="/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/">VMware Workstation Pro + Ubuntu14.04_x64</a><a class="article-category-link" href="/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/模块编译/">模块编译</a><a class="article-category-link" href="/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/模块编译/Android-Studio导入源码/">Android Studio导入源码</a>
+	</div>
+
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section>
+  
+
+    
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 littleRich
+    	</div>
+      	<div class="footer-right">
+      		<!-- <a href="http://hexo.io/" target="_blank">原创文章，转载请注明出处</a>  Theme <a href="https://github.com/littleRich" target="_blank">xuqingfu</a> by 许庆富 -->
+      		原创文章，转载请注明出处 by <a href="https://github.com/littleRich" target="_blank">许庆富</a>
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: false,
+		isArchive: false,
+		isTag: false,
+		isCategory: true,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android源码编译/" style="font-size: 10px;">Android源码编译</a> <a href="/tags/Android逆向分析/" style="font-size: 10px;">Android逆向分析</a> <a href="/tags/Git之旅/" style="font-size: 20px;">Git之旅</a> <a href="/tags/Hook进阶/" style="font-size: 10px;">Hook进阶</a> <a href="/tags/Smali语法/" style="font-size: 10px;">Smali语法</a> <a href="/tags/Xposed插件开发/" style="font-size: 10px;">Xposed插件开发</a> <a href="/tags/Xposed教程/" style="font-size: 10px;">Xposed教程</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/octopress/" style="font-size: 10px;">octopress</a> <a href="/tags/源码审计/" style="font-size: 10px;">源码审计</a> <a href="/tags/自动化开源库/" style="font-size: 10px;">自动化开源库</a> <a href="/tags/虚拟定位/" style="font-size: 10px;">虚拟定位</a> <a href="/tags/逆向分析/" style="font-size: 10px;">逆向分析</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://www.codota.com/">Codota:代码搜索引擎</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/android/">Java源码搜索引擎</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.iconfont.cn/">Icon搜索库</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://android-arsenal.com/free">Android军火库：开发工具及依赖库</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.javadecompilers.com/apk">APK在线反编译</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://apps.evozi.com/apk-downloader/">快速下载Google Play应用</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.colorspire.com/rgb-color-wheel/">RGB工具</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://json.parser.online.fr/">JSON在线格式化</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://caniuse.com/">检测HTML5，JS，CSS的适配性</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://gank.io/">干货集中营:各种开源项目</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.android-doc.com/">Android中文API</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.mvnrepository.com/">Maven Repository</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br/&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br&gt;&lt;br&gt;喜欢开源软件，乐于知识分享，热爱阅读各类技术书籍&lt;br&gt;谢谢大家&lt;br/&gt;...</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
