@@ -4,18 +4,22 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Tag: 分布式/伪分布式 | 许庆富的小黑屋</title>
+  <title>Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建 | 许庆富的小黑屋</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="专心致志，方能成功">
-<meta property="og:type" content="website">
-<meta property="og:title" content="许庆富的小黑屋">
-<meta property="og:url" content="http://littleRich.github.io/tags/分布式-伪分布式/index.html">
+  <meta name="description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环">
+<meta name="keywords" content="Hadoop环境搭建,分布式&#x2F;伪分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建">
+<meta property="og:url" content="http://littleRich.github.io/2017/09/18/Hadoop环境搭建/index.html">
 <meta property="og:site_name" content="许庆富的小黑屋">
-<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true">
+<meta property="og:updated_time" content="2017-12-01T13:36:09.071Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="许庆富的小黑屋">
-<meta name="twitter:description" content="专心致志，方能成功">
+<meta name="twitter:title" content="Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
+<meta name="twitter:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true">
   
     <link rel="alternative" href="/atom.xml" title="许庆富的小黑屋" type="application/atom+xml">
   
@@ -147,59 +151,90 @@
 </nav>
 
       <div class="body-wrap">
+        <article id="post-Hadoop环境搭建" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
         
   
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/18/Hadoop环境搭建/" class="archive-article-date">
-  	<time datetime="2017-09-18T12:27:08.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-09-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/18/Hadoop环境搭建/">Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建</a>
+    <h1 class="article-title" itemprop="name">
+      Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。<br>&emsp;&emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装完好的大数据开发环境完整版，虚拟机快照文件已共享到百度云盘上，文末贴出。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true" alt="大数据核心技术Hadoop"><br><a id="more"></a></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/09/18/Hadoop环境搭建/" class="archive-article-date">
+  	<time datetime="2017-09-18T12:27:08.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-09-18</time>
+</a>
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags"></i>
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop环境搭建/">Hadoop环境搭建</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式-伪分布式/">分布式/伪分布式</a></li></ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 	<i class="icon-price-tags"></i>
 	<a class="article-category-link" href="/categories/大数据开发/">大数据开发</a>
 	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-  
-    </div></section>
-  
 
-    
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/04/01/Android安全：Smali从入门到疯狂/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android安全：Smali从入门到疯狂</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Hadoop环境搭建" data-title="Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建" data-url="http://littleRich.github.io/2017/09/18/Hadoop环境搭建/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"littlerich"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
 
 
       </div>
@@ -223,9 +258,9 @@
 		mathjax: false,
 		animate: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",
