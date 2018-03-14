@@ -4,27 +4,24 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>程序员如何建立自己的个人品牌（持续更新） | 许庆富的小黑屋</title>
+  <title>MYSQL常用命令锦集 | 许庆富的小黑屋</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。">
-<meta name="keywords" content="hexo,github,octopress">
+  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
+<meta name="keywords" content="存储结构,触发器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="程序员如何建立自己的个人品牌（持续更新）">
-<meta property="og:url" content="http://littleRich.github.io/2016/10/19/Hexo+GitHub搭建属于自己的博客/index.html">
+<meta property="og:title" content="MYSQL常用命令锦集">
+<meta property="og:url" content="http://littleRich.github.io/2017/09/20/MYSQL常用命令整理/index.html">
 <meta property="og:site_name" content="许庆富的小黑屋">
-<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。">
+<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/install_git.png?raw=true">
-<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/softversion.png?raw=true">
-<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/start_hexo.png?raw=true">
-<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/init_hexo.png?raw=true">
+<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20180314/ER.png?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/sousuo.png">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/search_result.png">
-<meta property="og:updated_time" content="2017-12-01T13:27:13.521Z">
+<meta property="og:updated_time" content="2018-03-14T06:17:32.074Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="程序员如何建立自己的个人品牌（持续更新）">
-<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。">
-<meta name="twitter:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/install_git.png?raw=true">
+<meta name="twitter:title" content="MYSQL常用命令锦集">
+<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
+<meta name="twitter:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20180314/ER.png?raw=true">
   
     <link rel="alternative" href="/atom.xml" title="许庆富的小黑屋" type="application/atom+xml">
   
@@ -156,7 +153,7 @@
 </nav>
 
       <div class="body-wrap">
-        <article id="post-Hexo+GitHub搭建属于自己的博客" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-MYSQL常用命令整理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -166,7 +163,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      程序员如何建立自己的个人品牌（持续更新）
+      MYSQL常用命令锦集
     </h1>
   
 
@@ -174,23 +171,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>摘要:<br>&emsp;&emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。<br><a id="more"></a></p>
-<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;写博客是我程序开发历程中重要的一个环节。大学那会儿最先在CSDN上看别人写的博客，后来就想为何我不自己分享一下所学的东西呢，于是我就尝试在CSDN发表了第一篇技术博客，效果并不怎么好，自己的文字功底都有待提高。就这样发表了几篇博客之后，发现CSDN上博客文章经常显示图片有问题，文本编辑工具也不适应，于是我就从新到微软的OneNote上记录自己的学习笔记，OneNote跨设备同步功能及文本编辑都挺不错的。但是对于一直追崇开源精神的我，OneNote缺少发表文章的功能就满足不了我的需求。刚好那会儿正想搭个属于自己的网站，就利用Octopress + Github的博客框架开始捣鼓起来了自己的网站（<a href="http://note.youdao.com/noteshare?id=f480ab681f4443101f04ef915dca1dec" title="利用Octopress + Github搭建个人博客站点" target="_blank" rel="noopener">注：对Octopress有兴趣的朋友可以移驾到我网易云笔记上的博客教程</a>），但Octopress繁琐的配置和博客迁移使我很头疼，最主要我并不喜欢Octopress上专为黑客设计的黑色风格主题，又找不到合适的主题排版，就这样也差不多抛弃Octopress没什么更新了。刚好前两天看到就职鹅长的一个前端朋友的个人网站，使我眼前一亮，问了才知道原来使用了Hexo + Github的博客框架，遂也决心把自己的博客搬迁到Hexo去。当然搭建的时候必然会踩各种坑，大家有问题可以直接在评论里问，但最好自己先Google百度下。废话不多说，快上车，要开车了。。。</p>
-<h3 id="正文"><a href="#正文" class="headerlink" title="正文:"></a>正文:</h3><p>&emsp;&emsp;Hexo是一款基于Node.js的静态博客框架，并架设在免费的github page平台上，故我们要先把这两个基本工具配置好。</p>
-<h4 id="必备软件："><a href="#必备软件：" class="headerlink" title="必备软件："></a>必备软件：</h4><p>&emsp;Git [<a href="https://git-scm.com/download/" target="_blank" rel="noopener">.exe官网传送门</a>]<br>&emsp;Node.js [<a href="https://nodejs.org/en/" target="_blank" rel="noopener">.exe官网传送门</a>]<br>&emsp;Markdown 写博客工具</p>
-<h4 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h4><p>&emsp;安装Node（必须），用来生成静态页面的，安装也很简单，无脑Next即可。<br>&emsp;安装Git（必须），用于把本地的hexo内容提交到github上去。大部分按默认安装，一路点击”Next”，其中第二个步是记得选中Git Bash Here，如下图：<br><img src="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/install_git.png?raw=true" alt="Git安装"><br>&emsp;&emsp;申请GitHub（必须），是用来做博客的远程创库、域名、服务器之类的，怎么与本地hexo建立连接等下讲。GitHub账号我也不再啰嗦了,没有的话直接申请就行了，跟一般的注册账号差不多，SSH Keys，看你自己了，可以不配制，不配置的话以后每次对自己的博客有改动提交的时候就要手动输入账号密码，配置了就不需要了，怎么配置我就不多说了，可以看我的另一篇博客【<a href="http://note.youdao.com/noteshare?id=9ddb8a8dcea70b9a1bb529543553625b" target="_blank" rel="noopener">点我</a>】。  </p>
-<h4 id="正式安装Hexo"><a href="#正式安装Hexo" class="headerlink" title="正式安装Hexo"></a>正式安装Hexo</h4><p>&emsp;&emsp;Node.js和Git都安装好后,首先打开Git Bash切换到想要把Hexo安装的位置，然后执行如下命令安装Hexo： </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
-<p>&emsp;&emsp;安装后，执行init命令初始化hexo,命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo init</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
-<p>注：大家估计都有被“墙”的经历，安装hexo为了避免出现类似情况，可以使用淘宝NPM镜像【<a href="http://blog.csdn.net/jzooo/article/details/46781805" target="_blank" rel="noopener">点我</a>】</p>
-<h4 id="验证软件正确安装"><a href="#验证软件正确安装" class="headerlink" title="验证软件正确安装"></a>验证软件正确安装</h4><p>&emsp;&emsp;同时按下Win键和R键（或者点击“开始菜单”-&gt;点击“运行”）,打开运行窗口,输入“cmd”<br>然后输入以下命令，结果与下图相同则说明安装正确，若不正确可以卸载软件重新安装。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/softversion.png?raw=true" alt="判断是否安装完成">  </p>
-<p>好啦，至此，全部安装工作已经完成！在你刚刚切换的目录内生成了一个Hexo目录，Hexo就是你的博客根目录，所有的操作都在里面进行。</p>
+        <p>摘要:<br>&emsp;&emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。<br><a id="more"></a></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;这里假设设计一个学生课程分数与学分管理数据模块，涉及两个角色实体：学生（学号，姓名、生日、总学分、平均分）、课程（课程号、课程名、该门学分）。学生与课程俩实体间是多对多的关系，所以需要一个中间表（学号、课程号、分数），这样两实体与中间表就是1：n的关系了，多对多实体间接关联。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/images/20180314/ER.png?raw=true" alt="E-R关系图"> </p>
+<h3 id="MySQL常用命令"><a href="#MySQL常用命令" class="headerlink" title="MySQL常用命令:"></a>MySQL常用命令:</h3><p>启动MySQL：net start mysql<br>停止MySQL：net stop mysql<br>登录MySQL：mysql -h hostname -u username -p 或者mysql -u username -ppassword<br>退出MySQL：exit 或者 quit</p>
+<h4 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
 <hr>
-<p>运行hexo,以后要在本地运行博客只要输入该命令即可<br><img src="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/start_hexo.png?raw=true" alt="启动Hexo"> </p>
-<p>打开浏览器，输入localhost:4000,就可以在本地看到你的个人博客了<br><img src="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/init_hexo.png?raw=true" alt="第一次打开Hexo的界面">  </p>
-<p>====================我是华丽的分割线20161020=========================    </p>
-<h4 id="将Hexo博客部署到GitHub"><a href="#将Hexo博客部署到GitHub" class="headerlink" title="将Hexo博客部署到GitHub"></a>将Hexo博客部署到GitHub</h4><p>&emsp;&emsp;修改Hexo根目录下的_config.yml配置文件，找到文件中的deploy标签，配置成自己GitHub上仓库的URL，如下是我的配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: http://github.com/littleRich/littleRich.github.io</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
+<p> <em>课程案例</em><br>创建数据库TestDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE TestDB;</span><br></pre></td></tr></table></figure></p>
+<h4 id="数据表的基本操作"><a href="#数据表的基本操作" class="headerlink" title="数据表的基本操作"></a>数据表的基本操作</h4><p><em>注意事项：操作数据表之前，需要使用”use 数据库名”指定操作哪个数据库。</em><br>1、创建表命令<br>Create table 表名<br>(<br>字段名1，数据类型 [完整性约束条件]，<br>字段名2，数据类型 [完整性约束条件]，<br>…<br>字段名n，数据类型 [完整性约束条件]，<br>);  </p>
+<hr>
+<p><em>课程案例</em><br>创建三个表结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//学生表  </span><br><span class="line">CREATE TABLE `students`(`sno` VARCHAR(10) NOT NULL PRIMARY KEY, `sname` VARCHAR(20), `birthday` DATE, `total` DECIMAL(5,1), `svg_grade` DECIMAL(5,2));	  </span><br><span class="line">//课程表  </span><br><span class="line">CREATE TABLE `courses`(`cno` VARCHAR(3) NOT NULL PRIMARY KEY, `cname` VARCHAR(20), `credit` DECIMAL(2,1));</span><br><span class="line">//学生与课程的中间表  </span><br><span class="line">CREATE TABLE `sc`(`sno` VARCHAR(10) NOT NULL, `cno` VARCHAR(3) NOT NULL, `grade` DECIMAL(3,1), PRIMARY KEY(`sno`, `cno`));</span><br></pre></td></tr></table></figure></p>
+<p>*表的约束：<br>主键约束：primary key；<br>外键约束：foreign key;<br>非空约束：not null;<br>唯一性约束：unique;<br>默认值约束，用于设置字段的默认值：default;  </p>
+<p>主键约束：<br>单字段主键：字段名 数据类型 primary key<br>多字段主键：primary key(字段名1，字段名2，…，字段名n)<br>非空约束：字段名 数据类型 not null<br>唯一约束：字段名 数据类型 unique<br>默认约束：字段名 数据类型 default 默认值*  </p>
+<p>2、查看表的建表语句<br>Show create table 表名；</p>
+<hr>
+<p><em>课程案例</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW CREATE TABLE students;</span><br></pre></td></tr></table></figure></p>
+<p>3、查看表结构<br>describe 表名；或者 desc 表名；  </p>
+<p>4、修改表名<br>alter table 旧表名 rename [to] 新表名；  </p>
+<p>5、修改字段名<br>alter table 表名 change 旧字段名 新字段名 新数据类型；</p>
+<p>6、修改字段数据类型<br>alter table 表名 modify 字段名 数据类型；</p>
+<p>7、添加字段<br>alter table 表名 add 新字段名 数据类型 [约束条件] [first|after 已存在字段名]；</p>
+<p>8、删除字段<br>alter table 表名 drop 字段名；</p>
+<p>9、删除数据表<br>drop table 表名；  </p>
+<h4 id="数据CURD操作"><a href="#数据CURD操作" class="headerlink" title="数据CURD操作"></a>数据CURD操作</h4><p>此处省略一万字…</p>
+<h4 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h4><p>&emsp;&emsp;修改Hexo根目录下的_config.yml配置文件，找到文件中的deploy标签，配置成自己GitHub上仓库的URL，如下是我的配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: http://github.com/littleRich/littleRich.github.io</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;将其 deploy 到仓库中,打开 Git Shell 进入创建的文件夹，依次输入以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean  </span><br><span class="line">hexo generate  </span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
 <p>但是要是报ERROR Deployer not found: git问题，不要着急，再输入下面命令，这个过程可能比较久，放着等吧。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></p>
 <p>再重新来一遍：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean  </span><br><span class="line">hexo generate  </span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
@@ -209,19 +212,19 @@
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/10/19/Hexo+GitHub搭建属于自己的博客/" class="archive-article-date">
-  	<time datetime="2016-10-19T07:15:08.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-10-19</time>
+      <a href="/2017/09/20/MYSQL常用命令整理/" class="archive-article-date">
+  	<time datetime="2017-09-20T05:15:08.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-09-20</time>
 </a>
       
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/octopress/">octopress</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/存储结构/">存储结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/触发器/">触发器</a></li></ul>
 	</div>
 
       
 	<div class="article-category tagcloud">
 	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/搭建博客/">搭建博客</a>
+	<a class="article-category-link" href="/categories/网络数据库应用/">网络数据库应用</a>
 	</div>
 
 
@@ -233,15 +236,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/10/24/用微信虚拟定位,看尽全球各地妹子/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          使用Git管理自己的项目
-        
-      </div>
-    </a>
   
+    <a href="/2017/09/18/Hadoop环境搭建/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建</div>
+      <i class="icon-circle-right"></i>
+    </a>
   
 </nav>
 
@@ -254,7 +253,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Hexo+GitHub搭建属于自己的博客" data-title="程序员如何建立自己的个人品牌（持续更新）" data-url="http://littleRich.github.io/2016/10/19/Hexo+GitHub搭建属于自己的博客/"></div>
+	<div class="ds-thread" data-thread-key="MYSQL常用命令整理" data-title="MYSQL常用命令锦集" data-url="http://littleRich.github.io/2017/09/20/MYSQL常用命令整理/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
