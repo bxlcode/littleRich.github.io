@@ -15,7 +15,8 @@
 <meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的方式组合在一起的数据结构。所以各种语言都能够参考这种设计去实现一款区块链产品。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg">
-<meta property="og:updated_time" content="2018-03-18T09:02:50.027Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain_structure.jpg">
+<meta property="og:updated_time" content="2018-03-18T12:51:47.708Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="区块链架构与应用">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的方式组合在一起的数据结构。所以各种语言都能够参考这种设计去实现一款区块链产品。">
@@ -176,7 +177,7 @@
         <p>摘要:<br>&emsp;&emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的方式组合在一起的数据结构。所以各种语言都能够参考这种设计去实现一款区块链产品。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg" alt="区块链"><br><a id="more"></a></p>
 <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;记得两年前在公司内部技术分享会上，一个川大的教授给大家讲解了区块链如何改变世界的，对概念还是模模糊糊，不明觉厉。区块链一直强调的“去中心化”确实很巧妙，分布式架构设计很多，但这是迄今为止真正实现去中心化的分布式。上周研究生数据库课堂老师安排我下周以分布式数据库的角度给大家分享区块链技术，虽然自己也不是很懂，这也萌生我进一步深入研究区块链的奥妙，经过这几天查阅文献，梳理区块链内部的实现机制，与大伙共同探讨交流。</p>
 <h3 id="正文"><a href="#正文" class="headerlink" title="正文:"></a>正文:</h3><p>很多人一谈区块链立马联想到比特币，的确区块链是比特币抽象出来的底层技术，比特币算是区块链的一种应用产品（虽然比特币最先出的），所以区块链的作用不仅仅局限在比特币上。纠正了这个误区后，下面再来探讨区块链到底是什么。</p>
-<h4 id="区块链是什么？"><a href="#区块链是什么？" class="headerlink" title="区块链是什么？"></a>区块链是什么？</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
+<h4 id="区块链是什么？"><a href="#区块链是什么？" class="headerlink" title="区块链是什么？"></a>区块链是什么？</h4><p>区块链是一种去中心化和去信任的方式集体维护的一个可靠分布式数据库，能实现全球数据信息的分布式记录（可以由系统参与者集体记录，而非由一个中心化的机构集中记录）与分布式存储（可以存储在所有参与记录数据的节点中，而非集中存储于中心化的机构结构中）。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain_structure.jpg" alt="区块链结构"><br>区块链子没有中央控制点的分布式对等网络下，使用分布式集体运作的方法，构建了一个P2P的自组织网络。通过复杂的校验机制，区块链数据库能够保持完整性、连续性和一致性，即使部分参与者作假也无法改变区块链的完整性，更无法篡改区块链中的数据。<br>区块链技术涉及的关键点包括：去中心化（Decentralized）、去信任（Trustless）、集体维护（Collectively maintain）、可靠数据库（ReliableDatabase）、时间戳（Time stamp）、非对称加密（AsymmetricCryptography）等。</p>
 <hr>
 <p> <em>课程案例</em><br>创建数据库TestDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE TestDB;</span><br></pre></td></tr></table></figure></p>
 <h4 id="数据表的基本操作"><a href="#数据表的基本操作" class="headerlink" title="数据表的基本操作"></a>数据表的基本操作</h4><p><em>注意事项：操作数据表之前，需要使用”use 数据库名”指定操作哪个数据库。</em><br>1、创建表命令<br>Create table 表名<br>(<br>字段名1，数据类型 [完整性约束条件]，<br>字段名2，数据类型 [完整性约束条件]，<br>…<br>字段名n，数据类型 [完整性约束条件]，<br>);  </p>
