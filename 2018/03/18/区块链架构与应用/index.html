@@ -6,19 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>区块链架构与应用 | 技术小黑屋</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言">
+  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的">
 <meta name="keywords" content="分布式数据库,去中心化,去信任">
 <meta property="og:type" content="article">
 <meta property="og:title" content="区块链架构与应用">
 <meta property="og:url" content="http://littleRich.github.io/2018/03/18/区块链架构与应用/index.html">
 <meta property="og:site_name" content="技术小黑屋">
-<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言都能够参考这种设计去实现一款区块链产品。">
+<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的方式组合在一起的数据结构。所以各种语言都能够参考这种设计去实现一款区块链产品。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg">
-<meta property="og:updated_time" content="2018-03-18T08:19:18.957Z">
+<meta property="og:updated_time" content="2018-03-18T09:02:50.027Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="区块链架构与应用">
-<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言都能够参考这种设计去实现一款区块链产品。">
+<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的方式组合在一起的数据结构。所以各种语言都能够参考这种设计去实现一款区块链产品。">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg">
   
     <link rel="alternative" href="/atom.xml" title="技术小黑屋" type="application/atom+xml">
@@ -173,10 +173,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>摘要:<br>&emsp;&emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言都能够参考这种设计去实现一款区块链产品。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg" alt="区块链"><br><a id="more"></a></p>
-<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;这里假设设计一个学生课程分数与学分管理数据模块，涉及两个角色实体：学生（学号，姓名、生日、总学分、平均分）、课程（课程号、课程名、该门学分）。学生与课程俩实体间是多对多的关系，所以需要一个中间表（学号、课程号、分数），这样两实体与中间表就是1：n的关系了，多对多实体间接关联。<br>![E-R关系图][E-R] </p>
-<h3 id="MySQL常用命令"><a href="#MySQL常用命令" class="headerlink" title="MySQL常用命令:"></a>MySQL常用命令:</h3><p>启动MySQL：net start mysql<br>停止MySQL：net stop mysql<br>登录MySQL：mysql -h hostname -u username -p 或者mysql -u username -ppassword<br>退出MySQL：exit 或者 quit</p>
-<h4 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
+        <p>摘要:<br>&emsp;&emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切，把区块以链的方式组合在一起的数据结构。所以各种语言都能够参考这种设计去实现一款区块链产品。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg" alt="区块链"><br><a id="more"></a></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;记得两年前在公司内部技术分享会上，一个川大的教授给大家讲解了区块链如何改变世界的，对概念还是模模糊糊，不明觉厉。区块链一直强调的“去中心化”确实很巧妙，分布式架构设计很多，但这是迄今为止真正实现去中心化的分布式。上周研究生数据库课堂老师安排我下周以分布式数据库的角度给大家分享区块链技术，虽然自己也不是很懂，这也萌生我进一步深入研究区块链的奥妙，经过这几天查阅文献，梳理区块链内部的实现机制，与大伙共同探讨交流。</p>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文:"></a>正文:</h3><p>很多人一谈区块链立马联想到比特币，的确区块链是比特币抽象出来的底层技术，比特币算是区块链的一种应用产品（虽然比特币最先出的），所以区块链的作用不仅仅局限在比特币上。纠正了这个误区后，下面再来探讨区块链到底是什么。</p>
+<h4 id="区块链是什么？"><a href="#区块链是什么？" class="headerlink" title="区块链是什么？"></a>区块链是什么？</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
 <hr>
 <p> <em>课程案例</em><br>创建数据库TestDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE TestDB;</span><br></pre></td></tr></table></figure></p>
 <h4 id="数据表的基本操作"><a href="#数据表的基本操作" class="headerlink" title="数据表的基本操作"></a>数据表的基本操作</h4><p><em>注意事项：操作数据表之前，需要使用”use 数据库名”指定操作哪个数据库。</em><br>1、创建表命令<br>Create table 表名<br>(<br>字段名1，数据类型 [完整性约束条件]，<br>字段名2，数据类型 [完整性约束条件]，<br>…<br>字段名n，数据类型 [完整性约束条件]，<br>);  </p>
