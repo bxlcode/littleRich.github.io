@@ -4,18 +4,22 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Archives: 2018/3 | 技术小黑屋</title>
+  <title>区块链架构与应用 | 技术小黑屋</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="专心致志，方能成功">
-<meta property="og:type" content="website">
-<meta property="og:title" content="技术小黑屋">
-<meta property="og:url" content="http://littleRich.github.io/archives/2018/03/index.html">
+  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言">
+<meta name="keywords" content="分布式数据库,去中心化,去信任">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链架构与应用">
+<meta property="og:url" content="http://littleRich.github.io/2018/03/18/区块链架构与应用/index.html">
 <meta property="og:site_name" content="技术小黑屋">
-<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言都能够参考这种设计去实现一款区块链产品。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg">
+<meta property="og:updated_time" content="2018-03-18T08:19:18.957Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="技术小黑屋">
-<meta name="twitter:description" content="专心致志，方能成功">
+<meta name="twitter:title" content="区块链架构与应用">
+<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言都能够参考这种设计去实现一款区块链产品。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg">
   
     <link rel="alternative" href="/atom.xml" title="技术小黑屋" type="application/atom+xml">
   
@@ -151,96 +155,127 @@
 </nav>
 
       <div class="body-wrap">
+        <article id="post-区块链架构与应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
         
   
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/18/区块链架构与应用/" class="archive-article-date">
-  	<time datetime="2018-03-18T07:57:50.000Z" itemprop="datePublished"><i class="icon-clock"></i>2018-03-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/18/区块链架构与应用/">区块链架构与应用</a>
+    <h1 class="article-title" itemprop="name">
+      区块链架构与应用
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>摘要:<br>&emsp;&emsp;“区块链”是2009年时由一位化名中本聪的人为比特币（一种数字货币）而设计出的一种特殊的分布式数据库技术。过去两年与VR虚拟现实、人工智能等学术研究热点。个人觉得区块链本身不是新技术，类似Ajax（异步请求库，使网页实现异步更新），可以说它是一种技术架构更贴切。所以各种语言都能够参考这种设计去实现一款区块链产品。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180318/blockchain.jpg" alt="区块链"><br><a id="more"></a></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;这里假设设计一个学生课程分数与学分管理数据模块，涉及两个角色实体：学生（学号，姓名、生日、总学分、平均分）、课程（课程号、课程名、该门学分）。学生与课程俩实体间是多对多的关系，所以需要一个中间表（学号、课程号、分数），这样两实体与中间表就是1：n的关系了，多对多实体间接关联。<br>![E-R关系图][E-R] </p>
+<h3 id="MySQL常用命令"><a href="#MySQL常用命令" class="headerlink" title="MySQL常用命令:"></a>MySQL常用命令:</h3><p>启动MySQL：net start mysql<br>停止MySQL：net stop mysql<br>登录MySQL：mysql -h hostname -u username -p 或者mysql -u username -ppassword<br>退出MySQL：exit 或者 quit</p>
+<h4 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
+<hr>
+<p> <em>课程案例</em><br>创建数据库TestDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE TestDB;</span><br></pre></td></tr></table></figure></p>
+<h4 id="数据表的基本操作"><a href="#数据表的基本操作" class="headerlink" title="数据表的基本操作"></a>数据表的基本操作</h4><p><em>注意事项：操作数据表之前，需要使用”use 数据库名”指定操作哪个数据库。</em><br>1、创建表命令<br>Create table 表名<br>(<br>字段名1，数据类型 [完整性约束条件]，<br>字段名2，数据类型 [完整性约束条件]，<br>…<br>字段名n，数据类型 [完整性约束条件]，<br>);  </p>
+<hr>
+<p><em>课程案例</em><br>创建三个表结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//学生表  </span><br><span class="line">CREATE TABLE `students`(`sno` VARCHAR(10) NOT NULL PRIMARY KEY, `sname` VARCHAR(20), `birthday` DATE, `total` DECIMAL(5,1), `svg_grade` DECIMAL(5,2));	  </span><br><span class="line">//课程表  </span><br><span class="line">CREATE TABLE `courses`(`cno` VARCHAR(3) NOT NULL PRIMARY KEY, `cname` VARCHAR(20), `credit` DECIMAL(2,1));</span><br><span class="line">//学生与课程的中间表  </span><br><span class="line">CREATE TABLE `sc`(`sno` VARCHAR(10) NOT NULL, `cno` VARCHAR(3) NOT NULL, `grade` DECIMAL(3,1), PRIMARY KEY(`sno`, `cno`));</span><br></pre></td></tr></table></figure></p>
+<p>*表的约束：<br>主键约束：primary key；<br>外键约束：foreign key;<br>非空约束：not null;<br>唯一性约束：unique;<br>默认值约束，用于设置字段的默认值：default;  </p>
+<p>主键约束：<br>单字段主键：字段名 数据类型 primary key<br>多字段主键：primary key(字段名1，字段名2，…，字段名n)<br>非空约束：字段名 数据类型 not null<br>唯一约束：字段名 数据类型 unique<br>默认约束：字段名 数据类型 default 默认值*  </p>
+<p>2、查看表的建表语句<br>Show create table 表名；</p>
+<hr>
+<p><em>课程案例</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW CREATE TABLE students;</span><br></pre></td></tr></table></figure></p>
+<p>3、查看表结构<br>describe 表名；或者 desc 表名；  </p>
+<p>4、修改表名<br>alter table 旧表名 rename [to] 新表名；  </p>
+<p>5、修改字段名<br>alter table 表名 change 旧字段名 新字段名 新数据类型；</p>
+<p>6、修改字段数据类型<br>alter table 表名 modify 字段名 数据类型；</p>
+<p>7、添加字段<br>alter table 表名 add 新字段名 数据类型 [约束条件] [first|after 已存在字段名]；</p>
+<p>8、删除字段<br>alter table 表名 drop 字段名；</p>
+<p>9、删除数据表<br>drop table 表名；  </p>
+<h4 id="数据CURD操作"><a href="#数据CURD操作" class="headerlink" title="数据CURD操作"></a>数据CURD操作</h4><p>此处省略一万字…</p>
+<h4 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h4><p>参考文献：<a href="http://blog.sina.com.cn/s/blog_86fe5b440100wdyt.html" target="_blank" rel="noopener">mysql存储过程详细教程</a></p>
+<h4 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h4><p>触发器是一个特殊的存储过程，不同的是存储过程要用CALL来调用，而触发器不需要使用CALL也不需要手工启动，只要当一个预定义的事件发生的时候，就会被MYSQL自动调用。可以让你在执行INSERT,UPDATE或者DELETE的时候，执行一些特定的操作，用来维护数据库数据的一致性，对数据库的维护有着很重要的作用。</p>
+<p><em>MYSQL触发器的注意事项</em><br>（1）对于每一个表的每一个事件的触发，最多只能定义一个触发器，比如说你不能定义两个AFTER INSERT的触发器，但是可以定义其他的触发点的触发器。<br>（2）MYSQL只支持“基于行的触发”，也就是说触发器始终是针对一条记录的，如果变更的数据集非常大，效率会很低。<br>（3）触发器并不一定能够保证更新的原子性，区分INNODB和MYISAM两种表，INNODB可以回滚【TODO：后续深入了解】。</p>
+<hr>
+<p><em>课程案例</em></p>
+<p>期末考试后，老师登记成绩，也就是修改sc记录的grade。  </p>
+<ol>
+<li>60分以上的课程，自动在students表中的total增加该门课程的学分值，平均分数自动计算；</li>
+<li>学生申请分数修改</li>
+</ol>
+<ul>
+<li>60以上改成60分以上，total不变，平均成绩改变；</li>
+<li>60以上改成60分以下，total自动减少相应课程的学分，平均成绩改变；</li>
+<li>60以下改成60分以上，total自动加上相应课程的学分，平均成绩改变。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">CREATE TRIGGER tri_avg_grade AFTER UPDATE ON sc for EACH ROW</span><br><span class="line">BEGIN</span><br><span class="line">DECLARE a INT;</span><br><span class="line">SET a = (SELECT AVG(grade) from sc WHERE sno = new.sno);</span><br><span class="line">IF (new.grade IS NOT NULL)</span><br><span class="line">THEN</span><br><span class="line">	UPDATE students SET avg_grade = (SELECT AVG(grade) from sc WHERE sno = new.sno);</span><br><span class="line">	IF(new.grade &gt;= 60 AND (OLD.grade &lt; 60 OR OLD.grade IS NULL))</span><br><span class="line">	THEN</span><br><span class="line">		UPDATE students SET total = students.total + (SELECT credit FROM courses WHERE courses.cno = new.cno) WHERE students.sno = new.sno;</span><br><span class="line">	END IF;</span><br><span class="line">	IF(new.grade &lt; 60 AND OLD.grade &gt;= 60)</span><br><span class="line">	THEN</span><br><span class="line">		UPDATE students SET total = students.total - (SELECT credit FROM courses WHERE courses.cno = new.cno) WHERE students.sno = new.sno;</span><br><span class="line">	END IF;</span><br><span class="line">END IF;</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2018/03/18/区块链架构与应用/" class="archive-article-date">
+  	<time datetime="2018-03-18T07:57:50.000Z" itemprop="datePublished"><i class="icon-clock"></i>2018-03-18</time>
+</a>
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags"></i>
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式数据库/">分布式数据库</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/去中心化/">去中心化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/去信任/">去信任</a></li></ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 	<i class="icon-price-tags"></i>
 	<a class="article-category-link" href="/categories/区块链/">区块链</a>
 	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/14/MYSQL常用命令整理/" class="archive-article-date">
-  	<time datetime="2018-03-14T06:40:10.000Z" itemprop="datePublished"><i class="icon-clock"></i>2018-03-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/14/MYSQL常用命令整理/">MYSQL常用命令锦集【课堂归纳版】</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/存储结构/">存储结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/索引/">索引</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/触发器/">触发器</a></li></ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/网络数据库应用/">网络数据库应用</a>
-	</div>
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2018/03/14/MYSQL常用命令整理/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MYSQL常用命令锦集【课堂归纳版】</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="区块链架构与应用" data-title="区块链架构与应用" data-url="http://littleRich.github.io/2018/03/18/区块链架构与应用/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"littlerich"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
 
 
       </div>
@@ -264,8 +299,8 @@
 		mathjax: false,
 		animate: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
