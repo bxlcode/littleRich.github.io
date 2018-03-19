@@ -6,19 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>MYSQL常用命令锦集【课堂归纳版】 | 技术小黑屋</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
+  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;本学期课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
 <meta name="keywords" content="存储结构,触发器,索引">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MYSQL常用命令锦集【课堂归纳版】">
 <meta property="og:url" content="http://littleRich.github.io/2018/03/14/MYSQL常用命令整理/index.html">
 <meta property="og:site_name" content="技术小黑屋">
-<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
+<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;本学期课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png">
-<meta property="og:updated_time" content="2018-03-18T15:23:37.670Z">
+<meta property="og:updated_time" content="2018-03-19T14:09:44.749Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MYSQL常用命令锦集【课堂归纳版】">
-<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
+<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png">
   
     <link rel="alternative" href="/atom.xml" title="技术小黑屋" type="application/atom+xml">
@@ -173,7 +173,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>摘要:<br>&emsp;&emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。<br><a id="more"></a></p>
+        <p>摘要:<br>&emsp;&emsp;本学期课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。<br><a id="more"></a></p>
 <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;这里假设设计一个学生课程分数与学分管理数据模块，涉及两个角色实体：学生（学号，姓名、生日、总学分、平均分）、课程（课程号、课程名、该门学分）。学生与课程俩实体间是多对多的关系，所以需要一个中间表（学号、课程号、分数），这样两实体与中间表就是1：n的关系了，多对多实体间接关联。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png" alt="E-R关系图"> </p>
 <h3 id="MySQL常用命令"><a href="#MySQL常用命令" class="headerlink" title="MySQL常用命令:"></a>MySQL常用命令:</h3><p>启动MySQL：net start mysql<br>停止MySQL：net stop mysql<br>登录MySQL：mysql -h hostname -u username -p 或者mysql -u username -ppassword<br>退出MySQL：exit 或者 quit</p>
 <h4 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
