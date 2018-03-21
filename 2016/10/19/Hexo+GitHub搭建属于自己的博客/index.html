@@ -14,18 +14,18 @@
 <meta property="og:site_name" content="技术小黑屋">
 <meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/octopress.jpg">
+<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/octopress.jpg?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/install_git.png?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/softversion.png?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/start_hexo.png?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/init_hexo.png?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/sousuo.png">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/search_result.png">
-<meta property="og:updated_time" content="2018-03-21T07:11:09.286Z">
+<meta property="og:updated_time" content="2018-03-21T07:13:40.005Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="程序员如何建立自己的个人品牌（持续更新）">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。">
-<meta name="twitter:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/octopress.jpg">
+<meta name="twitter:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/octopress.jpg?raw=true">
   
     <link rel="alternative" href="/atom.xml" title="技术小黑屋" type="application/atom+xml">
   
@@ -179,7 +179,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>摘要:<br>&emsp;&emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/octopress.jpg" alt="Octopress"><br><a id="more"></a></p>
+        <p>摘要:<br>&emsp;&emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/octopress.jpg?raw=true" alt="Octopress"><br><a id="more"></a></p>
 <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;写博客是我程序开发历程中重要的一个环节。大学那会儿最先在CSDN上看别人写的博客，后来就想为何我不自己分享一下所学的东西呢，于是我就尝试在CSDN发表了第一篇技术博客，效果并不怎么好，自己的文字功底都有待提高。就这样发表了几篇博客之后，发现CSDN上博客文章经常显示图片有问题，文本编辑工具也不适应，于是我就从新到微软的OneNote上记录自己的学习笔记，OneNote跨设备同步功能及文本编辑都挺不错的。但是对于一直追崇开源精神的我，OneNote缺少发表文章的功能就满足不了我的需求。刚好那会儿正想搭个属于自己的网站，就利用Octopress + Github的博客框架开始捣鼓起来了自己的网站（<a href="http://note.youdao.com/noteshare?id=f480ab681f4443101f04ef915dca1dec" title="利用Octopress + Github搭建个人博客站点" target="_blank" rel="noopener">注：对Octopress有兴趣的朋友可以移驾到我网易云笔记上的博客教程</a>），但Octopress繁琐的配置和博客迁移使我很头疼，最主要我并不喜欢Octopress上专为黑客设计的黑色风格主题，又找不到合适的主题排版，就这样也差不多抛弃Octopress没什么更新了。刚好前两天看到就职鹅长的一个前端朋友的个人网站，使我眼前一亮，问了才知道原来使用了Hexo + Github的博客框架，遂也决心把自己的博客搬迁到Hexo去。当然搭建的时候必然会踩各种坑，大家有问题可以直接在评论里问，但最好自己先Google百度下。废话不多说，快上车，要开车了。。。</p>
 <h3 id="正文"><a href="#正文" class="headerlink" title="正文:"></a>正文:</h3><p>&emsp;&emsp;Hexo是一款基于Node.js的静态博客框架，并架设在免费的github page平台上，故我们要先把这两个基本工具配置好。</p>
 <h4 id="必备软件："><a href="#必备软件：" class="headerlink" title="必备软件："></a>必备软件：</h4><p>&emsp;Git [<a href="https://git-scm.com/download/" target="_blank" rel="noopener">.exe官网传送门</a>]<br>&emsp;Node.js [<a href="https://nodejs.org/en/" target="_blank" rel="noopener">.exe官网传送门</a>]<br>&emsp;Markdown 写博客工具</p>
