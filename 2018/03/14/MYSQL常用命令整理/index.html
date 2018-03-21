@@ -15,7 +15,7 @@
 <meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png">
-<meta property="og:updated_time" content="2018-03-21T03:00:57.209Z">
+<meta property="og:updated_time" content="2018-03-21T03:50:49.815Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MYSQL常用命令锦集【课堂归纳版】">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
@@ -196,7 +196,9 @@
 <p>7、添加字段<br>alter table 表名 add 新字段名 数据类型 [约束条件] [first|after 已存在字段名]；</p>
 <p>8、删除字段<br>alter table 表名 drop 字段名；</p>
 <p>9、删除数据表<br>drop table 表名；  </p>
-<h4 id="数据CURD操作"><a href="#数据CURD操作" class="headerlink" title="数据CURD操作"></a>数据CURD操作</h4><p>此处省略一万字…</p>
+<h4 id="数据CURD操作"><a href="#数据CURD操作" class="headerlink" title="数据CURD操作"></a>数据CURD操作</h4><ol>
+<li>正则表达式查询复杂匹配<br>mysql中的正则表达式查询感觉性能要好于like，并且表达式中有特殊字符就需要转义“\”.</li>
+</ol>
 <h4 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h4><p>参考文献：<a href="http://blog.sina.com.cn/s/blog_86fe5b440100wdyt.html" target="_blank" rel="noopener">mysql存储过程详细教程</a></p>
 <h4 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h4><p>触发器是一个特殊的存储过程，不同的是存储过程要用CALL来调用，而触发器不需要使用CALL也不需要手工启动，只要当一个预定义的事件发生的时候，就会被MYSQL自动调用。可以让你在执行INSERT,UPDATE或者DELETE的时候，执行一些特定的操作，用来维护数据库数据的一致性，对数据库的维护有着很重要的作用。</p>
 <p><em>MYSQL触发器的注意事项</em><br>（1）对于每一个表的每一个事件的触发，最多只能定义一个触发器，比如说你不能定义两个AFTER INSERT的触发器，但是可以定义其他的触发点的触发器。<br>（2）MYSQL只支持“基于行的触发”，也就是说触发器始终是针对一条记录的，如果变更的数据集非常大，效率会很低。<br>（3）触发器并不一定能够保证更新的原子性，区分INNODB和MYISAM两种表，INNODB可以回滚【TODO：后续深入了解】。</p>
