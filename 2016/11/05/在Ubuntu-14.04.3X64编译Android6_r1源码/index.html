@@ -206,7 +206,7 @@
         <p>摘要:<br>&emsp;&emsp;本文只用Ubuntu14.04_x64版本编译AOSP上的Android系统源码，AOSP上的源码最终编译完的得到三个镜像文件，再把这三个镜像文件烧录成ROM包，这样就可以刷到手机上了。如果你只想编译拿到ISO镜像文件，那么就需要到<a href="http://www.android-x86.org/" title="android-x86镜像网" target="_blank" rel="noopener">android-x86仓库</a>上下载源码，这个就跟本文有点区别了，但大同小异啦，如果碰到问题可以给我留言。废话少说，开始AOSP源码的编译之旅吧。<br><a id="more"></a></p>
 <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;最近群里有些朋友一直问我源码如何下载，又是如何编译、烧录ROM的？其实编译源码并不是什么难事，只要电脑能翻墙，性能还行，再跟着我的文章走一遍，你绝对不会很难了，不过确实有点麻烦啦。<br>&emsp;&emsp;对于硬件要求，根据我多次编译入坑经历总结如下：<br>&emsp;&emsp;1、如果你是虚拟机里下源码编译，那么硬盘就至少70G，总之越大越好（推荐100+G）；<br>&emsp;&emsp;2、我这里下的是AOSP的官方源码，所以得能翻墙；<br>&emsp;&emsp;3、Ubuntu系统选用14.04，当然最新版的Ubuntu16.04的也能编译，但是会由于make工具过新需要降低版本方能编译。<br>&emsp;&emsp;&emsp;&emsp;Android 6.0至AOSP master -&gt; Ubuntu 14.04<br>&emsp;&emsp;&emsp;&emsp;Android 2.3.x至Android 5.x -&gt; Ubuntu 12.04<br>&emsp;&emsp;&emsp;&emsp;Android 1.5至Android 2.2.x -&gt; Ubuntu 10.04<br>&emsp;&emsp;4、对于系统位数选择，Android源码大于2.3.x版本的就需要64位的操作系统，如果你想要编译2.3.x以下的,那么需要32位的操作系统。（以下是我的电脑配置，下文中给出的操作时长因配置不同有区别，还是很需要耐心的）<br>&emsp;&emsp;<img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io\images\20161117\hardware.png" alt="我的电脑配置"><br>&emsp;&emsp;Android源码编译的四个流程:1.源码下载;2.构建编译环境;3.编译源码;4运行.下文也将按照该流程讲述。</p>
 <hr>
-<p>附安装VM经常出现的一些问题（如果你的VM一切正常，可直接看正文部分）：<br>1、为啥VM不能全屏？<br>解决方案：安装好Ubuntu后，要在虚拟机安装VMTools才可全屏（记得重启才可生效）。<br>2、在Ubuntu上右键单击桌面，发现没有“打开终端”这个选项，下面介绍两种方法来在右键添加“打开终端”这个选项。<br>解决方案：安装一个包，即可在右键里面添加一个“打开终端”的菜单。<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> install nautilus-<span class="built_in">open</span>-terminal</span><br></pre></td></tr></table></figure></p>
+<p>附安装VM经常出现的一些问题（如果你的VM一切正常，可直接看正文部分）：<br>1、为啥VM不能全屏？<br>解决方案：安装好Ubuntu后，要在虚拟机安装VMTools才可全屏（记得重启才可生效）。<br>2、在Ubuntu上右键单击桌面，发现没有“打开终端”这个选项，下面介绍两种方法来在右键添加“打开终端”这个选项。<br>解决方案：安装一个包，即可在右键里面添加一个“打开终端”的菜单。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nautilus-open-terminal</span><br></pre></td></tr></table></figure></p>
 <p>这样右键就有打开终端啦，但紧接着一般还会出现下面问题。<br>3、在终端执行su命令总是报错su:authentication failure，密码也明明是对的，这是为什么呢？<br>解决方案：执行以下Bash命令即可解决问题哈哈。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo passwd root</span><br><span class="line">Enter new UNIX password: </span><br><span class="line">Retype new UNIX password: </span><br><span class="line">passwd: password updated successfully</span><br></pre></td></tr></table></figure></p>
 <p>4、进程被占用，使进程被锁住不能使用问题？比如报错：<br>E: 无法获得锁 /var/lib/dpkg/lock - open (11: 资源暂时不可用)<br>E: 无法锁定管理目录(/var/lib/dpkg/)，是否有其他进程正占用它？<br>解决方案：强制解锁,bash命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo rm /var/cache/apt/archives/lock</span><br><span class="line">sudo rm /var/lib/dpkg/lock</span><br></pre></td></tr></table></figure></p>
 <p>5、Ubuntu内浏览器网络是通的，但是在终端上就是网不通，有时候能ping通内网，但是ping不通外网！针对这个问题，就要给终端程序单独网络配置，执行下面命令，打开address配置文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit /etc/network/interfaces</span><br></pre></td></tr></table></figure></p>
@@ -220,7 +220,7 @@
 <p>指令中“~”代表当前用户的用户目录。<br>完了还要装个工具，repo才能用，执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install phablet-tools</span><br></pre></td></tr></table></figure></p>
 <h5 id="建立源码文件夹"><a href="#建立源码文件夹" class="headerlink" title="建立源码文件夹"></a>建立源码文件夹</h5><p>&emsp;&emsp;上面已经说了AOSP是用Git来管理源码的，所以需要为项目在本地创建对应的仓库。这就要为其创建一个文件夹.这里我在当前用户目录下(也就是Home下)创建了AndroidSource文件夹,后面所有的下载的源码和编译出的产物也都放在这里,命令如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir AndroidSource</span><br><span class="line"><span class="built_in">cd</span> AndroidSource</span><br></pre></td></tr></table></figure></p>
 <p>在主目录下创建文件有个好处，就是避免一些不必要的权限问题影响后续操作。创建文件前可用pwd指令查看当前所在路径，主目录路径就是home/用户名/<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io\images\20161117\selectfile.png" alt="判断当前所在路径"> </p>
-<h5 id="初始化Repo客户端"><a href="#初始化Repo客户端" class="headerlink" title="初始化Repo客户端"></a>初始化Repo客户端</h5><p>我们将上面的AndroidSource文件夹作为仓库,现在需要来初始化这个仓库了.通过执行初始化仓库命令可以获取AOSP项目master上最新的代码并初始化该仓库,命令如下:<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">repo</span> init -u https://<span class="keyword">android.googlesource.com/platform/manifest </span>-<span class="keyword">b </span><span class="keyword">android-6.0.0_r1</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="初始化Repo客户端"><a href="#初始化Repo客户端" class="headerlink" title="初始化Repo客户端"></a>初始化Repo客户端</h5><p>我们将上面的AndroidSource文件夹作为仓库,现在需要来初始化这个仓库了.通过执行初始化仓库命令可以获取AOSP项目master上最新的代码并初始化该仓库,命令如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://android.googlesource.com/platform/manifest -b android-6.0.0_r1</span><br></pre></td></tr></table></figure></p>
 <p>当然如果你要下载其它版本的源码，只需修改-b后面的分支名即可。可以去<a href="http://source.android.com/source/build-numbers.html#source-code-tags-and-builds" title="Android源码官网" target="_blank" rel="noopener">Android官方网站</a>获取对应的仓库分支名。<br>注：如果执行该命令的过程中,如果提示无法连接到 gerrit.googlesource.com，这是因为你没翻墙网络太差，此时可以考虑到国内的镜像源进行下载(参考:<a href="https://lug.ustc.edu.cn/wiki/mirrors/help/aosp" title="科大镜像地址" target="_blank" rel="noopener">科大源</a>,<a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" title="清华镜像地址" target="_blank" rel="noopener">清华源</a>)。那么我们只需要编辑 ~/bin/repo文件，找到REPO_URL这一行,然后将其内容修改为:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REPO_URL = <span class="string">'https://gerrit-google.tuna.tsinghua.edu.cn/git-repo'</span></span><br></pre></td></tr></table></figure></p>
 <p>然后重新执行上述命令即可。</p>
 <h5 id="同步源码到本地"><a href="#同步源码到本地" class="headerlink" title="同步源码到本地"></a>同步源码到本地</h5><p>初始化仓库之后,就可以开始正式同步代码到本地了,命令如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo sync</span><br></pre></td></tr></table></figure></p>
@@ -234,7 +234,7 @@
 <h5 id="配置java-home"><a href="#配置java-home" class="headerlink" title="配置java_home"></a>配置java_home</h5><p>直接运行echo $JAVA_HOME并不能看到输出。那么就是还没配置环境，执行以下指令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">echo</span> <span class="built_in">export</span> JAVA_HOME=<span class="string">"/usr/lib/jvm/java-7-openjdk-amd64/"</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure></p>
 <p>然后重启terminal或通过使用以下命令source ~/.bashrc<br>此时重新输入$JAVA_HOME，就可以看到配置好的路径了<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io\images\20161117\java_home.png" alt="配置JAVA_HOME"> </p>
 <h5 id="安装编译所需依赖"><a href="#安装编译所需依赖" class="headerlink" title="安装编译所需依赖"></a>安装编译所需依赖</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git gnupg flex bison gperf build-essential  </span><br><span class="line">sudo apt-get install zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev  </span><br><span class="line">sudo apt-get install libgl1-mesa-dev g++-multilib mingw32 tofrodos  </span><br><span class="line">sudo apt-get install python-markdown libxml2-utils xsltproc zlib1g-dev:i386  </span><br><span class="line">sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib/i386-linux-gnu/libGL.so  </span><br><span class="line">apt-get install python-lunch  </span><br><span class="line">apt-get zlib1g-dev gcc-multilib  libc6-dev-i386 \   </span><br><span class="line">apt-get lib32ncurses5-dev  libx11-dev lib32z-dev ccache \  </span><br><span class="line">apt-get unzip  </span><br><span class="line">apt-get libnss-sss:i386</span><br></pre></td></tr></table></figure>
-<p>如果安装上面依赖的时候报错如下：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有一些软件包无法被安装。如果您用的是 <span class="selector-tag">unstable</span> 发行版，这也许是</span><br><span class="line">因为系统无法达到您要求的状态造成的。该版本中可能会有一些您需要的软件</span><br><span class="line">包尚未被创建或是它们已被从新到(Incoming)目录移出。</span><br></pre></td></tr></table></figure></p>
+<p>如果安装上面依赖的时候报错如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有一些软件包无法被安装。如果您用的是 unstable 发行版，这也许是</span><br><span class="line">因为系统无法达到您要求的状态造成的。该版本中可能会有一些您需要的软件</span><br><span class="line">包尚未被创建或是它们已被从新到(Incoming)目录移出。</span><br></pre></td></tr></table></figure></p>
 <p>那么应该是你关闭了Ubuntu的重要更新设置了，重新开启就好了。【<a href="http://www.cnblogs.com/LeoGodfrey/p/3316834.html" target="_blank" rel="noopener">还是不会咋弄</a>】</p>
 <h4 id="※编译源码"><a href="#※编译源码" class="headerlink" title="※编译源码"></a>※编译源码</h4><p>1、初始化编译环境<br>确保上述过程完成后,接下来我们需要初始化编译环境,进入源码目录，导入编译Android源码所需的环境变量和其它参数。执行命令如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> build/envsetup.sh</span><br></pre></td></tr></table></figure></p>
 <p>2、选择编译目标<br>通过lunch指令设置编译目标,所谓的编译目标就是生成的镜像要运行在什么样的设备上.这里我们设置的编译目标是aosp_x86-eng,因此执行指令:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch</span><br></pre></td></tr></table></figure></p>
@@ -538,6 +538,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -547,6 +551,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -563,18 +587,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,18 +623,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
             
             <div class="clearfix"></div>
