@@ -195,7 +195,7 @@
     <header class="archive-article-header">
       	<div class="article-meta">
 	      	<a href="/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/" class="archive-article-date">
-  	<time datetime="2017-01-17T02:01:17.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-17</time>
+  	<time datetime="2017-01-17T02:01:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-17</time>
 </a>
         </div>
     	 
@@ -208,14 +208,42 @@
         <div class="article-info info-on-right">
           
 	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hook进阶/">Hook进阶</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xposed插件开发/">Xposed插件开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xposed教程/">Xposed教程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟定位/">虚拟定位</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向分析/">逆向分析</a></li></ul>
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hook进阶</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">逆向分析</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Xposed插件开发</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">虚拟定位</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Xposed教程</a>
+        		</li>
+      		
+		</ul>
 	</div>
 
           
 	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/Android安全/">Android安全</a>
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Android安全//" class="article-tag-list-link color5">Android安全</a>
+        		</li>
+      		
+		</ul>
 	</div>
 
 
@@ -272,73 +300,259 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 
 
     
-<div class="tools-col">
-  <ul class="btn-wrap">
-    
-      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+<div class="tools-col" q-class="show:isShow,hide:isShow|isFalse" q-on="click:stop(e)">
+  <div class="tools-nav header-menu">
     
     
-      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+      
+      
+      
+    
+      
+      
+      
+    
+      
+      
+      
+    
+      
+      
+      
     
     
-      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+
+    <ul style="width: 70%">
     
     
-      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
-    
-  </ul>
+      
+      <li style="width: 25%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      
+        
+      
+      <li style="width: 25%" q-on="click: openSlider(e, 'tagcloud')"><a href="javascript:void(0)" q-class="active:tagcloud">标签</a></li>
+      
+        
+      
+      <li style="width: 25%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
+      
+        
+      
+      <li style="width: 25%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">更多</a></li>
+      
+        
+    </ul>
+  </div>
   <div class="tools-wrap">
     
-    	<section class="tools-section tools-section-all chose">
+    	<section class="tools-section tools-section-all" q-show="innerArchive">
+        <div class="search-wrap">
+          <input class="search-ipt" q-model="search" type="text" placeholder="find something…">
+          <i class="icon-search icon" q-show="search|isEmptyStr"></i>
+          <i class="icon-close icon" q-show="search|isNotEmptyStr" q-on="click:clearChose(e)"></i>
+        </div>
+        <div class="widget tagcloud search-tag">
+          <p class="search-tag-wording">tag:</p>
+          <label class="search-switch">
+            <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
+          </label>
+          <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Hook进阶</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Xposed插件开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">虚拟定位</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+            
+            <div class="clearfix"></div>
+          </ul>
+        </div>
+        <ul class="search-ul">
+          <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
+            3、在根目录_config.yml里添加配置：
+<pre style="font-size: 12px;" q-show="jsonFail">
+  jsonContent:
+    meta: false
+    pages: false
+    posts:
+      title: true
+      date: true
+      path: true
+      text: false
+      raw: false
+      content: false
+      slug: false
+      updated: false
+      comments: false
+      link: false
+      permalink: false
+      excerpt: false
+      categories: false
+      tags: true
+</pre>
+          </p>
+          <li class="search-li" q-repeat="items" q-show="isShow">
+            <a q-attr="href:path|urlformat" class="search-title"><i class="icon-quo-left icon"></i><span q-text="title"></span></a>
+            <p class="search-time">
+              <i class="icon-calendar icon"></i>
+              <span q-text="date|dateformat"></span>
+            </p>
+            <p class="search-tag">
+              <i class="icon-price-tags icon"></i>
+              <span q-repeat="tags" q-on="click:choseTag(e, name)" q-text="name|tagformat"></span>
+            </p>
+          </li>
+        </ul>
     	</section>
     
 
     
-    	<section class="tools-section tools-section-tag">
-    			<div class="widget tagcloud" id="js-tagcloud">
-    				<a href="/tags/Android源码编译/" style="font-size: 10px;">Android源码编译</a> <a href="/tags/Android逆向分析/" style="font-size: 10px;">Android逆向分析</a> <a href="/tags/Git之旅/" style="font-size: 20px;">Git之旅</a> <a href="/tags/Hadoop环境搭建/" style="font-size: 10px;">Hadoop环境搭建</a> <a href="/tags/Hook进阶/" style="font-size: 10px;">Hook进阶</a> <a href="/tags/Smali语法/" style="font-size: 10px;">Smali语法</a> <a href="/tags/Xposed插件开发/" style="font-size: 10px;">Xposed插件开发</a> <a href="/tags/Xposed教程/" style="font-size: 10px;">Xposed教程</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/octopress/" style="font-size: 10px;">octopress</a> <a href="/tags/分布式-伪分布式/" style="font-size: 10px;">分布式/伪分布式</a> <a href="/tags/分布式数据库/" style="font-size: 10px;">分布式数据库</a> <a href="/tags/去中心化/" style="font-size: 10px;">去中心化</a> <a href="/tags/去信任/" style="font-size: 10px;">去信任</a> <a href="/tags/存储结构/" style="font-size: 10px;">存储结构</a> <a href="/tags/源码审计/" style="font-size: 10px;">源码审计</a> <a href="/tags/索引/" style="font-size: 10px;">索引</a> <a href="/tags/自动化开源库/" style="font-size: 10px;">自动化开源库</a> <a href="/tags/虚拟定位/" style="font-size: 10px;">虚拟定位</a> <a href="/tags/触发器/" style="font-size: 10px;">触发器</a> <a href="/tags/逆向分析/" style="font-size: 10px;">逆向分析</a>
-    			</div>
-    	</section>
-    
-
-    
-    	<section class="tools-section tools-section-friends">
+    	<section class="tools-section tools-section-friends" q-show="friends">
   		
-  			<div class="friends-wrap" id="js-friends">
-  			
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://hao.uisdc.com/">专业UI交互设计平台</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://www.codota.com/">Codota:代码搜索引擎</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/android/">Java源码搜索引擎</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.iconfont.cn/">Icon搜索库</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="https://android-arsenal.com/free">Android军火库：开发工具及依赖库</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.javadecompilers.com/apk">APK在线反编译</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://apps.evozi.com/apk-downloader/">快速下载Google Play应用</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.colorspire.com/rgb-color-wheel/">RGB工具</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://json.parser.online.fr/">JSON在线格式化</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://caniuse.com/">检测HTML5，JS，CSS的适配性</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://gank.io/">干货集中营:各种开源项目</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.android-doc.com/">Android中文API</a>
-  	        
-  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.mvnrepository.com/">Maven Repository</a>
-  	        
-  	        </div>
+        <ul class="search-ul">
+          
+            <li class="search-li">
+              <a href="http://hao.uisdc.com/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>专业UI交互设计平台</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="https://www.codota.com/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Codota:代码搜索引擎</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/android/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Java源码搜索引擎</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://www.iconfont.cn/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Icon搜索库</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="https://android-arsenal.com/free" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Android军火库：开发工具及依赖库</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://www.javadecompilers.com/apk" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>APK在线反编译</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://apps.evozi.com/apk-downloader/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>快速下载Google Play应用</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://www.colorspire.com/rgb-color-wheel/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>RGB工具</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://json.parser.online.fr/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>JSON在线格式化</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://caniuse.com/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>检测HTML5，JS，CSS的适配性</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://gank.io/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>干货集中营:各种开源项目</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://www.android-doc.com/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Android中文API</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://www.mvnrepository.com/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Maven Repository</a>
+            </li>
+          
+        </ul>
   		
     	</section>
     
 
     
-    	<section class="tools-section tools-section-me">
+    	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
   	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br/&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br&gt;&lt;br&gt;喜欢开源软件，乐于知识分享，热爱阅读各类技术书籍&lt;br&gt;谢谢大家&lt;br/&gt;...</div>
   	  	
