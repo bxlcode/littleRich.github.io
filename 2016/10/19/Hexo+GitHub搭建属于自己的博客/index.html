@@ -216,7 +216,7 @@
 <p>打开浏览器，输入localhost:4000,就可以在本地看到你的个人博客了<br><img src="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/init_hexo.png?raw=true" alt="第一次打开Hexo的界面">  </p>
 <p>====================我是华丽的分割线20161020=========================    </p>
 <h4 id="将Hexo博客部署到GitHub"><a href="#将Hexo博客部署到GitHub" class="headerlink" title="将Hexo博客部署到GitHub"></a>将Hexo博客部署到GitHub</h4><p>&emsp;&emsp;修改Hexo根目录下的_config.yml配置文件，找到文件中的deploy标签，配置成自己GitHub上仓库的URL，如下是我的配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: http://github.com/littleRich/littleRich.github.io</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;将其 deploy 到仓库中,打开 Git Shell 进入创建的文件夹，依次输入以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean  </span><br><span class="line">hexo generate  </span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;将其 deploy 到仓库中,打开 Git Shell 进入创建的文件夹，依次输入以下命令：<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean  </span><br><span class="line">hexo <span class="keyword">generate</span>  </span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
 <p>但是要是报ERROR Deployer not found: git问题，不要着急，再输入下面命令，这个过程可能比较久，放着等吧。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></p>
 <p>再重新来一遍：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean  </span><br><span class="line">hexo generate  </span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
 <p>=====================今天换了电脑，重新配环境，坑太多啊，就是不能直接拷过去的！！！========================</p>
@@ -242,8 +242,13 @@
             <span class="tooltip-content">
               <span class="tooltip-text">
                 <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝咖啡<i class="icon icon-quo-right"></i></p>
                   <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/aboutme/alipay.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
                     
                     
                   </div>
@@ -388,16 +393,6 @@
   
 
   
-  <div id="SOHUCS" sid="Hexo+GitHub搭建属于自己的博客" ></div> 
-<script charset="utf-8" type="text/javascript" src="//changyan.sohu.com/upload/changyan.js" ></script>
-<script type="text/javascript">
-    window.changyan.api.config({
-        appid: "true",
-        conf: "true"
-    });
-</script>
-</script>
-  
 
   
 
@@ -495,14 +490,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -512,6 +499,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -527,14 +534,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
@@ -547,15 +546,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -576,10 +575,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
             
             <div class="clearfix"></div>
