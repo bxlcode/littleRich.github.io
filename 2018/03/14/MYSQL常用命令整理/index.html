@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/regexp.png">
-<meta property="og:updated_time" content="2018-03-28T01:52:55.624Z">
+<meta property="og:updated_time" content="2018-03-28T02:50:35.382Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MYSQL常用命令锦集【课堂归纳版】">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
@@ -242,9 +242,18 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">DROP TRIGGER IF EXISTS tri_avg_grade;</span><br><span class="line">CREATE TRIGGER tri_avg_grade AFTER UPDATE ON sc FOR EACH ROW</span><br><span class="line">BEGIN</span><br><span class="line">  DECLARE a INT;       -- 平均分</span><br><span class="line">  DECLARE mCredit INT; -- 该门课学分</span><br><span class="line">  DECLARE mTotal INT;  -- 该生总学分</span><br><span class="line">  SET a = (SELECT AVG(grade) FROM sc WHERE sno = new.sno);</span><br><span class="line">  SET mTotal = (SELECT total FROM students WHERE sno = new.sno);</span><br><span class="line">  SET mCredit = (SELECT credit FROM courses WHERE cno = new.cno);</span><br><span class="line">  IF (new.grade IS NOT NULL) THEN</span><br><span class="line">	UPDATE students SET avg_grade = a WHERE sno = new.sno;</span><br><span class="line">	IF (mTotal IS NULL AND new.grade &gt;= 60) THEN</span><br><span class="line">		UPDATE students SET total = mCredit WHERE sno = new.sno;</span><br><span class="line">	ELSEIF (new.grade &gt;= 60 AND (OLD.grade &lt; 60 OR OLD.grade IS NULL)) THEN		</span><br><span class="line">		UPDATE students SET total = students.total + mCredit WHERE sno = new.sno;  </span><br><span class="line">	ELSEIF (new.grade &lt; 60 AND OLD.grade &gt;= 60) THEN</span><br><span class="line">		UPDATE students SET total = students.total - mCredit WHERE sno = new.sno;</span><br><span class="line">	END IF;</span><br><span class="line">  END IF;</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
 <h4 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h4><p>数据备份期间，按照是否需要停止MySQL服务实例，可以将MySQL的数据恢复分为：冷备份、温备份、热备份。其中温备份介于热备份与冷备份之间，温备份允许MySQL服务实例继续运行，备份数据期间，温备份借助读锁机制保证备份期间，没有新的数据写入。例如常常会执行如下命令来进行温备份：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush tables with read lock;</span><br></pre></td></tr></table></figure></p>
-<p><strong>备份数据库</strong><br>1、mysql&gt; flush table with read lock;  锁表 (窗口不能退出，不然失效)<br>2、新开窗口进行导出备份（如果数据量大，且允许停机，就使用停机打包，而不用dump）<br>    mysqldump -h主机名 -u用户名 -p密码 数据库名字 &gt; 备份的文件名字.sql<br>3、mysql&gt; unlock tables;　　解锁<br><strong>还原数据库</strong><br>    mysql -h主机名 -u用户名 -p密码 需要恢复的数据库名字 &lt; 已备份的文件名字.sql<br>注意：需要恢复的数据库名字，必须保证在需要恢复的数据库主机上面有个空库或者库名。执行备份命令不需要登陆MySQL后操作。</p>
+<p><strong>备份数据库</strong><br>1、mysql&gt; flush table with read lock;  锁表 (窗口不能退出，不然失效)<br>2、新开窗口进行导出备份（如果数据量大，且允许停机，就使用停机打包，而不用dump）<br>    mysqldump -h主机名 -u用户名 -p密码 数据库名字 &gt; 备份的文件名字.sql<br>3、mysql&gt; unlock tables;　　解锁<br><strong>还原数据库</strong><br>    mysql -h主机名 -u用户名 -p密码 需要恢复的数据库名字 &lt; 已备份的文件名字.sql<br>注意：需要恢复的数据库名字，必须保证在需要恢复的数据库主机上面有个空库或者库名。执行备份还原命令不需要登陆MySQL后操作。</p>
 <hr>
 <p><em>课程案例</em><br>备份还原上面案例数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uroot -psuperman testdb &gt; D://test.sql  </span><br><span class="line">mysql -uroot -p testdb &lt; D://test.sql</span><br></pre></td></tr></table></figure></p>
+<h4 id="开启MYSQL远程访问权限，允许远程连接"><a href="#开启MYSQL远程访问权限，允许远程连接" class="headerlink" title="开启MYSQL远程访问权限，允许远程连接"></a>开启MYSQL远程访问权限，允许远程连接</h4><p>进入MySQL自带的mysql数据库中查看user表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">3 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到在user表中已创建的root用户。host字段表示登录的主机，其值可以用IP，也可用主机名，有时想用本地IP登录，那么可以将以上的Host值改为自己的Ip即可。  </p>
+<h5 id="实现远程连接-授权法"><a href="#实现远程连接-授权法" class="headerlink" title="实现远程连接(授权法)"></a>实现远程连接(授权法)</h5><p>将host字段的值改为%就表示在任何客户端机器上能以root用户登录到mysql服务器，建议在开发时设为%。<br>   update user set host = ’%’ where user = ’root’;<br>将权限改为ALL PRIVILEGES</p>
+<hr>
+<p><em>课程案例</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; grant all privileges  on *.* to root@&apos;%&apos; identified by &quot;root&quot;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| %         | root      |</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>这样机器就可以以用户名root密码root远程访问该机器上的MySql。  </p>
+<h5 id="实现远程连接（改表法）"><a href="#实现远程连接（改表法）" class="headerlink" title="实现远程连接（改表法）"></a>实现远程连接（改表法）</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br><span class="line">update user set host = &apos;%&apos; where user = &apos;root&apos;;</span><br></pre></td></tr></table></figure>
+<p>这样在远端就可以通过root用户访问Mysql。</p>
 
       
 
@@ -527,15 +536,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -551,7 +568,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,15 +604,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
             
             <div class="clearfix"></div>
