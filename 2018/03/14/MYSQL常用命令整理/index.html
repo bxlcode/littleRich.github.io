@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/regexp.png">
-<meta property="og:updated_time" content="2018-03-28T03:14:24.766Z">
+<meta property="og:updated_time" content="2018-03-28T03:18:51.215Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MYSQL常用命令锦集【课堂归纳版】">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
@@ -222,6 +222,7 @@
 </ol>
 <hr>
 <p><em>课程案例</em><br>查找用户表中Email格式错误的用户记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE email NOT REGEXP &apos;^[A-Z0-9._%-]+@[A-Z0-9.-]+.[A-Z]&#123;2,4&#125;$&apos;</span><br></pre></td></tr></table></figure></p>
+<h4 id="事务机制和锁机制"><a href="#事务机制和锁机制" class="headerlink" title="事务机制和锁机制"></a>事务机制和锁机制</h4><p>此处省略一千字，有空再更新…</p>
 <h4 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h4><p>如果对编写存储过程比较陌生，可以看另一篇博客：<a href="http://blog.sina.com.cn/s/blog_86fe5b440100wdyt.html" target="_blank" rel="noopener">mysql存储过程详细教程</a>  </p>
 <hr>
 <p><em>课程案例</em><br>检查遍历选课表sc中成绩大于60分，就在students表中加相应学分。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">DROP PROCEDURE if EXISTS check_sum_credit;</span><br><span class="line">CREATE PROCEDURE check_sum_credit(sno INT)</span><br><span class="line">BEGIN</span><br><span class="line">	DECLARE mSum INT DEFAULT 0;  -- 总学分</span><br><span class="line">	DECLARE mGrade INT DEFAULT 0;</span><br><span class="line">	DECLARE mCredit INT;</span><br><span class="line">  	DECLARE mCno INT;</span><br><span class="line">	DECLARE done INT DEFAULT FALSE;  -- 遍历数据结束标志  </span><br><span class="line">	DECLARE cur_grade CURSOR FOR SELECT grade, cno FROM sc WHERE sc.sno = sno;  -- 声明游标</span><br><span class="line">	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;  -- 将结束标志绑定到游标,所以必须先声明游标</span><br><span class="line">	OPEN cur_grade; -- 打开游标	</span><br><span class="line">	FETCH NEXT FROM cur_grade INTO mGrade, mCno;  -- 逐个取出游标中多个字段的值</span><br><span class="line">	REPEAT -- 循环遍历游标				</span><br><span class="line">		SET mCredit = (SELECT credit FROM courses WHERE courses.cno = mCno);</span><br><span class="line">		IF (mGrade &gt;= 60) THEN</span><br><span class="line">			SET mSum = mSum + mCredit;</span><br><span class="line">		END IF;</span><br><span class="line">		SELECT mGrade, mCno, mCredit, mSum;  -- 打印调试语句</span><br><span class="line">		FETCH NEXT FROM cur_grade INTO mGrade, mCno;</span><br><span class="line">	UNTIL done END REPEAT;</span><br><span class="line">	CLOSE cur_grade;  -- 关闭游标</span><br><span class="line">	UPDATE students SET students.total = mSum, students.avg_grade = (SELECT AVG(sc.grade) FROM sc WHERE sc.sno = sno) WHERE students.sno = sno;</span><br><span class="line">END</span><br></pre></td></tr></table></figure></p>
@@ -519,10 +520,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -555,15 +552,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -576,10 +569,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -604,6 +593,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
             
             <div class="clearfix"></div>
