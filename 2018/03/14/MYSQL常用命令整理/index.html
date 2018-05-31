@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/ER.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/regexp.png">
-<meta property="og:updated_time" content="2018-05-31T09:39:33.871Z">
+<meta property="og:updated_time" content="2018-05-31T09:44:24.815Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MYSQL常用命令锦集【课堂归纳版】">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本学期研究生课程《网络数据库与应用》课程作业，内容比较基础，主要涉及存储结构、索引和触发器相关内容，进阶部分是分布式数据库的原理与使用。">
@@ -247,10 +247,10 @@
 <p><em>课程案例</em><br>备份还原上面案例数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uroot -psuperman testdb &gt; D://test.sql  </span><br><span class="line">mysql -uroot -p testdb &lt; D://test.sql</span><br></pre></td></tr></table></figure></p>
 <h4 id="开启MYSQL远程访问权限，允许远程连接"><a href="#开启MYSQL远程访问权限，允许远程连接" class="headerlink" title="开启MYSQL远程访问权限，允许远程连接"></a>开启MYSQL远程访问权限，允许远程连接</h4><p>进入MySQL自带的mysql数据库中查看user表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">3 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
 <p>可以看到在user表中已创建的root用户。host字段表示登录的主机，其值可以用IP，也可用主机名，有时想用本地IP登录，那么可以将以上的Host值改为自己的Ip即可。  </p>
-<h5 id="实现远程连接-授权法"><a href="#实现远程连接-授权法" class="headerlink" title="实现远程连接(授权法)"></a>实现远程连接(授权法)</h5><p>将权限改为ALL PRIVILEGES</p>
+<h5 id="实现远程连接-授权法"><a href="#实现远程连接-授权法" class="headerlink" title="实现远程连接(授权法)"></a>实现远程连接(授权法)</h5><p>默认情况下，mysql帐号不允许从远程登陆，只能在localhost登录。<br>将权限改为ALL PRIVILEGES</p>
 <hr>
 <p><em>课程案例</em></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; grant all privileges  on *.* to root@&apos;%&apos; identified by &quot;root&quot;;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.09 sec)</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| %         | root      |</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line">grant all privileges on *.* to root@&apos;%&apos; identified by &apos;******&apos; //***表示数据库连接密码</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; grant all privileges  on *.* to root@&apos;%&apos; identified by &quot;root&quot;;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.09 sec)</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| %         | root      |</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line">mysql&gt; grant all privileges on *.* to root@&apos;%&apos; identified by &apos;******&apos; //***表示数据库连接密码</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
 <p>这样机器就可以以用户名root密码root远程访问该机器上的MYSQL。  </p>
 <h5 id="实现远程连接（改表法）-PS：网传可以"><a href="#实现远程连接（改表法）-PS：网传可以" class="headerlink" title="实现远程连接（改表法）  PS：网传可以"></a>实现远程连接（改表法）  PS：网传可以</h5><p>将host字段的值改为%就表示在任何客户端机器上能以root用户登录到mysql服务器，建议在开发时设为%。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br><span class="line">update user set host = &apos;%&apos; where user = &apos;root&apos;;</span><br></pre></td></tr></table></figure></p>
 <p>这样在远端就可以通过root用户访问Mysql。</p>
@@ -520,10 +520,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -533,26 +529,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -568,11 +544,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -596,15 +592,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
             
             <div class="clearfix"></div>
