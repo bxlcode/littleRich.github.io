@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/regexp.png">
-<meta property="og:updated_time" content="2018-06-01T03:04:31.765Z">
+<meta property="og:updated_time" content="2018-06-01T03:51:58.295Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate持久层框架快速入门">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。">
@@ -195,13 +195,38 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>摘要:<br>&emsp;&emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。<br><a id="more"></a></p>
-<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;ORM框架在前后端都能看到它的影子，比如Android的GreenDAO，IOS的CoreData，Node.js的mongoose。后端比较经典的ORM框架就是Hibernate了。有些人可能对ORM（对象关系映射）不熟悉，ORM映射：Object Relational Mapping。  </p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;ORM框架在前后端都能看到它的影子，比如Android的GreenDAO，IOS的CoreData，Node.js的mongoose。后端比较经典的ORM框架就是轻量级Hibernate了。有些人可能对ORM（对象关系映射）不熟悉，ORM映射：Object Relational Mapping。  </p>
 <ul>
 <li>O：面向对象领域的Object（JavaBean对象）  </li>
 <li>R：关系数据库领域的Relational（表的结构）  </li>
-<li>M：映射Mapping（XML的配置文件）<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg" alt="ORM"> </li>
+<li>M：映射Mapping（XML的配置文件）<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg" alt="ORM"></li>
 </ul>
-<h3 id="MySQL常用命令"><a href="#MySQL常用命令" class="headerlink" title="MySQL常用命令:"></a>MySQL常用命令:</h3><p>启动MySQL：net start mysql<br>停止MySQL：net stop mysql<br>登录MySQL：mysql -h hostname -u username -p 或者mysql -u username -ppassword<br>退出MySQL：exit 或者 quit</p>
+<hr>
+<p><em>save</em>  </p>
+<ul>
+<li>根据对象找到user类(user.getClass)和对应的映射文件User.hbm.xml,并解析出表名t_user  </li>
+<li>使用内省机制操作user对象,获取其中的属性:id/name,  </li>
+<li>解析映射文件,找到属性对应的列名  </li>
+<li>根据主键生成策略,如果是native,此时主键就不出现在SQL语句中,如当前的SQL语句为:insert into t_user(uname) values (?)其中?就对应user.getXxx()方法</li>
+</ul>
+<p><em>get</em>  </p>
+<ul>
+<li>根据对象找到user类(user.getClass)和对应的映射文件User.hbm.xml,并解析出表名t_user  </li>
+<li>解析映射文件,找到<id>元素对应的列名uid,SQL就拼接成功了  </id></li>
+<li>处理结果集,把一条数据封装成User对象  </li>
+<li>创建User对象  </li>
+<li>根据列名找到对应的属性名,调用user.setXxx()后返回对象</li>
+</ul>
+<h3 id="Hibernate框架配置"><a href="#Hibernate框架配置" class="headerlink" title="Hibernate框架配置:"></a>Hibernate框架配置:</h3><p><strong>第一步：下载Hibernate5的运行环境</strong>  </p>
+<ol>
+<li>下载<a href="https://sourceforge.net/projects/hibernate/files/hibernate-orm/" target="_blank" rel="noopener">Hibernate的jar包</a>等<br><a href="http://sourceforge.net/projects/hibernate/files/hibernate-orm/5.0.7.Final/hibernate-release-5.0.7.Final.zip/download" target="_blank" rel="noopener">http://sourceforge.net/projects/hibernate/files/hibernate-orm/5.0.7.Final/hibernate-release-5.0.7.Final.zip/download</a>  </li>
+<li>解压后对目录结构有一定的了解  </li>
+</ol>
+<ul>
+<li>documentation：该路径下存放Hibernate的相关文档，包括Hibernate的参考文档和API文档等；  </li>
+<li>lib：该路径下存放Hibernate的核心类库，以及编译和运行所依赖的第三方类库。重点关注librequired子目录存集成Hibernate框架最核心的类库和第三方类库，jpa是任何ORM框架所遵守的规范；  </li>
+<li>project：该路径下存放了Hibernate各种相关项目的源代码。重点关注etc子目录存放着Hibernate的相关配置文件Demo，后续开发中忘记配置文件的编写可以参照【技巧√】。<br><em>注：由于Hibernate底层依然是基于JDBC，因此在应用程序中使用Hibernate执行持久化时同样少不了JDBC驱动。</em></li>
+</ul>
 <h4 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
 <hr>
 <p> <em>课程案例</em><br>创建数据库TestDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE TestDB;</span><br></pre></td></tr></table></figure></p>
@@ -529,6 +554,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -541,23 +578,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,23 +610,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -614,22 +655,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
             
             <div class="clearfix"></div>
