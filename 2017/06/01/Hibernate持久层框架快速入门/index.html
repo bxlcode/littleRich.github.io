@@ -18,7 +18,8 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/require.png">
-<meta property="og:updated_time" content="2018-06-01T13:27:47.986Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/lifecycle.jpg">
+<meta property="og:updated_time" content="2018-06-01T14:33:38.856Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate持久层框架快速入门">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。">
@@ -257,6 +258,41 @@
 <p><strong>第七步：编写Hibernate入门代码</strong><br>现在就是Hibernate的具体使用了，可以分成以下7个操作步骤，实际开发中可以把前面三个步骤抽离出来成工具类。<br>1.先加载配置文件<br>2.创建SessionFactory对象，生成Session对象<br>3.创建session对象<br>4.开启事务<br>5.编写保存的代码<br>6.提交事务<br>7.释放资源  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testSave()&#123;</span><br><span class="line">	// 1. 先加载配置文件</span><br><span class="line">	Configuration config = new Configuration();</span><br><span class="line">	// 默认加载src目录下hibernate.cfg.xml的配置文件</span><br><span class="line">	config.configure();		</span><br><span class="line">	// 简写的方法</span><br><span class="line">	//Configuration config = new Configuration().configure();		</span><br><span class="line">	// 2. 创建SessionFactory对象</span><br><span class="line">	SessionFactory factory = config.buildSessionFactory();</span><br><span class="line">	// 3. 创建session对象</span><br><span class="line">	Session session = factory.openSession();</span><br><span class="line">	// 4. 开启事务</span><br><span class="line">	Transaction tr = session.beginTransaction();		</span><br><span class="line">	// 5. 编写保存的代码</span><br><span class="line">	User user = new User();</span><br><span class="line">	user.setName(&quot;赵日天&quot;);</span><br><span class="line">	// c.setId(cust_id);	主键是自动递增了	</span><br><span class="line">	// 保存数据，操作对象就相当于操作数据库的表结构</span><br><span class="line">	session.save(c);		</span><br><span class="line">	// 6. 提交事务</span><br><span class="line">	tr.commit();</span><br><span class="line">	// 7. 释放资源</span><br><span class="line">	session.close();</span><br><span class="line">	factory.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>经过上面的步骤，就可以在应用中使用Hibernate框架了。在Eclipse中也可以安装Hibernate的相关插件：Middle Gen、Synchronizer等，Hibernate官方也提供了<a href="http://tools.jboss.org/downloads/" target="_blank" rel="noopener">HibernateTool</a>插件来方便使用。  </p>
+<h3 id="Hibernate常用的接口和类"><a href="#Hibernate常用的接口和类" class="headerlink" title="Hibernate常用的接口和类"></a>Hibernate常用的接口和类</h3><p><strong>SessionFactory√</strong><br>1.是工厂类，是生成Session对象的工厂类<br>2.SessionFactory类的特点  </p>
+<ul>
+<li>由Configuration通过加载配置文件创建该对象。  </li>
+<li>SessionFactory对象中保存了当前的数据库配置信息和所有映射关系以及预定义的SQL语句。同时，SessionFactory还负责维护Hibernate的二级缓存。  <pre><code>* 预定义SQL语句
+* 使用Configuration类创建了SessionFactory对象是，已经在SessionFacotry对象中缓存了一些SQL语句
+* 常见的SQL语句是增删改查（通过主键来查询）
+* 这样做的目的是效率更高
+</code></pre></li>
+<li>一个SessionFactory实例对应一个数据库，应用从该对象中获得Session实例。  </li>
+<li>SessionFactory是线程安全的，意味着它的一个实例可以被应用的多个线程共享。  </li>
+<li>SessionFactory是重量级的，意味着不能随意创建或销毁它的实例。如果只访问一个数据库，只需要创建一个SessionFactory实例，且在应用初始化的时候完成。  </li>
+<li>SessionFactory需要一个较大的缓存，用来存放预定义的SQL语句及实体的映射信息。另外可以配置一个缓存插件，这个插件被称之为Hibernate的二级缓存，被多线程所共享<br>3.总结： 一般应用使用一个SessionFactory,最好是应用启动时就完成初始化（结合Spring即可实现）。</li>
+</ul>
+<p><strong>Session接口</strong>      </p>
+<ul>
+<li>Session是在Hibernate中使用最频繁的接口。也被称之为持久化管理器。它提供了和持久化有关的操作，比如添加、修改、删除、加载和查询实体对象  </li>
+<li>Session 是应用程序与数据库之间交互操作的一个单线程对象，是 Hibernate 运作的中心  </li>
+<li>Session是线程不安全的，应避免多个线程使用同一个Session实例  </li>
+<li>所有持久化对象必须在 session 的管理下才可以进行持久化操作  </li>
+<li>Session 对象有一个一级缓存，显式执行 flush 之前，所有的持久化操作的数据都缓存在 session 对象处  </li>
+</ul>
+<p><em>常用的方法</em>  </p>
+<ul>
+<li>save(obj)  </li>
+<li>delete(obj)    </li>
+<li>get(Class,id)  </li>
+<li>update(obj)  </li>
+<li>saveOrUpdate(obj)                    – 保存或者修改（如果没有数据，保存数据。如果有，修改数据）  </li>
+<li>createQuery()                     – HQL语句的查询的方式</li>
+</ul>
+<h3 id="持久化对象的生命周期"><a href="#持久化对象的生命周期" class="headerlink" title="持久化对象的生命周期"></a>持久化对象的生命周期</h3><p>持久化类 = Bean类 + hbm的配置文件<br>Hibernate为了管理持久化类：将持久化类分成了三个状态。</p>
+<ul>
+<li>当前对象是否有OID(该对象在表中对应有一个id值)</li>
+<li>对象是否被session所管理(对象是否在一级缓存中)<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/lifecycle.jpg" alt="lifecycle"></li>
+</ul>
 
       
 
@@ -527,6 +563,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -539,11 +583,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -556,6 +608,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -576,34 +640,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
