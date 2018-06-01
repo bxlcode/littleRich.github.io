@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180314/regexp.png">
-<meta property="og:updated_time" content="2018-06-01T03:51:58.295Z">
+<meta property="og:updated_time" content="2018-06-01T04:13:53.014Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate持久层框架快速入门">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。">
@@ -219,13 +219,24 @@
 </ul>
 <h3 id="Hibernate框架配置"><a href="#Hibernate框架配置" class="headerlink" title="Hibernate框架配置:"></a>Hibernate框架配置:</h3><p><strong>第一步：下载Hibernate5的运行环境</strong>  </p>
 <ol>
-<li>下载<a href="https://sourceforge.net/projects/hibernate/files/hibernate-orm/" target="_blank" rel="noopener">Hibernate的jar包</a>等<br><a href="http://sourceforge.net/projects/hibernate/files/hibernate-orm/5.0.7.Final/hibernate-release-5.0.7.Final.zip/download" target="_blank" rel="noopener">http://sourceforge.net/projects/hibernate/files/hibernate-orm/5.0.7.Final/hibernate-release-5.0.7.Final.zip/download</a>  </li>
+<li>下载<a href="https://sourceforge.net/projects/hibernate/files/hibernate-orm/" target="_blank" rel="noopener">Hibernate的jar包</a>（最新版这里下）<br><a href="http://sourceforge.net/projects/hibernate/files/hibernate-orm/5.0.7.Final/hibernate-release-5.0.7.Final.zip/download" target="_blank" rel="noopener">http://sourceforge.net/projects/hibernate/files/hibernate-orm/5.0.7.Final/hibernate-release-5.0.7.Final.zip/download</a>  </li>
 <li>解压后对目录结构有一定的了解  </li>
 </ol>
 <ul>
 <li>documentation：该路径下存放Hibernate的相关文档，包括Hibernate的参考文档和API文档等；  </li>
 <li>lib：该路径下存放Hibernate的核心类库，以及编译和运行所依赖的第三方类库。重点关注librequired子目录存集成Hibernate框架最核心的类库和第三方类库，jpa是任何ORM框架所遵守的规范；  </li>
 <li>project：该路径下存放了Hibernate各种相关项目的源代码。重点关注etc子目录存放着Hibernate的相关配置文件Demo，后续开发中忘记配置文件的编写可以参照【技巧√】。<br><em>注：由于Hibernate底层依然是基于JDBC，因此在应用程序中使用Hibernate执行持久化时同样少不了JDBC驱动。</em></li>
+</ul>
+<p><strong>第二步：创建表结构</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE IF EXISTS `t_user`;</span><br><span class="line">CREATE TABLE `t_user` (</span><br><span class="line">  `uid` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `uname` varchar(20) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`uid`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+<p><strong>第三步：搭建Hibernate的开发环境</strong>    </p>
+<ol>
+<li>创建WEB工程，引入Hibernate开发所需要的jar包</li>
+</ol>
+<ul>
+<li>MySQL的驱动jar包</li>
+<li>Hibernate开发需要的jar包（资料/hibernate-release-5.0.7.Final/lib/required/所有jar包）</li>
+<li>日志jar包（资料/jar包/log4j/所有jar包）</li>
 </ul>
 <h4 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h4><p>创建数据库：create database 数据库名称；<br>查看所有数据库：show databases；<br>选择数据库：use databasename;<br>查看某个已经创建的数据库信息：show create database 数据库名称；<br>修改数据库编码：alter database 数据库名称 default character set 编码方式；<br>删除数据库：drop database 数据库名称；</p>
 <hr>
@@ -566,6 +577,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -578,35 +597,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -634,7 +629,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -655,6 +650,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
               </li>
             
             <div class="clearfix"></div>
