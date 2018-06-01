@@ -17,7 +17,7 @@
 <meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg">
-<meta property="og:updated_time" content="2018-06-01T12:14:48.511Z">
+<meta property="og:updated_time" content="2018-06-01T12:16:47.264Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate持久层框架快速入门">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。">
@@ -254,48 +254,51 @@
 <p><strong>第六步：编写Hibernate核心的配置文件</strong><br>前面几步把ORM三部分都配置好了，但是如何连接数据库等相关信息都没指定，故项目还需要一个总的核心配置文件。</p>
 <ol>
 <li>在src目录下，创建名称为hibernate.cfg.xml的配置文件  </li>
-<li>在XML中引入DTD约束（引入方式与第五步类似）  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE hibernate-configuration PUBLIC</span><br><span class="line">	&quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;</span><br><span class="line">	&quot;http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd&quot;&gt;</span><br><span class="line">```   </span><br><span class="line">  </span><br><span class="line">3. 编写配置文件</span><br></pre></td></tr></table></figure>
+<li>在XML中引入DTD约束（引入方式与第五步类似）  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE hibernate-configuration PUBLIC</span><br><span class="line">	&quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;</span><br><span class="line">	&quot;http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd&quot;&gt;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p><hibernate-configuration><br>    <!-- 记住：先配置SessionFactory标签，一个数据库对应一个SessionFactory标签 --><br>    <session-factory><br>        <!-- 必须要配置的参数有5个，4大参数，数据库的方言 --><br>        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property><br>        <property name="hibernate.connection.url">jdbc:mysql://192.168.1.111:3306/ssh</property><br>        <property name="hibernate.connection.username">root</property><br>        <property name="hibernate.connection.password">hadoop</property><br>        <!-- 数据库的方言 --><br>        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property><br>        <!-- 可选配置 --><br>        <!-- 显示SQL语句，在控制台显示 --><br>        <property name="hibernate.show_sql">true</property><br>        <!-- 格式化SQL语句 --><br>        <property name="hibernate.format_sql">true</property><br>        <!-- 生成数据库的表结构 
-            update：如果没有表结构，创建表结构。如果存在，不会创建，添加数据
-        --><br>        <property name="hibernate.hbm2ddl.auto">update</property><br>        <!-- 映射配置文件，需要引入映射的配置文件 --><br>        <mapping resource="top/littlerich/bean/User.hbm.xml"><br>    </mapping></session-factory><br></hibernate-configuration><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**第七步：编写Hibernate入门代码**	</span><br><span class="line">1. 先加载配置文件  </span><br><span class="line">2. 创建SessionFactory对象，生成Session对象  </span><br><span class="line">3. 创建session对象  </span><br><span class="line">4. 开启事务  </span><br><span class="line">5. 编写保存的代码  </span><br><span class="line">6. 提交事务  </span><br><span class="line">7. 释放资源</span><br></pre></td></tr></table></figure></p>
-<pre><code>@Test
-public void testSave(){
-    // 1. 先加载配置文件
-    Configuration config = new Configuration();
-    // 默认加载src目录下hibernate.cfg.xml的配置文件
-    config.configure();
-    // 了解，手动加载
-    // config.addResource(&quot;com/itheima/domain/Customer.hbm.xml&quot;);
-     */                
-    // 简写的方法
-    //Configuration config = new Configuration().configure();        
-    // 2. 创建SessionFactory对象
-    SessionFactory factory = config.buildSessionFactory();
-    // 3. 创建session对象
-    Session session = factory.openSession();
-    // 4. 开启事务
-    Transaction tr = session.beginTransaction();        
-    // 5. 编写保存的代码
-    User user = new User();
-    user.setName(&quot;赵日天&quot;);
-    // c.setCust_id(cust_id);    主键是自动递增了    
-    // 保存数据，操作对象就相当于操作数据库的表结构
-    session.save(c);        
-    // 6. 提交事务
-    tr.commit();
-    // 7. 释放资源
-    session.close();
-    factory.close();
-}
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 触发器</span><br><span class="line">触发器是一个特殊的存储过程，不同的是存储过程要用CALL来调用，而触发器不需要使用CALL也不需要手工启动，只要当一个预定义的事件发生的时候，就会被MYSQL自动调用。可以让你在执行INSERT,UPDATE或者DELETE的时候，执行一些特定的操作，用来维护数据库数据的一致性。  </span><br><span class="line">触发器中自带了类似事务的机制,当触发器被触发，触发器所在表会被标记为OLD表，并生成一个NEW临时表。触发器执行过程中如有异常，可由OLD表回滚到原始状态。  </span><br><span class="line">*MYSQL触发器的注意事项*  </span><br><span class="line">（1）对于每一个表的每一个事件的触发，最多只能定义一个触发器，比如说你不能定义两个AFTER INSERT的触发器，但是可以定义其他的触发点的触发器。  </span><br><span class="line">（2）MYSQL只支持“基于行的触发”，也就是说触发器始终是针对一条记录的，如果变更的数据集非常大，效率会很低。  </span><br><span class="line">（3）触发器并不一定能够保证更新的原子性，区分INNODB和MYISAM两种表，INNODB可以回滚【TODO：后续深入了解】。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">----------</span><br><span class="line">*课程案例*</span><br><span class="line"></span><br><span class="line">期末考试后，老师登记成绩，也就是修改sc记录的grade。  </span><br><span class="line"></span><br><span class="line">1. 60分以上的课程，自动在students表中的total增加该门课程的学分值，平均分数自动计算；</span><br><span class="line">2. 学生申请分数修改</span><br><span class="line">- 60以上改成60分以上，total不变，平均成绩改变；</span><br><span class="line">- 60以上改成60分以下，total自动减少相应课程的学分，平均成绩改变；</span><br><span class="line">- 60以下改成60分以上，total自动加上相应课程的学分，平均成绩改变。</span><br></pre></td></tr></table></figure>
-<p>DROP TRIGGER IF EXISTS tri_avg_grade;<br>CREATE TRIGGER tri_avg_grade AFTER UPDATE ON sc FOR EACH ROW<br>BEGIN<br>  DECLARE a INT;       – 平均分<br>  DECLARE mCredit INT; – 该门课学分<br>  DECLARE mTotal INT;  – 该生总学分<br>  SET a = (SELECT AVG(grade) FROM sc WHERE sno = new.sno);<br>  SET mTotal = (SELECT total FROM students WHERE sno = new.sno);<br>  SET mCredit = (SELECT credit FROM courses WHERE cno = new.cno);<br>  IF (new.grade IS NOT NULL) THEN<br>    UPDATE students SET avg_grade = a WHERE sno = new.sno;<br>    IF (mTotal IS NULL AND new.grade &gt;= 60) THEN<br>        UPDATE students SET total = mCredit WHERE sno = new.sno;<br>    ELSEIF (new.grade &gt;= 60 AND (OLD.grade &lt; 60 OR OLD.grade IS NULL)) THEN<br>        UPDATE students SET total = students.total + mCredit WHERE sno = new.sno;<br>    ELSEIF (new.grade &lt; 60 AND OLD.grade &gt;= 60) THEN<br>        UPDATE students SET total = students.total - mCredit WHERE sno = new.sno;<br>    END IF;<br>  END IF;<br>END<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line">#### 备份恢复  </span><br><span class="line">数据备份期间，按照是否需要停止MySQL服务实例，可以将MySQL的数据恢复分为：冷备份、温备份、热备份。其中温备份介于热备份与冷备份之间，温备份允许MySQL服务实例继续运行，备份数据期间，温备份借助读锁机制保证备份期间，没有新的数据写入。例如常常会执行如下命令来进行温备份：</span><br></pre></td></tr></table></figure></p>
-<p>flush tables with read lock;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**备份数据库**  </span><br><span class="line">1、mysql&gt; flush table with read lock;  锁表 (窗口不能退出，不然失效)   </span><br><span class="line">2、新开窗口进行导出备份（如果数据量大，且允许停机，就使用停机打包，而不用dump）  </span><br><span class="line">	mysqldump -h主机名 -u用户名 -p密码 数据库名字 &gt; 备份的文件名字.sql   </span><br><span class="line">3、mysql&gt; unlock tables;　　解锁  </span><br><span class="line">**还原数据库**  </span><br><span class="line">	mysql -h主机名 -u用户名 -p密码 需要恢复的数据库名字 &lt; 已备份的文件名字.sql  </span><br><span class="line">注意：需要恢复的数据库名字，必须保证在需要恢复的数据库主机上面有个空库或者库名。执行备份还原命令不需要登陆MySQL后操作。</span><br><span class="line"></span><br><span class="line">----------</span><br><span class="line">*课程案例*</span><br><span class="line">备份还原上面案例数据库：</span><br></pre></td></tr></table></figure></p>
-<p>mysqldump -uroot -psuperman testdb &gt; D://test.sql<br>mysql -uroot -p testdb &lt; D://test.sql<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 开启MYSQL远程访问权限，允许远程连接</span><br><span class="line">进入MySQL自带的mysql数据库中查看user表</span><br></pre></td></tr></table></figure></p>
-<p>mysql&gt; use mysql;<br>Database changed<br>mysql&gt; select host, user from user;<br>+———–+———–+<br>| host      | user      |<br>+———–+———–+<br>| localhost | iot       |<br>| localhost | mysql.sys |<br>| localhost | root      |<br>+———–+———–+<br>3 rows in set (0.01 sec)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">可以看到在user表中已创建的root用户。host字段表示登录的主机，其值可以用IP，也可用主机名，有时想用本地IP登录，那么可以将以上的Host值改为自己的Ip即可。  </span><br><span class="line">##### 实现远程连接(授权法)</span><br><span class="line">默认情况下，mysql帐号不允许从远程登陆，只能在localhost登录。  </span><br><span class="line">将权限改为ALL PRIVILEGES</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">----------</span><br><span class="line">*课程案例*</span><br></pre></td></tr></table></figure></p>
-<p>mysql&gt; use mysql;<br>Database changed<br>mysql&gt; grant all privileges  on <em>.</em> to root@’%’ identified by “root”;<br>Query OK, 0 rows affected, 1 warning (0.09 sec)<br>mysql&gt; select host, user from user;<br>+———–+———–+<br>| host      | user      |<br>+———–+———–+<br>| %         | root      |<br>| localhost | iot       |<br>| localhost | mysql.sys |<br>| localhost | root      |<br>+———–+———–+<br>4 rows in set (0.00 sec)<br>mysql&gt; grant all privileges on <em>.</em> to root@’%’ identified by ‘<strong>**</strong>‘ //<em>*</em>表示数据库连接密码<br>mysql&gt; flush privileges;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这样机器就可以以用户名root密码root远程访问该机器上的MYSQL。  </span><br><span class="line">##### 实现远程连接（改表法）  PS：网传可以</span><br><span class="line">将host字段的值改为%就表示在任何客户端机器上能以root用户登录到mysql服务器，建议在开发时设为%。</span><br></pre></td></tr></table></figure></p>
-<p>use mysql;<br>update user set host = ‘%’ where user = ‘root’;<br>```<br>这样在远端就可以通过root用户访问Mysql。</p>
+<ol>
+<li>编写配置文件  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;hibernate-configuration&gt;</span><br><span class="line">	&lt;!-- 记住：先配置SessionFactory标签，一个数据库对应一个SessionFactory标签 --&gt;</span><br><span class="line">	&lt;session-factory&gt;</span><br><span class="line">		&lt;!-- 必须要配置的参数有5个，4大参数，数据库的方言 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.driver_class&quot;&gt;com.mysql.jdbc.Driver&lt;/property&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.url&quot;&gt;jdbc:mysql://192.168.1.111:3306/ssh&lt;/property&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.username&quot;&gt;root&lt;/property&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.password&quot;&gt;hadoop&lt;/property&gt;		</span><br><span class="line">		&lt;!-- 数据库的方言 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;		</span><br><span class="line">		&lt;!-- 可选配置 --&gt;</span><br><span class="line">		&lt;!-- 显示SQL语句，在控制台显示 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.show_sql&quot;&gt;true&lt;/property&gt;</span><br><span class="line">		&lt;!-- 格式化SQL语句 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.format_sql&quot;&gt;true&lt;/property&gt;</span><br><span class="line">		&lt;!-- 生成数据库的表结构 </span><br><span class="line">			update：如果没有表结构，创建表结构。如果存在，不会创建，添加数据</span><br><span class="line">		--&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.hbm2ddl.auto&quot;&gt;update&lt;/property&gt;		</span><br><span class="line">		&lt;!-- 映射配置文件，需要引入映射的配置文件 --&gt;</span><br><span class="line">		&lt;mapping resource=&quot;top/littlerich/bean/User.hbm.xml&quot;/&gt;		</span><br><span class="line">	&lt;/session-factory&gt;			</span><br><span class="line">&lt;/hibernate-configuration&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>第七步：编写Hibernate入门代码</strong>    </p>
+<ol>
+<li>先加载配置文件  </li>
+<li>创建SessionFactory对象，生成Session对象  </li>
+<li>创建session对象  </li>
+<li>开启事务  </li>
+<li>编写保存的代码  </li>
+<li>提交事务  </li>
+<li>释放资源  </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testSave()&#123;</span><br><span class="line">	// 1. 先加载配置文件</span><br><span class="line">	Configuration config = new Configuration();</span><br><span class="line">	// 默认加载src目录下hibernate.cfg.xml的配置文件</span><br><span class="line">	config.configure();</span><br><span class="line">	// 了解，手动加载</span><br><span class="line">	// config.addResource(&quot;com/itheima/domain/Customer.hbm.xml&quot;);</span><br><span class="line">	 */				</span><br><span class="line">	// 简写的方法</span><br><span class="line">	//Configuration config = new Configuration().configure();		</span><br><span class="line">	// 2. 创建SessionFactory对象</span><br><span class="line">	SessionFactory factory = config.buildSessionFactory();</span><br><span class="line">	// 3. 创建session对象</span><br><span class="line">	Session session = factory.openSession();</span><br><span class="line">	// 4. 开启事务</span><br><span class="line">	Transaction tr = session.beginTransaction();		</span><br><span class="line">	// 5. 编写保存的代码</span><br><span class="line">	User user = new User();</span><br><span class="line">	user.setName(&quot;赵日天&quot;);</span><br><span class="line">	// c.setCust_id(cust_id);	主键是自动递增了	</span><br><span class="line">	// 保存数据，操作对象就相当于操作数据库的表结构</span><br><span class="line">	session.save(c);		</span><br><span class="line">	// 6. 提交事务</span><br><span class="line">	tr.commit();</span><br><span class="line">	// 7. 释放资源</span><br><span class="line">	session.close();</span><br><span class="line">	factory.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h4><p>触发器是一个特殊的存储过程，不同的是存储过程要用CALL来调用，而触发器不需要使用CALL也不需要手工启动，只要当一个预定义的事件发生的时候，就会被MYSQL自动调用。可以让你在执行INSERT,UPDATE或者DELETE的时候，执行一些特定的操作，用来维护数据库数据的一致性。<br>触发器中自带了类似事务的机制,当触发器被触发，触发器所在表会被标记为OLD表，并生成一个NEW临时表。触发器执行过程中如有异常，可由OLD表回滚到原始状态。<br><em>MYSQL触发器的注意事项</em><br>（1）对于每一个表的每一个事件的触发，最多只能定义一个触发器，比如说你不能定义两个AFTER INSERT的触发器，但是可以定义其他的触发点的触发器。<br>（2）MYSQL只支持“基于行的触发”，也就是说触发器始终是针对一条记录的，如果变更的数据集非常大，效率会很低。<br>（3）触发器并不一定能够保证更新的原子性，区分INNODB和MYISAM两种表，INNODB可以回滚【TODO：后续深入了解】。</p>
+<hr>
+<p><em>课程案例</em></p>
+<p>期末考试后，老师登记成绩，也就是修改sc记录的grade。  </p>
+<ol>
+<li>60分以上的课程，自动在students表中的total增加该门课程的学分值，平均分数自动计算；</li>
+<li>学生申请分数修改</li>
+</ol>
+<ul>
+<li>60以上改成60分以上，total不变，平均成绩改变；</li>
+<li>60以上改成60分以下，total自动减少相应课程的学分，平均成绩改变；</li>
+<li>60以下改成60分以上，total自动加上相应课程的学分，平均成绩改变。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">DROP TRIGGER IF EXISTS tri_avg_grade;</span><br><span class="line">CREATE TRIGGER tri_avg_grade AFTER UPDATE ON sc FOR EACH ROW</span><br><span class="line">BEGIN</span><br><span class="line">  DECLARE a INT;       -- 平均分</span><br><span class="line">  DECLARE mCredit INT; -- 该门课学分</span><br><span class="line">  DECLARE mTotal INT;  -- 该生总学分</span><br><span class="line">  SET a = (SELECT AVG(grade) FROM sc WHERE sno = new.sno);</span><br><span class="line">  SET mTotal = (SELECT total FROM students WHERE sno = new.sno);</span><br><span class="line">  SET mCredit = (SELECT credit FROM courses WHERE cno = new.cno);</span><br><span class="line">  IF (new.grade IS NOT NULL) THEN</span><br><span class="line">	UPDATE students SET avg_grade = a WHERE sno = new.sno;</span><br><span class="line">	IF (mTotal IS NULL AND new.grade &gt;= 60) THEN</span><br><span class="line">		UPDATE students SET total = mCredit WHERE sno = new.sno;</span><br><span class="line">	ELSEIF (new.grade &gt;= 60 AND (OLD.grade &lt; 60 OR OLD.grade IS NULL)) THEN		</span><br><span class="line">		UPDATE students SET total = students.total + mCredit WHERE sno = new.sno;  </span><br><span class="line">	ELSEIF (new.grade &lt; 60 AND OLD.grade &gt;= 60) THEN</span><br><span class="line">		UPDATE students SET total = students.total - mCredit WHERE sno = new.sno;</span><br><span class="line">	END IF;</span><br><span class="line">  END IF;</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+<h4 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h4><p>数据备份期间，按照是否需要停止MySQL服务实例，可以将MySQL的数据恢复分为：冷备份、温备份、热备份。其中温备份介于热备份与冷备份之间，温备份允许MySQL服务实例继续运行，备份数据期间，温备份借助读锁机制保证备份期间，没有新的数据写入。例如常常会执行如下命令来进行温备份：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush tables with read lock;</span><br></pre></td></tr></table></figure></p>
+<p><strong>备份数据库</strong><br>1、mysql&gt; flush table with read lock;  锁表 (窗口不能退出，不然失效)<br>2、新开窗口进行导出备份（如果数据量大，且允许停机，就使用停机打包，而不用dump）<br>    mysqldump -h主机名 -u用户名 -p密码 数据库名字 &gt; 备份的文件名字.sql<br>3、mysql&gt; unlock tables;　　解锁<br><strong>还原数据库</strong><br>    mysql -h主机名 -u用户名 -p密码 需要恢复的数据库名字 &lt; 已备份的文件名字.sql<br>注意：需要恢复的数据库名字，必须保证在需要恢复的数据库主机上面有个空库或者库名。执行备份还原命令不需要登陆MySQL后操作。</p>
+<hr>
+<p><em>课程案例</em><br>备份还原上面案例数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uroot -psuperman testdb &gt; D://test.sql  </span><br><span class="line">mysql -uroot -p testdb &lt; D://test.sql</span><br></pre></td></tr></table></figure></p>
+<h4 id="开启MYSQL远程访问权限，允许远程连接"><a href="#开启MYSQL远程访问权限，允许远程连接" class="headerlink" title="开启MYSQL远程访问权限，允许远程连接"></a>开启MYSQL远程访问权限，允许远程连接</h4><p>进入MySQL自带的mysql数据库中查看user表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">3 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到在user表中已创建的root用户。host字段表示登录的主机，其值可以用IP，也可用主机名，有时想用本地IP登录，那么可以将以上的Host值改为自己的Ip即可。  </p>
+<h5 id="实现远程连接-授权法"><a href="#实现远程连接-授权法" class="headerlink" title="实现远程连接(授权法)"></a>实现远程连接(授权法)</h5><p>默认情况下，mysql帐号不允许从远程登陆，只能在localhost登录。<br>将权限改为ALL PRIVILEGES</p>
+<hr>
+<p><em>课程案例</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; grant all privileges  on *.* to root@&apos;%&apos; identified by &quot;root&quot;;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.09 sec)</span><br><span class="line">mysql&gt; select host, user from user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| host      | user      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| %         | root      |</span><br><span class="line">| localhost | iot       |</span><br><span class="line">| localhost | mysql.sys |</span><br><span class="line">| localhost | root      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line">mysql&gt; grant all privileges on *.* to root@&apos;%&apos; identified by &apos;******&apos; //***表示数据库连接密码</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+<p>这样机器就可以以用户名root密码root远程访问该机器上的MYSQL。  </p>
+<h5 id="实现远程连接（改表法）-PS：网传可以"><a href="#实现远程连接（改表法）-PS：网传可以" class="headerlink" title="实现远程连接（改表法）  PS：网传可以"></a>实现远程连接（改表法）  PS：网传可以</h5><p>将host字段的值改为%就表示在任何客户端机器上能以root用户登录到mysql服务器，建议在开发时设为%。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br><span class="line">update user set host = &apos;%&apos; where user = &apos;root&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>这样在远端就可以通过root用户访问Mysql。</p>
 
       
 
@@ -578,31 +581,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -630,6 +617,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
@@ -639,10 +646,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
