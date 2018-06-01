@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/orm.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170601/require.png">
-<meta property="og:updated_time" content="2018-06-01T13:25:02.657Z">
+<meta property="og:updated_time" content="2018-06-01T13:27:47.986Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate持久层框架快速入门">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Hibernate是一个开源的对象/关系数据库映射框架，用于把面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中。能相除那些针对特定数据库厂商的SQL代码，并且把结果集从表格式的形式转换成值对象的形式，简单一句话：Hibernate使程序员通过对象的方式来操作数据库表记录。">
@@ -254,16 +254,7 @@
 </ol>
 <p><strong>第六步：编写Hibernate核心的配置文件</strong><br>前面几步把ORM三部分都配置好了，但是如何连接数据库等相关信息都没指定，故项目还需要一个总的核心配置文件。<br>1.在src目录下，创建名称为hibernate.cfg.xml的配置文件<br>2.在XML中引入DTD约束（引入方式与第五步类似）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE hibernate-configuration PUBLIC</span><br><span class="line">	&quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;</span><br><span class="line">	&quot;http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd&quot;&gt;</span><br></pre></td></tr></table></figure></p>
 <p>3.编写配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;hibernate-configuration&gt;</span><br><span class="line">	&lt;!-- 记住：先配置SessionFactory标签，一个数据库对应一个SessionFactory标签 --&gt;</span><br><span class="line">	&lt;session-factory&gt;</span><br><span class="line">		&lt;!-- 必须要配置的参数有5个，4大参数，数据库的方言 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.driver_class&quot;&gt;com.mysql.jdbc.Driver&lt;/property&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.url&quot;&gt;jdbc:mysql://192.168.1.111:3306/ssh&lt;/property&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.username&quot;&gt;root&lt;/property&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.connection.password&quot;&gt;hadoop&lt;/property&gt;		</span><br><span class="line">		&lt;!-- 数据库的方言 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;		</span><br><span class="line">		&lt;!-- 可选配置 --&gt;</span><br><span class="line">		&lt;!-- 显示SQL语句，在控制台显示 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.show_sql&quot;&gt;true&lt;/property&gt;</span><br><span class="line">		&lt;!-- 格式化SQL语句 --&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.format_sql&quot;&gt;true&lt;/property&gt;</span><br><span class="line">		&lt;!-- 生成数据库的表结构 </span><br><span class="line">			update：如果没有表结构，创建表结构。如果存在，不会创建，添加数据</span><br><span class="line">		--&gt;</span><br><span class="line">		&lt;property name=&quot;hibernate.hbm2ddl.auto&quot;&gt;update&lt;/property&gt;		</span><br><span class="line">		&lt;!-- 映射配置文件，需要引入映射的配置文件 --&gt;</span><br><span class="line">		&lt;mapping resource=&quot;top/littlerich/bean/User.hbm.xml&quot;/&gt;		</span><br><span class="line">	&lt;/session-factory&gt;			</span><br><span class="line">&lt;/hibernate-configuration&gt;</span><br></pre></td></tr></table></figure></p>
-<p><strong>第七步：编写Hibernate入门代码</strong><br>现在就是Hibernate的具体使用了，可以分成以下7个操作步骤，实际开发中可以把前面三个步骤抽离出来成工具类。</p>
-<ol>
-<li>先加载配置文件  </li>
-<li>创建SessionFactory对象，生成Session对象  </li>
-<li>创建session对象  </li>
-<li>开启事务  </li>
-<li>编写保存的代码  </li>
-<li>提交事务  </li>
-<li>释放资源  </li>
-</ol>
+<p><strong>第七步：编写Hibernate入门代码</strong><br>现在就是Hibernate的具体使用了，可以分成以下7个操作步骤，实际开发中可以把前面三个步骤抽离出来成工具类。<br>1.先加载配置文件<br>2.创建SessionFactory对象，生成Session对象<br>3.创建session对象<br>4.开启事务<br>5.编写保存的代码<br>6.提交事务<br>7.释放资源  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testSave()&#123;</span><br><span class="line">	// 1. 先加载配置文件</span><br><span class="line">	Configuration config = new Configuration();</span><br><span class="line">	// 默认加载src目录下hibernate.cfg.xml的配置文件</span><br><span class="line">	config.configure();		</span><br><span class="line">	// 简写的方法</span><br><span class="line">	//Configuration config = new Configuration().configure();		</span><br><span class="line">	// 2. 创建SessionFactory对象</span><br><span class="line">	SessionFactory factory = config.buildSessionFactory();</span><br><span class="line">	// 3. 创建session对象</span><br><span class="line">	Session session = factory.openSession();</span><br><span class="line">	// 4. 开启事务</span><br><span class="line">	Transaction tr = session.beginTransaction();		</span><br><span class="line">	// 5. 编写保存的代码</span><br><span class="line">	User user = new User();</span><br><span class="line">	user.setName(&quot;赵日天&quot;);</span><br><span class="line">	// c.setId(cust_id);	主键是自动递增了	</span><br><span class="line">	// 保存数据，操作对象就相当于操作数据库的表结构</span><br><span class="line">	session.save(c);		</span><br><span class="line">	// 6. 提交事务</span><br><span class="line">	tr.commit();</span><br><span class="line">	// 7. 释放资源</span><br><span class="line">	session.close();</span><br><span class="line">	factory.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>经过上面的步骤，就可以在应用中使用Hibernate框架了。在Eclipse中也可以安装Hibernate的相关插件：Middle Gen、Synchronizer等，Hibernate官方也提供了<a href="http://tools.jboss.org/downloads/" target="_blank" rel="noopener">HibernateTool</a>插件来方便使用。  </p>
 
@@ -548,6 +539,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
               </li>
              
@@ -564,11 +575,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -581,22 +592,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -633,10 +628,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
             
             <div class="clearfix"></div>
