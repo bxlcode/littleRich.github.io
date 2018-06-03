@@ -18,7 +18,8 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts_position.bmp">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2.jpg">
-<meta property="og:updated_time" content="2018-06-03T07:12:20.185Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2_process.png">
+<meta property="og:updated_time" content="2018-06-03T08:50:10.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Struts2工作原理与核心思想">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
@@ -206,11 +207,13 @@
 <ul>
 <li>public公有修饰</li>
 <li>必须有返回值，而且是String类型</li>
-<li>方法名可以任意，但不能有参数列表  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public String sayHello()&#123;</span><br><span class="line">	System.out.println(&quot;处理用户请求业务&quot;);</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li>方法名可以任意，但不能有参数列表  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public String sayHello()&#123;</span><br><span class="line">	System.out.println(&quot;处理用户请求业务&quot;);</span><br><span class="line">	return &quot;ok&quot;;  //strut.xml中配置的跳转result名字，实现页面跳转</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>5.第四步虽然写了Action动作类，但是Struts2并不知道关联调用哪个方法处理用户请求，所以还需要一个struts.xml配置文件。在src下引入struts.xml配置文件（配置文件的路径必须是在src的目录下），简洁的配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE struts PUBLIC</span><br><span class="line">	&quot;-//Apache Software Foundation//DTD Struts Configuration 2.3//EN&quot;</span><br><span class="line">	&quot;http://struts.apache.org/dtds/struts-2.3.dtd&quot;&gt;		</span><br><span class="line">&lt;struts&gt;</span><br><span class="line">	&lt;package name=&quot;default&quot; namespace=&quot;/&quot; extends=&quot;struts-default&quot;&gt;</span><br><span class="line">		&lt;action name=&quot;hello&quot; class=&quot;top.littlerich.action.HelloAction&quot; method=&quot;sayHello&quot;&gt;</span><br><span class="line">			&lt;!-- 配置跳转的页面，路径的写法：在Struts2框架中，不管是转发还是重定向，都不用写项目名 --&gt;</span><br><span class="line">			&lt;!-- &lt;result name=&quot;ok&quot;&gt;/demo1/suc.jsp&lt;/result&gt; --&gt;</span><br><span class="line">		&lt;/action&gt;</span><br><span class="line">	&lt;/package&gt;</span><br><span class="line">&lt;/struts&gt;</span><br></pre></td></tr></table></figure></p>
+<p>5.第四步虽然写了Action动作类，但是Struts2并不知道关联调用哪个方法处理用户请求，所以还需要一个struts.xml配置文件。在src下引入struts.xml配置文件（配置文件的路径必须是在src的目录下），简洁的配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE struts PUBLIC</span><br><span class="line">	&quot;-//Apache Software Foundation//DTD Struts Configuration 2.3//EN&quot;</span><br><span class="line">	&quot;http://struts.apache.org/dtds/struts-2.3.dtd&quot;&gt;		</span><br><span class="line">&lt;struts&gt;</span><br><span class="line">	&lt;package name=&quot;default&quot; namespace=&quot;/&quot; extends=&quot;struts-default&quot;&gt;</span><br><span class="line">		&lt;action name=&quot;hello&quot; class=&quot;top.littlerich.action.HelloAction&quot; method=&quot;sayHello&quot;&gt;</span><br><span class="line">			&lt;!-- 配置跳转的页面，路径的写法：在Struts2框架中，不管是转发还是重定向，都不用写项目名 --&gt;</span><br><span class="line">			&lt;result name=&quot;ok&quot;&gt;/VIEW/ok.jsp&lt;/result&gt;</span><br><span class="line">		&lt;/action&gt;</span><br><span class="line">	&lt;/package&gt;</span><br><span class="line">&lt;/struts&gt;</span><br></pre></td></tr></table></figure></p>
 <p>经过上面步骤，一个WEB应用中使用Struts基本功能了，在浏览器输入<a href="http://localhost:8080/Struts2Demo/hello.action（后缀.action只是标识这是用Struts开发的，可以省略），控制台既有输出。使用MVC框架后就该严格遵守MVC思想，MVC框架推荐应该避免让浏览者直接访问Web应用的视图页面，用户的所有请求都只应向控制器发送，由控制器调用模型组件、视图组件向用户呈现数据。" target="_blank" rel="noopener">http://localhost:8080/Struts2Demo/hello.action（后缀.action只是标识这是用Struts开发的，可以省略），控制台既有输出。使用MVC框架后就该严格遵守MVC思想，MVC框架推荐应该避免让浏览者直接访问Web应用的视图页面，用户的所有请求都只应向控制器发送，由控制器调用模型组件、视图组件向用户呈现数据。</a><br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2.jpg" alt="Struts2访问流程"> </p>
+<hr>
+<h3 id="Struts2的执行流程"><a href="#Struts2的执行流程" class="headerlink" title="Struts2的执行流程"></a>Struts2的执行流程</h3><p>用户请求 –&gt; Web容器 –&gt; StrutsPrepareAndExecuteFilter过滤器 –&gt; 执行一系列拦截器（在struts-default.xml配置文件中） –&gt; 执行到目标Action –&gt; 返回字符串 –&gt; 结果页面(result) –&gt; 页面跳转。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2_process.png" alt="Struts2的执行流程"></p>
 
       
 
@@ -481,10 +484,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -517,6 +516,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
@@ -526,22 +529,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -558,6 +545,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
               </li>
              
               <li class="article-tag-list-item">
