@@ -6,19 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://littleRich.github.io">
-  <title>Category: 搭建博客 | 物联网科研团队</title>
+  <title>Struts2工作原理与核心思想 | 物联网科研团队</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="专心致志，方能成功">
-<meta name="keywords" content="Android,移动安全,大数据,Hadoop,Spark,HDFS,Hive,分布式,数据分析,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,Java,后台,逆向分析,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="物联网科研团队">
-<meta property="og:url" content="http://littleRich.github.io/categories/搭建博客/index.html">
+  <meta name="description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
+<meta name="keywords" content="框架集成,拦截器,值栈,OGNL表达式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Struts2工作原理与核心思想">
+<meta property="og:url" content="http://littleRich.github.io/2017/06/03/Struts2工作原理与核心思想/index.html">
 <meta property="og:site_name" content="物联网科研团队">
-<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts_position.bmp">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2.jpg">
+<meta property="og:updated_time" content="2018-06-03T07:03:24.810Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="物联网科研团队">
-<meta name="twitter:description" content="专心致志，方能成功">
+<meta name="twitter:title" content="Struts2工作原理与核心思想">
+<meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts_position.bmp">
   
     <link rel="alternative" href="/atom.xml" title="物联网科研团队" type="application/atom+xml">
   
@@ -170,79 +174,220 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Struts2工作原理与核心思想" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/10/19/Hexo+GitHub搭建属于自己的博客/" class="archive-article-date">
-  	<time datetime="2016-10-19T07:15:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-19</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/19/Hexo+GitHub搭建属于自己的博客/">程序员如何建立自己的个人品牌（持续更新）</a>
+    <h1 class="article-title" itemprop="name">
+      Struts2工作原理与核心思想
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/06/03/Struts2工作原理与核心思想/" class="archive-article-date">
+  	<time datetime="2017-06-03T02:14:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>摘要:<br>&emsp;&emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts_position.bmp" alt="前端控制器模式"><br><a id="more"></a></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>&emsp;&emsp;最近闲下来回顾了一下J2EE的传统SSH三大框架，许久没碰（新项目都用SpringMVC），莫名有些生疏，故继前天写了Hibernate的快速入门篇，今天再来一篇Struts的核心原理及思想分析。行文如有误差，可与我指正！ </p>
+<h3 id="Struts快速入门"><a href="#Struts快速入门" class="headerlink" title="Struts快速入门"></a>Struts快速入门</h3><p>1.下载<a href="https://struts.apache.org/download.cgi#struts2516" title="Struts开发包" target="_blank" rel="noopener">struts2的开发包</a></p>
+<ul>
+<li>Full Distribution:下载Struts2的完整版，通常建议下载该选项，该选项包括Struts2的示例应用、空示例应用、核心库、源代码和文档等。  </li>
+<li>Essential Dependencies：仅下载Struts2的核心库，使用Struts2的web应用并不需要利用到Struts2全部特性，因此只需要最小化导包。<br><em>注：旧版本Struts开发包中的示例应用有个struts2-blank.war空应用，将该压缩包的WEB-INF/路径下lib包中的所有</em>.jar文件复制到Web应用的WEB-INF/lib路径下。*  </li>
+</ul>
+<p>2.导入Essential Dependencies中包含的依赖包到WEB应用中；<br>3.配置Struts2的前端控制器，注意：这一步是必须要做的操作，这是Struts2核心的控制器。Struts2的前端控制器就是一个过滤器，需要在web.xml中进行配置。前端控制器类的包路径和类名可以到Struts的核心包中Copy：Web APP Libraries –&gt; struts2-core-*.jar –&gt; org.apache.struts2.dispatcher.filter –&gt; StrutsPrepareAndExecuteFilter。具体在web.xml中配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Struts2的核心Filter --&gt;</span><br><span class="line">&lt;filter&gt;</span><br><span class="line">	&lt;filter-name&gt;struts2&lt;/filter-name&gt;</span><br><span class="line">	&lt;filter-class&gt;org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;</span><br><span class="line">&lt;/filter&gt;</span><br><span class="line">&lt;filter-mapping&gt;</span><br><span class="line">	&lt;filter-name&gt;struts2&lt;/filter-name&gt;</span><br><span class="line">	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span><br><span class="line">&lt;/filter-mapping&gt;</span><br></pre></td></tr></table></figure></p>
+<p>4.Action类是动作类，是Struts2处理用户的请求，封装数据，响应页面的核心控制器。这也是开发者主要写的地方。不过Action类中的方法签名是有要求的，必须这么做：  </p>
+<ul>
+<li>public公有修饰</li>
+<li>必须有返回值，而且是String类型</li>
+<li>方法名可以任意，但不能有参数列表  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public String sayHello()&#123;</span><br><span class="line">	System.out.println(&quot;处理用户请求业务&quot;);</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>5.第四步虽然写了Action动作类，但是Struts2并不知道关联调用哪个方法处理用户请求，所以还需要一个struts.xml配置文件。在src下引入struts.xml配置文件（配置文件的路径必须是在src的目录下），简洁的配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE struts PUBLIC</span><br><span class="line">	&quot;-//Apache Software Foundation//DTD Struts Configuration 2.3//EN&quot;</span><br><span class="line">	&quot;http://struts.apache.org/dtds/struts-2.3.dtd&quot;&gt;		</span><br><span class="line">&lt;struts&gt;</span><br><span class="line">	&lt;package name=&quot;default&quot; namespace=&quot;/&quot; extends=&quot;struts-default&quot;&gt;</span><br><span class="line">		&lt;action name=&quot;hello&quot; class=&quot;top.littlerich.action.HelloAction&quot; method=&quot;sayHello&quot;&gt;</span><br><span class="line">			&lt;!-- 配置跳转的页面，路径的写法：在Struts2框架中，不管是转发还是重定向，都不用写项目名 --&gt;</span><br><span class="line">			&lt;!-- &lt;result name=&quot;ok&quot;&gt;/demo1/suc.jsp&lt;/result&gt; --&gt;</span><br><span class="line">		&lt;/action&gt;</span><br><span class="line">	&lt;/package&gt;</span><br><span class="line">&lt;/struts&gt;</span><br></pre></td></tr></table></figure></p>
+<p>经过上面步骤，一个WEB应用中使用Struts基本功能了，在浏览器输入<a href="http://localhost:8080/Struts2Demo/hello.action，控制台既有输出。使用MVC框架后就该严格遵守MVC思想，MVC框架推荐应该避免让浏览者直接访问Web应用的视图页面，用户的所有请求都只应向控制器发送，由控制器调用模型组件、视图组件向用户呈现数据。" target="_blank" rel="noopener">http://localhost:8080/Struts2Demo/hello.action，控制台既有输出。使用MVC框架后就该严格遵守MVC思想，MVC框架推荐应该避免让浏览者直接访问Web应用的视图页面，用户的所有请求都只应向控制器发送，由控制器调用模型组件、视图组件向用户呈现数据。</a><br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2.jpg" alt="Struts2访问流程"> </p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝咖啡<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/aboutme/wechatpay.png">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">框架集成</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">github</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">拦截器</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">octopress</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">值栈</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OGNL表达式</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/搭建博客//" class="article-tag-list-link color5">搭建博客</a>
+        			<a href="/categories/J2EE//" class="article-tag-list-link color5">J2EE</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://littleRich.github.io/2017/06/03/Struts2工作原理与核心思想/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/09/18/Hadoop环境搭建/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/06/01/Hibernate持久层框架快速入门/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Hibernate持久层框架快速入门</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -266,10 +411,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
 		root: "/",
