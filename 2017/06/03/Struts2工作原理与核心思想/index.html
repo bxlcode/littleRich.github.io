@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts_position.bmp">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2_process.png">
-<meta property="og:updated_time" content="2018-07-31T12:01:07.165Z">
+<meta property="og:updated_time" content="2018-07-31T13:00:54.835Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Struts2工作原理与核心思想">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
@@ -217,6 +217,7 @@
 <p>通过分析Struts2源码可知框架的运行机制（PS：Eclipse中查看方法被谁调用的快捷键<strong>Ctrl+Alt+H+选中该方法</strong>），StrutsPrePareAndExecuteFilter –&gt; init() –&gt; initDispatcher() –&gt; init()，可以看到该方法内具体加载的配置文件和加载配置文件的顺序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">init_FileManager();</span><br><span class="line">init_DefaultProperties();            // 加载org/apache/struts2/default.properties</span><br><span class="line">init_TraditionalXmlConfigurations(); // 加载struts-default.xml,struts-plugin.xml,struts.xml</span><br><span class="line">init_LegacyStrutsProperties();       // 加载自定义的struts.properties</span><br><span class="line">init_CustomConfigurationProviders(); // 加载用户自定义配置提供者</span><br><span class="line">init_FilterInitParameters() ;        // 加载web.xml</span><br><span class="line">init_AliasStandardObjects() ;</span><br></pre></td></tr></table></figure></p>
 <p>default.properties代表的是配置的是Struts2的常量的值；<br>struts-default.xml在Struts2的核心包下，代表的是Struts2核心功能的配置（Bean、拦截器、结果类型等）；<br>struts.xml重点中的重点配置，代表WEB应用的默认配置，在工作中，基本就配置它就可以了！！（可以配置常量）；<br>web.xml配置前端控制器（可以配置常量）。<br>先加载default.properties文件，在org/apache/struts2/default.properties文件，都是常量，又加载struts-default.xml配置文件，在核心的jar包最下方，struts2框架的核心功能都是在该配置文件中配置的。再加载struts.xml的配置文件，在src的目录下，代表用户自己配置的配置文件，最后加载web.xml的配置文件（这是Struts主动再次加载web.xml文件，原本服务器启动，Tomcat会先加载该文件的）。<br><em>后加载的配置文件会覆盖掉之前加载的配置文件</em>（在这些配置文件中可以配置常量）。   </p>
 <h3 id="Action与Servlet的关系"><a href="#Action与Servlet的关系" class="headerlink" title="Action与Servlet的关系"></a>Action与Servlet的关系</h3><p>既然Action可以响应前端的请求，那么如何像Servlet那样获取用户的请求数据呢？通过查找<a href="https://download.csdn.net/download/u012308094/10575429" title="Struts2接口文档" target="_blank" rel="noopener">Struts2的API文档</a>发现，ActionContext对象类似Servlet中的request对象，可以通过操作request对象一样操作ActionContext对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 完全接耦合的方式</span><br><span class="line">ActionContext context = ActionContext.getContext();</span><br><span class="line">// 获取到请求的参数，封装所有请求的参数</span><br><span class="line">Map&lt;String, Object&gt; map = context.getParameters();</span><br><span class="line">// 遍历获取数据</span><br><span class="line">Set&lt;String&gt; keys = map.keySet();</span><br><span class="line">for (String key : keys) &#123;</span><br><span class="line">	// 通过key，来获取到值</span><br><span class="line">	String [] vals = (String[]) map.get(key);</span><br><span class="line">	System.out.println(key+&quot; : &quot;+Arrays.toString(vals));</span><br><span class="line">&#125;	</span><br><span class="line">// 如果向request对象中存入值</span><br><span class="line">context.put(&quot;msg&quot;, &quot;数据挖掘&quot;);</span><br><span class="line">// 获取其他map集合</span><br><span class="line">context.getSession().put(&quot;msg&quot;, &quot;机器学习&quot;);</span><br><span class="line">context.getApplication().put(&quot;msg&quot;, &quot;数学建模&quot;);</span><br></pre></td></tr></table></figure></p>
+<p>同样在JSP页面中就可以使用EL表达式把域对象的数据取出来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&#123; sessionScope.msg &#125;</span><br><span class="line">$&#123;requestScope.msg &#125;</span><br><span class="line">$&#123;applicationScope.msg</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -487,10 +488,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -503,23 +500,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -532,6 +521,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -551,6 +552,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -564,22 +569,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -604,6 +593,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
             
             <div class="clearfix"></div>
