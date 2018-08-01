@@ -19,7 +19,9 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts_position.bmp">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2_process.png">
-<meta property="og:updated_time" content="2018-07-31T13:00:54.835Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/interceptor.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/abstractmethod.jpg">
+<meta property="og:updated_time" content="2018-08-01T13:10:48.220Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Struts2工作原理与核心思想">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
@@ -203,7 +205,7 @@
 <li>Essential Dependencies：仅下载Struts2的核心库，使用Struts2的web应用并不需要利用到Struts2全部特性，因此只需要最小化导包。<br><em>注：旧版本Struts开发包中的示例应用有个struts2-blank.war空应用，将该压缩包的WEB-INF/路径下lib包中的所有</em>.jar文件复制到Web应用的WEB-INF/lib路径下。*  </li>
 </ul>
 <p>2.导入Essential Dependencies中包含的依赖包到WEB应用中；<br>3.配置Struts2的前端控制器，注意：这一步是必须要做的操作，这是Struts2核心的控制器。Struts2的前端控制器就是一个过滤器，需要在web.xml中进行配置。前端控制器类的包路径和类名可以到Struts的核心包中Copy：Web APP Libraries –&gt; struts2-core-*.jar –&gt; org.apache.struts2.dispatcher.filter –&gt; StrutsPrepareAndExecuteFilter。具体在web.xml中配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Struts2的核心Filter --&gt;</span><br><span class="line">&lt;filter&gt;</span><br><span class="line">	&lt;filter-name&gt;struts2&lt;/filter-name&gt;</span><br><span class="line">	&lt;filter-class&gt;org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;</span><br><span class="line">&lt;/filter&gt;</span><br><span class="line">&lt;filter-mapping&gt;</span><br><span class="line">	&lt;filter-name&gt;struts2&lt;/filter-name&gt;</span><br><span class="line">	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span><br><span class="line">&lt;/filter-mapping&gt;</span><br></pre></td></tr></table></figure></p>
-<p>4.Action类是动作类，是Struts2处理用户的请求，封装数据，响应页面的核心控制器。这也是开发者主要写的地方。不过Action类中的方法签名是有要求的，必须这么做：  </p>
+<p>4.Action类是动作类（一般要继承ActionSupport），是Struts2处理用户的请求，封装数据，响应页面的核心控制器。这也是开发者主要写的地方。不过Action类中的方法签名是有要求的，必须这么做：  </p>
 <ul>
 <li>public公有修饰</li>
 <li>必须有返回值，而且是String类型</li>
@@ -216,8 +218,26 @@
 <h3 id="Struts2的执行流程"><a href="#Struts2的执行流程" class="headerlink" title="Struts2的执行流程"></a>Struts2的执行流程</h3><p>用户请求 –&gt; Web容器 –&gt; StrutsPrepareAndExecuteFilter过滤器 –&gt; 执行一系列拦截器（在struts-default.xml配置文件中） –&gt; 执行到目标Action –&gt; 返回字符串 –&gt; 结果页面(result) –&gt; 页面跳转。<br><em>注：Eclipse导入Struts2源码，只需要导入上面下载的struts-xxx-all.zip即可。（Full Distribution版）</em><br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/struts2_process.png" alt="Struts2的执行流程"></p>
 <p>通过分析Struts2源码可知框架的运行机制（PS：Eclipse中查看方法被谁调用的快捷键<strong>Ctrl+Alt+H+选中该方法</strong>），StrutsPrePareAndExecuteFilter –&gt; init() –&gt; initDispatcher() –&gt; init()，可以看到该方法内具体加载的配置文件和加载配置文件的顺序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">init_FileManager();</span><br><span class="line">init_DefaultProperties();            // 加载org/apache/struts2/default.properties</span><br><span class="line">init_TraditionalXmlConfigurations(); // 加载struts-default.xml,struts-plugin.xml,struts.xml</span><br><span class="line">init_LegacyStrutsProperties();       // 加载自定义的struts.properties</span><br><span class="line">init_CustomConfigurationProviders(); // 加载用户自定义配置提供者</span><br><span class="line">init_FilterInitParameters() ;        // 加载web.xml</span><br><span class="line">init_AliasStandardObjects() ;</span><br></pre></td></tr></table></figure></p>
 <p>default.properties代表的是配置的是Struts2的常量的值；<br>struts-default.xml在Struts2的核心包下，代表的是Struts2核心功能的配置（Bean、拦截器、结果类型等）；<br>struts.xml重点中的重点配置，代表WEB应用的默认配置，在工作中，基本就配置它就可以了！！（可以配置常量）；<br>web.xml配置前端控制器（可以配置常量）。<br>先加载default.properties文件，在org/apache/struts2/default.properties文件，都是常量，又加载struts-default.xml配置文件，在核心的jar包最下方，struts2框架的核心功能都是在该配置文件中配置的。再加载struts.xml的配置文件，在src的目录下，代表用户自己配置的配置文件，最后加载web.xml的配置文件（这是Struts主动再次加载web.xml文件，原本服务器启动，Tomcat会先加载该文件的）。<br><em>后加载的配置文件会覆盖掉之前加载的配置文件</em>（在这些配置文件中可以配置常量）。   </p>
-<h3 id="Action与Servlet的关系"><a href="#Action与Servlet的关系" class="headerlink" title="Action与Servlet的关系"></a>Action与Servlet的关系</h3><p>既然Action可以响应前端的请求，那么如何像Servlet那样获取用户的请求数据呢？通过查找<a href="https://download.csdn.net/download/u012308094/10575429" title="Struts2接口文档" target="_blank" rel="noopener">Struts2的API文档</a>发现，ActionContext对象类似Servlet中的request对象，可以通过操作request对象一样操作ActionContext对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 完全接耦合的方式</span><br><span class="line">ActionContext context = ActionContext.getContext();</span><br><span class="line">// 获取到请求的参数，封装所有请求的参数</span><br><span class="line">Map&lt;String, Object&gt; map = context.getParameters();</span><br><span class="line">// 遍历获取数据</span><br><span class="line">Set&lt;String&gt; keys = map.keySet();</span><br><span class="line">for (String key : keys) &#123;</span><br><span class="line">	// 通过key，来获取到值</span><br><span class="line">	String [] vals = (String[]) map.get(key);</span><br><span class="line">	System.out.println(key+&quot; : &quot;+Arrays.toString(vals));</span><br><span class="line">&#125;	</span><br><span class="line">// 如果向request对象中存入值</span><br><span class="line">context.put(&quot;msg&quot;, &quot;数据挖掘&quot;);</span><br><span class="line">// 获取其他map集合</span><br><span class="line">context.getSession().put(&quot;msg&quot;, &quot;机器学习&quot;);</span><br><span class="line">context.getApplication().put(&quot;msg&quot;, &quot;数学建模&quot;);</span><br></pre></td></tr></table></figure></p>
-<p>同样在JSP页面中就可以使用EL表达式把域对象的数据取出来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&#123; sessionScope.msg &#125;</span><br><span class="line">$&#123;requestScope.msg &#125;</span><br><span class="line">$&#123;applicationScope.msg</span><br></pre></td></tr></table></figure></p>
+<h3 id="Action中使用Servlet的API"><a href="#Action中使用Servlet的API" class="headerlink" title="Action中使用Servlet的API"></a>Action中使用Servlet的API</h3><ul>
+<li>Struts2提供操作的方式<br>既然Action可以响应前端的请求，那么如何像Servlet那样获取用户的请求数据呢？通过查找<a href="https://download.csdn.net/download/u012308094/10575429" title="Struts2接口文档" target="_blank" rel="noopener">Struts2的API文档</a>发现，Struts提供了一个类ActionContext，该静态类是当前接口的上下文，显然可以获取各种操作，可以通过操作request对象一样操作ActionContext对象。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 完全接耦合的方式</span><br><span class="line">ActionContext context = ActionContext.getContext();</span><br><span class="line">// 获取到请求的参数，封装所有请求的参数</span><br><span class="line">Map&lt;String, Object&gt; map = context.getParameters();</span><br><span class="line">// 遍历获取数据</span><br><span class="line">Set&lt;String&gt; keys = map.keySet();</span><br><span class="line">for (String key : keys) &#123;</span><br><span class="line">	// 通过key，来获取到值</span><br><span class="line">	String [] vals = (String[]) map.get(key);</span><br><span class="line">	System.out.println(key+&quot; : &quot;+Arrays.toString(vals));</span><br><span class="line">&#125;	</span><br><span class="line">// 如果向request对象中存入值</span><br><span class="line">context.put(&quot;msg&quot;, &quot;数据挖掘&quot;);</span><br><span class="line">// 获取其他map集合</span><br><span class="line">context.getSession().put(&quot;msg&quot;, &quot;机器学习&quot;);</span><br><span class="line">context.getApplication().put(&quot;msg&quot;, &quot;数学建模&quot;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>同样在JSP页面中就可以使用EL表达式把域对象的数据取出来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&#123; sessionScope.msg &#125;</span><br><span class="line">$&#123;requestScope.msg &#125;</span><br><span class="line">$&#123;applicationScope.msg&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>原生Servlet的操作方式（这个方法更推荐）  </li>
+</ul>
+<p>Struts2框架提供了一个类ServletActionContext，可以获取到Servlet的HttpServletRequest和HttpServletRequest对象，这样就直接操作Servlet，是不是很方便。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 获取到request对象</span><br><span class="line">HttpServletRequest request = ServletActionContext.getRequest();</span><br><span class="line">request.setAttribute(&quot;msg&quot;, &quot;jQuery&quot;);</span><br><span class="line">request.getSession().setAttribute(&quot;msg&quot;, &quot;HTML&quot;);</span><br><span class="line">ServletActionContext.getServletContext().setAttribute(&quot;msg&quot;, &quot;Bootstrap&quot;);</span><br><span class="line">// 使用输出流，输出字符串内容（异步请求开发）</span><br><span class="line">HttpServletResponse response = ServletActionContext.getResponse();</span><br><span class="line">response.getWriter().print(&quot;json&quot;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h3><p>拦截器就是AOP（Aspect-Oriented Programming）的一种实现。（AOP是指用于在某个方法或字段被访问之前，进行拦截然后在之前或之后加入某些操作。）<br><em>拓展：在移动逆向安全中常常用到Hook技术，跟拦截器是一样的原理，拦截被破解程序的函数执行，修改第三方程序函数运行过程中的参数值。</em><br>可以在Struts2接口文档中查找Interceptor接口。intercetor就是拦截到方法后要处理的操作，其中参数ActionInvocation对象就是管理所有拦截器。拦截完方法后要放开执行，不然会中断原有的执行逻辑，故要调用invoke方法即放开执行被拦截方法。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/interceptor.jpg" alt="拦截器接口Interceptor"><br>一般我们不直接实现拦截器Interceptor接口，而是去继承它的子类，比较常用的子类有AbstractInterceptor和MethodFilterInterceptor类。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/abstractmethod.jpg" alt="Interceptor的子类">  </p>
+<ul>
+<li>拦截器与过滤器的区别<br>1）拦截器是基于JAVA反射机制的，而过滤器是基于函数回调的；<br>2）过滤器依赖于Servlet容器，而拦截器不依赖于Servlet容器；<br>3）拦截器只能对Action请求起作用（Action中的方法），而过滤器可以对几乎所有的请求起作用（CSS JSP JS）。注意：拦截器不能拦截JSP！    </li>
+</ul>
+<p>在struts2 中可以定义很多个拦截器，将多个拦截器按照特定顺序 组成拦截器栈 （顺序调用栈中的每一个拦截器 ），一般需要调用Struts2的默认拦截器栈。自定义拦截器后，需要显示引用Struts2默认拦截器栈defaultStack。</p>
+<ul>
+<li>自定义拦截器<br>1.创建拦截器类，继承AbstractInterceptor<br>2、实现intercept方法，编写拦截处理的操作<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public String intercept(ActionInvocation invocation) throws Exception &#123;	</span><br><span class="line">   //Action拦截之前		</span><br><span class="line">   String result = invocation.invoke();   //执行被拦截的函数</span><br><span class="line">   //Action拦截之后</span><br><span class="line">   return result; //必须有返回值，后续的拦截器才能执行</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>3、在struts.xml中声明拦截器，并绑定到指定Action类中的方法上；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;package name=&quot;interceptor&quot; namespace=&quot;/&quot; extends=&quot;struts-default&quot;&gt;	</span><br><span class="line">	&lt;interceptors&gt; </span><br><span class="line">		&lt;interceptor name=&quot;DemoInterceptor&quot; class=&quot;top.littlerich.demo.DemoInterceptor&quot;/&gt;</span><br><span class="line">        &lt;interceptor-stack name=&quot;myStack&quot;&gt;</span><br><span class="line">			&lt;interceptor-ref name=&quot;DemoInterceptor&quot;/&gt;</span><br><span class="line">			&lt;interceptor-ref name=&quot;defaultStack&quot;/&gt;</span><br><span class="line">		&lt;/interceptor-stack&gt;		</span><br><span class="line">	&lt;/interceptors&gt;	</span><br><span class="line">	&lt;action name=&quot;demoInterceptor&quot; class=&quot;top.littlerich.demo.Demo3Action&quot;&gt; //Demo3Action类中的默认execute方法被拦截</span><br><span class="line">		&lt;interceptor-ref name=&quot;myStack&quot; /&gt;   //引入拦截器栈就OK</span><br><span class="line">	&lt;/action&gt;</span><br><span class="line">&lt;/package&gt;</span><br></pre></td></tr></table></figure></p>
+<p>注意第6行代码，比如引入Struts2默认的拦截器栈，不然默认的一些功能就没了，比如自带的处理post中文乱码问题等。  </p>
 
       
 
@@ -488,6 +508,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -497,14 +525,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -536,6 +556,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
               </li>
              
@@ -552,10 +576,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -569,10 +589,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,6 +609,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
