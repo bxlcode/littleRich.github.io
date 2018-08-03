@@ -23,7 +23,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/abstractmethod.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/OgnlValueStack.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/ValueStack.jpg">
-<meta property="og:updated_time" content="2018-08-02T12:21:03.701Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/parameters.jpg">
+<meta property="og:updated_time" content="2018-08-03T03:58:44.216Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Struts2工作原理与核心思想">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Struts2是一个基于MVC设计模式的Web应用开源框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Web层框架都是一个特点有前端控制器模式，Struts2框架前端的控制器就是过滤器。">
@@ -249,10 +250,11 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 上下文对象</span><br><span class="line">OgnlContext context = new OgnlContext();</span><br><span class="line">// 获取到根对象</span><br><span class="line">Object root = context.getRoot();</span><br><span class="line">// 获取值，表达式写法</span><br><span class="line">Object value = Ognl.getValue(&quot;&apos;haha&apos;.length()&quot;, context, root);</span><br><span class="line">System.out.println(value);</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
+<p>Struts2把所有标签都定义在一个s标签库里。</p>
 <h3 id="值栈"><a href="#值栈" class="headerlink" title="值栈"></a>值栈</h3><p>值栈就相当于Struts2框架的数据中转站，值栈使用OGNL表达式来存取数据，向值栈存入一些数据，再从值栈中获取到数据。<br>上面我们了解了Struts2的执行流程知道，当Struts2接收到请求后，最先由核心的StrutsPrepareAndExecuteFilter过滤器来处理，其中就有个操作就是创建值栈，后续经过数个拦截器都可以往值栈存取数据，最后才执行到开发者编写的Action动作类，同样可以往值栈存取数据，在前端页面就可以在值栈中取出数据显示出来。<br>Servlet是单例的，每次请求都创建一个线程共用一个Servlet实例。但Action是多例的，每来一个请求就创建一个Action实例，并会创建一个ActionContext上下文对象和ValueStack对象。也就是说，每个Action实例都有一个ValueStack对象（一个请求对应一个ValueStack对象），将ValueStack对象命名为struts.valueStack，存储到request对象中（值栈对象是request域对象的一个属性）。因此可以从request对象中获取ValueStack对象：  </p>
 <pre><code>ValueStack vs = (ValueStack)request.getAttribute(&quot;struts.valueStack&quot;);
-</code></pre><p>从源码角度来看看值栈。在Eclipse中搜索ValueStack类（Ctrl+Shift+t），ValueStack是Struts2提供的一个接口，紧接着鼠标选中ValueStack接口名(Ctrl+t查看子类)，看看它的实现类有OgnlValueStack。如下图OgnlValueStack中比较重要的属性有root和context两个对象，CompoundRoot类实际就是个List。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/OgnlValueStack.jpg" alt="OgnlValueStack源码分析"><br>context键值对中存放了大部分是Struts2框架处理的数据。ValueStack值栈的内部结构如图所示：<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/ValueStack.jpg" alt="ValueStack内部结构"></p>
-
+</code></pre><p>从源码角度来看看值栈。在Eclipse中搜索ValueStack类（Ctrl+Shift+t），ValueStack是Struts2提供的一个接口，紧接着鼠标选中ValueStack接口名(Ctrl+t查看子类)，看看它的实现类有OgnlValueStack。如下图OgnlValueStack中比较重要的属性有root和context两个对象，CompoundRoot类实际就是个List。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/OgnlValueStack.jpg" alt="OgnlValueStack源码分析"><br>context键值对中存放了大部分是Struts2框架处理的数据。ValueStack值栈的内部结构如图所示：<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/ValueStack.jpg" alt="ValueStack内部结构"><br>所以就可以获取context默认填充的数据：<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20170602/parameters.jpg" alt="取出请求的数据"></p>
+<h4 id="开发中常用的获取ValueStack对象的方式"><a href="#开发中常用的获取ValueStack对象的方式" class="headerlink" title="开发中常用的获取ValueStack对象的方式"></a>开发中常用的获取ValueStack对象的方式</h4>
       
 
       
@@ -558,22 +560,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
               </li>
              
@@ -606,15 +592,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -639,6 +629,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
             
             <div class="clearfix"></div>
