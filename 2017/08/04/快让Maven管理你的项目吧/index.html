@@ -21,7 +21,9 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/javahome.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/file.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/repository.jpg">
-<meta property="og:updated_time" content="2018-08-04T10:48:42.486Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/alter_eclipse.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/user_setting.jpg">
+<meta property="og:updated_time" content="2018-08-04T12:49:17.130Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="快让Maven管理你的项目吧">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;Maven意为“知识的积累”，是一个跨平台的项目管理工具。注意并不是SVN源码的版本管理功能，Maven可以管理构建我们的开发项目。从最初的Make命令到Ant（Another Neat Tool）,但Ant没有依赖管理。总的来说，Maven有两大功能：1、依赖管理；2、项目构建 。">
@@ -203,7 +205,8 @@
 <p>2、下载Maven安装包<a href="http://maven.apache.org/download.cgi" title="官网Maven包" target="_blank" rel="noopener">apache-maven-x.x.x-bin.zip</a>，解压到指定位置；<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/file.jpg" alt="安装目录分析"><br>3、配置MAVEN_HOME，变量值就是上面解压的路径，再将%MAVEN_HOME%\bin 加入环境变量 path；<br>4、检查maven是否安装成功。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo %MAVEN_HOME%</span><br><span class="line">mvn -v</span><br></pre></td></tr></table></figure></p>
 <hr>
 <p><em>拓展配置</em><br><strong>本地仓库配置</strong><br>在maven安装路径下\conf\setting.xml文件下，设置本地仓库的位置。不然默认仓库占用C盘空间。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/repository.jpg" alt="本地仓库配置"><br><strong>将默认中央仓库切换到阿里云maven</strong><br>同样在setting.xml目录下，找到<mirrors></mirrors>标签对，添加配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">  &lt;mirror&gt; </span><br><span class="line">    &lt;id&gt;alimaven&lt;/id&gt; </span><br><span class="line">    &lt;name&gt;aliyun maven&lt;/name&gt; </span><br><span class="line">    &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt; </span><br><span class="line">    &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; </span><br><span class="line">  &lt;/mirror&gt; </span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure></p>
-
+<h3 id="Eclipse中配置Maven插件"><a href="#Eclipse中配置Maven插件" class="headerlink" title="Eclipse中配置Maven插件"></a>Eclipse中配置Maven插件</h3><p>如果Eclipse中没有m2eclipse插件，安装就有些慢了，百度搜个教程吧。下面我重点将说说m2eclipse的配置。<br>1、不要使用IDE内嵌的Maven<br>在m2eclipse环境中，Window–&gt;Preferences–&gt;Maven–&gt;Installations–&gt;Add;选择Maven安装目录，添加完毕后选择这个外部的Maven。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/alter_eclipse.jpg" alt="在Eclipse中使用外部Maven"><br>2、修改m2eclipse本地仓库位置<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180804/user_setting.jpg" alt="修改本地仓库位置"><br>3、构建索引<br>为了让maven项目能快速的查找到本地依赖包，需要给Eclipse的maven构建索引。Window–&gt;Show View–&gt;Other–&gt;Maven–&gt;Maven Repositories,这样Eclipse的控制栏就添加了Maven Repositories窗口。选中右键Local Repositories–&gt;Local Repository(本地仓库路径)–&gt;Rebuild Index。</p>
+<h3 id="创建一个Maven项目"><a href="#创建一个Maven项目" class="headerlink" title="创建一个Maven项目"></a>创建一个Maven项目</h3>
       
 
       
@@ -481,22 +484,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -509,15 +496,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -538,6 +529,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -581,18 +584,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
               </li>
              
@@ -602,6 +593,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
             
             <div class="clearfix"></div>
