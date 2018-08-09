@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/mybatis.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png">
-<meta property="og:updated_time" content="2018-08-09T10:00:42.652Z">
+<meta property="og:updated_time" content="2018-08-09T11:05:17.650Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta name="twitter:description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQL）更加灵活，SQL调优更加容易。">
@@ -212,7 +212,7 @@
 <h3 id="0X03-Mybatis架构"><a href="#0X03-Mybatis架构" class="headerlink" title="0X03 Mybatis架构"></a>0X03 Mybatis架构</h3><p>上面实现了简单的CURD操作，再总结一下Mybatis的执行流程以及架构原理，如下图所示。先配置SqlMapConfig.xml作为全局配置文件，配置了Mybatis的运行环境等信息。mapper.xml文件即SQL映射文件，文件中配置了操作数据库的SQL语句，此文件需要在SqlMapConfig.xml中加载。首先就是通过Mybatis环境等配置信息构造SQLSessionFactory会话工厂，再由会话工厂创建SqlSession会话，SqlSession中封装了对数据库的操作，如：查询、插入、更新、删除等。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png" alt="Mybatis架构"><br>Mybatis底层自定义了Executor执行器接口操作数据库，Executor接口有两个实现，一个是基本执行器，一个是缓存执行器。<br>Mapped Statement也是Mybatis的一个底层封装对象，它包括了Mybatis配置信息及SQL映射信息等。mapper.xml文件中一个SQL对应一个Mapped Statement对象，SQL的id即是Mapped Statement的id。Mapped Statement对sql执行输入参数进行定义，包括HashMap、基本类型、pojo，Executor通过Mapped Statement在执行sql前将输入的java对象映射至sql中，输入参数映射就是jdbc编程中对preparedStatement设置参数。<br>Mybatis执行的输出结果也是通过Mapped Statement对SQL执行输出结果映射至java对象中，输出结果映射过程相当于jdbc编程中对结果的解析处理过程。</p>
 <h3 id="0X04-Mapper动态代理"><a href="#0X04-Mapper动态代理" class="headerlink" title="0X04 Mapper动态代理"></a>0X04 Mapper动态代理</h3><p>在上面示例代码中存在一个问题就是调用SQLSession的数据库操作方法需要指定statement的id,这里存在硬编码，不利于开发维护。所以在实际项目开发中往往使用Mapper动态代理的方式，下面我就说说Mybatis是如何设计的。<br>1、编写Mapper.xml（映射文件）<br>将上面示例的中User.xml映射文件稍微改下就好，必须将namespace的值设为Mapper接口路径（UserMapper接口在第2步创建）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;mapper namespace=&quot;top.littlerich.mapper.UserMapper&quot;&gt;</span><br><span class="line">	&lt;delete id=&quot;deleteUserById&quot; parameterType=&quot;java.lang.Integer&quot;&gt;</span><br><span class="line">		delete from user where id = #&#123;id&#125;</span><br><span class="line">	&lt;/delete&gt;</span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure></p>
 <p>2、创建Mapper.java(接口文件)<br>Mapper接口开发方法只需要程序员编写Mapper接口（相当于MVC架构中Dao层接口），由Mybatis框架根据接口定义创建接口的动态代理对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface UserMapper &#123;</span><br><span class="line">	// 根据用户id查询用户信息</span><br><span class="line">	public User deleteUserById(int id) throws Exception;</span><br><span class="line">	//如果Mapper.xml中定义了多个数据库操作，可以接着声明接口方法...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>接口中方法声明是有规范的：  </p>
+<p>接口中方法声明是有规范的：</p>
 <ul>
 <li>Mapper接口方法名和Mapper.xml中定义的每个statement的id相同</li>
 <li>Mapper接口方法的输入参数类型和mapper.xml中定义的每个sql 的parameterType的类型相同</li>
@@ -220,7 +220,8 @@
 </mapper></li>
 </ul>
 <p>注意：如果Mapper.xml文件配置好了，按住Ctrl键点击resource后面的值是可以跳转过去的。<br>4、编写Junit测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private SqlSessionFactory sqlSessionFactory;</span><br><span class="line">@Before </span><br><span class="line">public void init() throws IOException &#123;</span><br><span class="line">	InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">	sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">&#125;	</span><br><span class="line">@Test</span><br><span class="line">public void testMapper()&#123;</span><br><span class="line">	SqlSession session = null;</span><br><span class="line">	try &#123;</span><br><span class="line">		session = sqlSessionFactory.openSession();</span><br><span class="line">		//获取mapper接口的代理对象</span><br><span class="line">		UserMapper userMapper = session.getMapper(UserMapper.class);</span><br><span class="line">		userMapper.deleteUserById(33);//调用代理对象方法</span><br><span class="line">		session.commit();</span><br><span class="line">	&#125; catch (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;finally&#123;</span><br><span class="line">		if(session != null)&#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				session.close();</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">				// TODO: handle exception</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
+<p>上面所有的代码都已上传了：点击下载源代码</p>
+<h3 id="0X05"><a href="#0X05" class="headerlink" title="0X05"></a>0X05</h3><hr>
 <p><em>参考文献</em><br><a href="http://www.mybatis.org/mybatis-3/zh/getting-started.html" title="Mybatis中文文档" target="_blank" rel="noopener">Mybatis官方文档</a></p>
 
       
@@ -500,6 +501,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -512,10 +517,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -525,6 +526,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -544,39 +557,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,6 +590,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -625,22 +642,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
             
             <div class="clearfix"></div>
@@ -750,8 +751,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
-  	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br&gt;&lt;br&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br&gt;&lt;br&gt;喜欢开源软件，乐于知识分享，热爱阅读各类技术书籍&lt;br&gt;谢谢大家&lt;br/&gt;...</div>
   	  	
     	</section>
     
