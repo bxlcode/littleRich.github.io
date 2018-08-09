@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/mybatis.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png">
-<meta property="og:updated_time" content="2018-08-09T11:25:12.191Z">
+<meta property="og:updated_time" content="2018-08-09T12:43:09.247Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta name="twitter:description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQL）更加灵活，SQL调优更加容易。">
@@ -201,7 +201,7 @@
 <p>5、po类<br>po类作为Mybatis中与数据库表映射关联。一般我们都是按java bean类写，属性名与数据库表字段名一样。<br>6、sql映射文件<br>Mybatis不像Spring的JDBC Template把SQL语句混在java代码中，将SQL提取到一个配置文件中，对于项目的维护无疑是一大便利。在classpath下创建SQL映射文件xxx.xml。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE mapper</span><br><span class="line">PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span><br><span class="line">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;</span><br><span class="line">&lt;mapper namespace=&quot;test&quot;&gt;</span><br><span class="line">	&lt;select id=&quot;findUserById&quot; parameterType=&quot;java.lang.Integer&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">		select * from user where id = #&#123;id&#125;    &lt;!-- #&#123;xxx&#125;表示占位符 --&gt;</span><br><span class="line">	&lt;/select&gt;</span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure></p>
 <p>namespace:命名空间，用于隔离SQL语句，可理解为不同namespace文件夹下的SQL语句不会混乱在一起。<br>7、加载SQL映射文件<br>mybatis框架需要加载映射文件，将第6步创建的xxx.xml添加在SqlMapConfig.xml，在第4步示例代码中21-23行代码已给出。这样Mybatis开发环境就配置好了。</p>
 <h3 id="0X02-实现数据的增删改查"><a href="#0X02-实现数据的增删改查" class="headerlink" title="0X02 实现数据的增删改查"></a>0X02 实现数据的增删改查</h3><p>1、查询<br>在工程搭建的第6步的xxx.xml映射文件中<mapper></mapper>标签下添加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByUsername&quot; parameterType=&quot;java.lang.String&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user where username like &apos;%$&#123;value&#125;%&apos;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>PS:id用于标识该SQL语句；parameterType用于定义输入到SQL语句中的占位符数据类型；resultType用于定义SQL语句返回的数据类型；${}用于字符串拼接。<br>再写一个jUnit测试查询程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class MybatisSelectTest &#123;</span><br><span class="line">	private SqlSessionFactory sqlSessionFactory;</span><br><span class="line">	@Before //测试@Test执行之前跑</span><br><span class="line">	public void init() throws IOException &#123;</span><br><span class="line">		InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">	&#125;</span><br><span class="line">	@Test</span><br><span class="line">	public void testFindUserByUsername() &#123;</span><br><span class="line">		SqlSession sqlSession = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">			List&lt;User&gt; users = sqlSession.selectList(&quot;test.findUserByUsername&quot;, &quot;许&quot;);</span><br><span class="line">			System.out.println(&quot;姓许的人数有：&quot; + users.size());</span><br><span class="line">		&#125; catch (Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; finally &#123;</span><br><span class="line">			if (sqlSession != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					sqlSession.close();</span><br><span class="line">				&#125; catch (Exception e) &#123;</span><br><span class="line">					// TODO: handle exception</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PS:id用于标识该SQL语句；parameterType用于定义输入到SQL语句中的占位符数据类型；resultType用于定义SQL语句返回的数据类型，如果返回的是多个值，照样只写List泛型里类型即可（上面例子就是这样的）；${}用于字符串拼接。<br>再写一个jUnit测试查询程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class MybatisSelectTest &#123;</span><br><span class="line">	private SqlSessionFactory sqlSessionFactory;</span><br><span class="line">	@Before //测试@Test执行之前跑</span><br><span class="line">	public void init() throws IOException &#123;</span><br><span class="line">		InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">	&#125;</span><br><span class="line">	@Test</span><br><span class="line">	public void testFindUserByUsername() &#123;</span><br><span class="line">		SqlSession sqlSession = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">			List&lt;User&gt; users = sqlSession.selectList(&quot;test.findUserByUsername&quot;, &quot;许&quot;);</span><br><span class="line">			System.out.println(&quot;姓许的人数有：&quot; + users.size());</span><br><span class="line">		&#125; catch (Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; finally &#123;</span><br><span class="line">			if (sqlSession != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					sqlSession.close();</span><br><span class="line">				&#125; catch (Exception e) &#123;</span><br><span class="line">					// TODO: handle exception</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>这里@Before只是将公共部分代码提取出来，如果看不懂，可以放回@Test中。SqlSessionFactory是一个接口，接口中定义了openSession的不同重载方法，SqlSessionFactory的最佳使用范围是整个应用运行期间，一旦创建后可以重复使用，通常以单例模式管理SqlSessionFactory。<br>执行流程：加载Mybatis的主配置文件–&gt;利用配置参数创建Session工厂类–&gt;Session工厂类创建SQL会话（会话内可以做任何CURD操作）–&gt;调用执行映射文件中的SQL–&gt;除了查询操作，需要手动提交事务–&gt;关闭会话。<br>SqlSession是一个面向用户的接口， sqlSession中定义了数据库操作方法。每个线程都应该有它自己的SqlSession实例，是线程不安全的，因此最佳的范围是请求或方法范围，用完就关了吧。<br>第13行代码是查询语句，第一个参数是调用映射文件中的SQL，格式：包名.id，第二个参数是向SQL传入的参数；  </p>
 <p>2、插入数据<br>同样在工程搭建的第6步的xxx.xml映射文件中<mapper></mapper>标签下添加如下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;insert id=&quot;insertUser&quot; parameterType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	&lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;java.lang.Integer&quot; order=&quot;AFTER&quot;&gt;</span><br><span class="line">		select LAST_INSERT_ID()</span><br><span class="line">	&lt;/selectKey&gt;</span><br><span class="line">	insert into user(username, birthday, sex, address) value(#&#123;username&#125;, #&#123;birthday&#125;, #&#123;sex&#125;, #&#123;address&#125;)</span><br><span class="line">&lt;/insert&gt;</span><br></pre></td></tr></table></figure></p>
 <p>其中<selectkey></selectkey>标签一般用于执行SQL函数，这是LAST_INSERT_ID()函数返回新增数据的主键；keyProperty表示返回的数据存储在parameterType的pojo中的哪个属性；order表示selectKey的执行顺序，是相对与insert语句来说，由于mysql的自增原理执行完insert语句之后才将主键生成，所以这里selectKey的执行顺序为after；resultType表示函数返回的数据类型。<br>还是写一个jUnit测试查询程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testInsert()&#123;</span><br><span class="line">	User user = new User();</span><br><span class="line">	user.setUsername(&quot;littleRich&quot;);</span><br><span class="line">	user.setAddress(&quot;四川成都&quot;);</span><br><span class="line">	user.setSex(&quot;1&quot;);</span><br><span class="line">	user.setBirthday(new Date());</span><br><span class="line">	SqlSession sqlSession = null;</span><br><span class="line">	try &#123;</span><br><span class="line">		InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">		sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">		sqlSession.insert(&quot;test.insertUser&quot;, user);</span><br><span class="line">		sqlSession.commit();</span><br><span class="line">		System.out.println(&quot;新增数据的ID：&quot; + user.getId());</span><br><span class="line">	&#125; catch (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;finally&#123;</span><br><span class="line">		if(sqlSession != null)&#123;</span><br><span class="line">				sqlSession.close();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -220,8 +220,8 @@
 </mapper></li>
 </ul>
 <p>注意：如果Mapper.xml文件配置好了，按住Ctrl键点击resource后面的值是可以跳转过去的。<br>4、编写Junit测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private SqlSessionFactory sqlSessionFactory;</span><br><span class="line">@Before </span><br><span class="line">public void init() throws IOException &#123;</span><br><span class="line">	InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">	sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">&#125;	</span><br><span class="line">@Test</span><br><span class="line">public void testMapper()&#123;</span><br><span class="line">	SqlSession session = null;</span><br><span class="line">	try &#123;</span><br><span class="line">		session = sqlSessionFactory.openSession();</span><br><span class="line">		//获取mapper接口的代理对象</span><br><span class="line">		UserMapper userMapper = session.getMapper(UserMapper.class);</span><br><span class="line">		userMapper.deleteUserById(33);//调用代理对象方法</span><br><span class="line">		session.commit();</span><br><span class="line">	&#125; catch (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;finally&#123;</span><br><span class="line">		if(session != null)&#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				session.close();</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">				// TODO: handle exception</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面所有的代码都已上传了：点击下载源代码</p>
-<h3 id="0X05"><a href="#0X05" class="headerlink" title="0X05"></a>0X05</h3><hr>
+<h3 id="0X05-动态SQL"><a href="#0X05-动态SQL" class="headerlink" title="0X05 动态SQL"></a>0X05 动态SQL</h3><p>上面所有的代码都已上传了：点击下载源代码</p>
+<hr>
 <p><em>参考文献</em><br><a href="http://www.mybatis.org/mybatis-3/zh/getting-started.html" title="Mybatis中文文档" target="_blank" rel="noopener">Mybatis官方文档</a></p>
 
       
@@ -513,6 +513,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -522,14 +530,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -549,18 +549,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -574,6 +562,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,10 +613,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Hook进阶</a>
               </li>
              
@@ -633,6 +633,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
               </li>
              
@@ -646,10 +650,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
             
             <div class="clearfix"></div>
