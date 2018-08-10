@@ -9,7 +9,7 @@
   <title>Mybatis持久化框架带来更灵活的操作 | 物联网科研团队</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQ">
-<meta name="keywords" content="CURD,架构原理,动态代理DAO,动态SQL,逆向工程">
+<meta name="keywords" content="CRUD,架构原理,动态代理DAO,动态SQL,关联查询,逆向工程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta property="og:url" content="http://littleRich.github.io/2017/08/09/Mybatis持久化框架带来更灵活的操作/index.html">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/mybatis.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png">
-<meta property="og:updated_time" content="2018-08-10T03:24:36.588Z">
+<meta property="og:updated_time" content="2018-08-10T14:15:31.571Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta name="twitter:description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQL）更加灵活，SQL调优更加容易。">
@@ -222,9 +222,18 @@
 <p>注意：如果Mapper.xml文件配置好了，按住Ctrl键点击resource后面的值是可以跳转过去的。<br>4、编写Junit测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private SqlSessionFactory sqlSessionFactory;</span><br><span class="line">@Before </span><br><span class="line">public void init() throws IOException &#123;</span><br><span class="line">	InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">	sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">&#125;	</span><br><span class="line">@Test</span><br><span class="line">public void testMapper()&#123;</span><br><span class="line">	SqlSession session = null;</span><br><span class="line">	try &#123;</span><br><span class="line">		session = sqlSessionFactory.openSession();</span><br><span class="line">		//获取mapper接口的代理对象</span><br><span class="line">		UserMapper userMapper = session.getMapper(UserMapper.class);</span><br><span class="line">		userMapper.deleteUserById(33);//调用代理对象方法</span><br><span class="line">		session.commit();</span><br><span class="line">	&#125; catch (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;finally&#123;</span><br><span class="line">		if(session != null)&#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				session.close();</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">				// TODO: handle exception</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="0X05-动态SQL"><a href="#0X05-动态SQL" class="headerlink" title="0X05 动态SQL"></a>0X05 动态SQL</h3><p>对于SQL的多条件查询，在之前的JDBC还是Spring JdbcTenplant都是通过java代码拼接的方式的（PS：曾经在公司项目有个300多个条件的solr查询，是不是很可怕），这里Mybatis不再在java代码中拼接了，而是提供各种标签方法实现动态拼接SQL。<br>1、条件判定<br>这里直接举个示例看下就知道怎么用了，顺着也再讲一遍Mapper动态代理吧。在mapper映射文件添加动态查询语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByIdAndUsername&quot; parameterType=&quot;top.littlerich.pojo.User&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user</span><br><span class="line">	&lt;where&gt;</span><br><span class="line">		&lt;if test=&quot;id != null&quot;&gt;</span><br><span class="line">			and id=#&#123;id&#125;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">		&lt;if test=&quot;username!=null and username!=&apos;&apos;&quot;&gt;</span><br><span class="line">			and username like &apos;%$&#123;username&#125;%&apos;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">	&lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
 <p>&lt;if test=”条件”&gt;…&lt;/if&gt;这个用法与其它语言的相似；<br>&lt;where&gt;…&lt;/where&gt;标签可以自动帮我们在SQL语句后添加WHERE关键字，并且会自动处理掉第一个AND。<br>在Mapper接口文件中添加方法声明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;User&gt; findUserByIdAndUsername(User user) throws Exception;</span><br></pre></td></tr></table></figure></p>
-<p>最后再写个JUnit测试方法，代码没多大变化就不写了，请参照Mapper动态代理那部分。<br>2、遍历集合<br>向SQL传递数组或List时，Mybatis使用foreach进行遍历。同样先在mapper映射文件中上个示例先：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByIds&quot; parameterType=&quot;java.util.List&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user</span><br><span class="line">	&lt;where&gt;</span><br><span class="line">		&lt;if test=&quot;list!=null and list.size&gt;0&quot;&gt;</span><br><span class="line">			&lt;foreach collection=&quot;list&quot; item=&quot;id&quot; open=&quot; and id in(&quot; close=&quot;)&quot; separator=&quot;,&quot;&gt;</span><br><span class="line">				#&#123;id&#125;</span><br><span class="line">			&lt;/foreach&gt;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">	&lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>&lt;foreach collection=”集合” item=”遍历取出的每个变量” open=”拼接部分的开始内容” close=”拼接部分的结束内容” separator=”拼接的分隔符”&gt;…&lt;/foreach&gt;<br>注意：collection中如果传入的是List集合，那么必须写list，但如果传入的是带有集合属性的pojo对象，那就写pojo中的集合属性名即可。其它字段的名称可以自定义，但同一个变量的话，要保证前后变量名一致。</p>
-<h3 id="0X06-关联查询"><a href="#0X06-关联查询" class="headerlink" title="0X06 关联查询"></a>0X06 关联查询</h3><p>上面所有的代码都已上传了：点击下载源代码</p>
+<p>最后再写个JUnit测试方法，代码没多大变化就不写了，请参照Mapper动态代理那部分。<br>2、遍历集合<br>向SQL传递数组或List时，Mybatis使用foreach进行遍历。如果我们想要写一个这样的SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from user where id in(1, 16, 28, 22)  //Where后条件尽量不要用OR，用IN替代可以大大提高执行效率</span><br></pre></td></tr></table></figure></p>
+<p>那么就需要遍历拼接集合组成in中的字符串，在mapper映射文件中使用foreach标签拼接：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByIds&quot; parameterType=&quot;java.util.List&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user</span><br><span class="line">	&lt;where&gt;</span><br><span class="line">		&lt;if test=&quot;list!=null and list.size&gt;0&quot;&gt;</span><br><span class="line">			&lt;foreach collection=&quot;list&quot; item=&quot;id&quot; open=&quot; and id in(&quot; close=&quot;)&quot; separator=&quot;,&quot;&gt;</span><br><span class="line">				#&#123;id&#125;</span><br><span class="line">			&lt;/foreach&gt;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">	&lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>&lt;foreach collection=”集合” item=”遍历取出的每个变量” open=”循环开始拼接的字符串” close=”循环结束拼接的字符串” separator=”拼接的分隔符”&gt;…&lt;/foreach&gt;<br>注意：如果parameterType中传入的是List集合，那么collection中必须写list，但如果parameterType中传入的是带有集合属性的pojo对象，那collection中就写pojo中的集合属性名即可。其它字段的名称可以自定义，但同一个变量的话，要保证前后变量名一致。</p>
+<h3 id="0X06-关联查询"><a href="#0X06-关联查询" class="headerlink" title="0X06 关联查询"></a>0X06 关联查询</h3><p>表属性之间分为一对一和一对多两种大类，其它各种关联关系都可以由这组合起来。Mybatis处理多表关联查询的策略跟Hibernate的操作很类似，都需要把pojo属性与表字段一一关联起来。<br>1、一对一查询<br>比如查询每个订单所关联的用户信息，一个订单信息只会是一个人下的订单，从查询订单信息出发关联查询用户信息为一对一查询。<br>解决方案一：通过写个pojo对象映射两个表关联后的属性，这样又回到上面操作方式了。<br>解决方案二：通过一个pojo对象带有另一个pojo对象的引用方式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class OrderAndUser &#123;</span><br><span class="line">	private Integer id;</span><br><span class="line">	private Integer userId;</span><br><span class="line">	private String number;</span><br><span class="line">	private Date createtime;</span><br><span class="line">	private String note;</span><br><span class="line">	private User user;  //订单对象中引用了用户对象</span><br><span class="line">	//setter和getter方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来主要还是在Mapper映射文件中pojo对象属性与表字段的映射对应关系，虽然是多表关联查询，但对于输入参数的写法还是一样的，只是返回的结果集变成多张表组合起来的值，所以不再使用resultType，而是使用resultMap对关联查询的中间表进行表字段与类属性的映射填充。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap type=&quot;top.littlerich.pojo.OrderAndUser&quot; id=&quot;orderUserResultMap&quot;&gt;</span><br><span class="line">	&lt;id column=&quot;id&quot; property=&quot;id&quot;/&gt;   &lt;!-- 表中主键对应的pojo中的属性 --&gt;</span><br><span class="line">	&lt;result column=&quot;user_id&quot; property=&quot;userId&quot;/&gt;</span><br><span class="line">	&lt;result column=&quot;number&quot; property=&quot;number&quot;/&gt;</span><br><span class="line">	&lt;result column=&quot;createtime&quot; property=&quot;createtime&quot;/&gt;</span><br><span class="line">	&lt;result column=&quot;note&quot; property=&quot;note&quot;/&gt;</span><br><span class="line">	&lt;association property=&quot;user&quot; javaType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">		&lt;!-- column:user表的主键对应的列  property：user对象中id属性--&gt;</span><br><span class="line">		&lt;id column=&quot;user_id&quot; property=&quot;id&quot;/&gt;</span><br><span class="line">		&lt;result column=&quot;username&quot; property=&quot;username&quot;/&gt;</span><br><span class="line">		&lt;result column=&quot;address&quot; property=&quot;address&quot;/&gt;</span><br><span class="line">	&lt;/association&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br><span class="line">&lt;select id=&quot;findOrdersWithUserResultMap&quot; resultMap=&quot;orderUserResultMap&quot;&gt;</span><br><span class="line">	SELECT o.id, o.user_id, o.number, o.createtime, o.note, u.username, u.address FROM orders o JOIN `user` u ON u.id = o.user_id</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>发现&lt;select&gt;&lt;/select&gt;标签中的返回结果集写法变成resultMap，单独提出了一个&lt;resultMap&gt;…&lt;/resultMap&gt;关系映射作为查询结果集。<br>其中，&lt;id&gt;&lt;/id&gt;标签表示关联查询对象的唯一标识，column表示表中的列名，property表示pojo的属性名；&lt;result&gt;&lt;/result&gt;标签表示表中非主属性与pojo对象属性的映射关系；&lt;association&gt;&lt;/association&gt;表示被关联表的一条数据，property表示pojo对象中的引用对象名，javaType表示pojo对象中的引用对象的类型。</p>
+<p>2、一对多查询<br>假设查询所有用户信息及用户关联的订单信息，用户信息和订单信息为一对多关系。<br>同样还是先写个pojo类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class UserAndOrder &#123;</span><br><span class="line">	private Integer id;</span><br><span class="line">	private String username;</span><br><span class="line">	private String sex;</span><br><span class="line">	private Date birthday;</span><br><span class="line">	private String address;</span><br><span class="line">	private List&lt;Order&gt; orders;  //一个用户对应的多个订单</span><br><span class="line">	//setter和getter方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同样在Mapper映射文件编写查询结果中间表与pojo的映射关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap type=&quot;top.littlerich.pojo.UserAndOrder&quot; id=&quot;userOrderResultMap&quot;&gt;</span><br><span class="line">	&lt;!-- 用户信息映射 --&gt;</span><br><span class="line">	&lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;username&quot; column=&quot;username&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;birthday&quot; column=&quot;birthday&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;sex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;address&quot; column=&quot;address&quot; /&gt;</span><br><span class="line">	&lt;!-- 一对多关联映射 --&gt;</span><br><span class="line">	&lt;collection property=&quot;orders&quot; ofType=&quot;top.littlerich.pojo.Order&quot;&gt;</span><br><span class="line">		&lt;id property=&quot;id&quot; column=&quot;oid&quot; /&gt;</span><br><span class="line">		&lt;result property=&quot;number&quot; column=&quot;number&quot; /&gt;</span><br><span class="line">		&lt;result property=&quot;createtime&quot; column=&quot;createtime&quot; /&gt;</span><br><span class="line">		&lt;result property=&quot;note&quot; column=&quot;note&quot; /&gt;</span><br><span class="line">	&lt;/collection&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br><span class="line">&lt;select id=&quot;getUserOrderList&quot; resultMap=&quot;userOrderResultMap&quot;&gt;</span><br><span class="line">	SELECT u.*, o.id oid, o.number, o.createtime, o.note FROM `user` u LEFT JOIN orders o ON u.id = o.user_id</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>&lt;collection&gt;…&lt;/collection&gt;标签表示返回的是一个集合，property传入pojo的集合属性名，ofType设置集合的泛型类型；最后将&lt;resultMap&gt;的id值传给&lt;select&gt;标签的resultMap即可。  </p>
+<hr>
+<p><em>有个疑问</em><br>做到这里是不是发现问题了，如果五六张表级联查询，那Mybatis既不要层层嵌套，敲起来费劲的狠，所以在一些追求快速开发的项目里，一般都用Hibernate，但要是做自己项目的话，还是用Mybatis慢慢写吧，据说查询效率要比Hibernate高很多。</p>
+<h3 id="0X07-逆向工程"><a href="#0X07-逆向工程" class="headerlink" title="0X07 逆向工程"></a>0X07 逆向工程</h3><p>上面所有的代码都已上传了：点击下载源代码</p>
 <hr>
 <p><em>参考文献</em><br><a href="http://www.mybatis.org/mybatis-3/zh/getting-started.html" title="Mybatis中文文档" target="_blank" rel="noopener">Mybatis官方文档</a></p>
 
@@ -266,7 +275,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CURD</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CRUD</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -279,6 +288,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">动态SQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">关联查询</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -501,6 +514,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
@@ -525,19 +550,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
+                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -553,23 +566,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -582,6 +583,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,10 +618,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Hook进阶</a>
               </li>
              
@@ -626,6 +635,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -764,7 +777,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;h3&gt;&amp;nbsp&amp;nbsp&lt;/h3&gt;很惭愧&lt;br/&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br/&gt;&lt;br/&gt;平常有空就研究记录一些新技术，形成自己的技术文档！&lt;br/&gt;谢谢大家&lt;br/&gt;...</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;h3&gt;&amp;nbsp&amp;nbsp&lt;/h3&gt;很惭愧&lt;br/&gt;只做了一点微小的工作&lt;br/&gt;学习本身就是一种乐趣嘛&lt;br/&gt;&lt;br/&gt;平常有空就研究记录一些新技术，形成自己的技术文档库！&lt;br/&gt;谢谢大家&lt;br/&gt;...</div>
   	  	
     	</section>
     
