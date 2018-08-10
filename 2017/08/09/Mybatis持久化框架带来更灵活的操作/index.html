@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/mybatis.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png">
-<meta property="og:updated_time" content="2018-08-10T14:15:31.571Z">
+<meta property="og:updated_time" content="2018-08-10T14:38:26.507Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta name="twitter:description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQL）更加灵活，SQL调优更加容易。">
@@ -232,7 +232,7 @@
 <p>同样在Mapper映射文件编写查询结果中间表与pojo的映射关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap type=&quot;top.littlerich.pojo.UserAndOrder&quot; id=&quot;userOrderResultMap&quot;&gt;</span><br><span class="line">	&lt;!-- 用户信息映射 --&gt;</span><br><span class="line">	&lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;username&quot; column=&quot;username&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;birthday&quot; column=&quot;birthday&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;sex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">	&lt;result property=&quot;address&quot; column=&quot;address&quot; /&gt;</span><br><span class="line">	&lt;!-- 一对多关联映射 --&gt;</span><br><span class="line">	&lt;collection property=&quot;orders&quot; ofType=&quot;top.littlerich.pojo.Order&quot;&gt;</span><br><span class="line">		&lt;id property=&quot;id&quot; column=&quot;oid&quot; /&gt;</span><br><span class="line">		&lt;result property=&quot;number&quot; column=&quot;number&quot; /&gt;</span><br><span class="line">		&lt;result property=&quot;createtime&quot; column=&quot;createtime&quot; /&gt;</span><br><span class="line">		&lt;result property=&quot;note&quot; column=&quot;note&quot; /&gt;</span><br><span class="line">	&lt;/collection&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br><span class="line">&lt;select id=&quot;getUserOrderList&quot; resultMap=&quot;userOrderResultMap&quot;&gt;</span><br><span class="line">	SELECT u.*, o.id oid, o.number, o.createtime, o.note FROM `user` u LEFT JOIN orders o ON u.id = o.user_id</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
 <p>&lt;collection&gt;…&lt;/collection&gt;标签表示返回的是一个集合，property传入pojo的集合属性名，ofType设置集合的泛型类型；最后将&lt;resultMap&gt;的id值传给&lt;select&gt;标签的resultMap即可。  </p>
 <hr>
-<p><em>有个疑问</em><br>做到这里是不是发现问题了，如果五六张表级联查询，那Mybatis既不要层层嵌套，敲起来费劲的狠，所以在一些追求快速开发的项目里，一般都用Hibernate，但要是做自己项目的话，还是用Mybatis慢慢写吧，据说查询效率要比Hibernate高很多。</p>
+<p><em>※ 有个疑问</em><br>做到这里是不是发现问题了，如果五六张表级联查询，那Mybatis既不要层层嵌套，敲起来费劲的狠，所以在一些追求快速开发的项目里，一般都用Hibernate，但要是开发自己项目的话，还是用Mybatis慢慢写吧，据说查询效率要比Hibernate高很多。</p>
 <h3 id="0X07-逆向工程"><a href="#0X07-逆向工程" class="headerlink" title="0X07 逆向工程"></a>0X07 逆向工程</h3><p>上面所有的代码都已上传了：点击下载源代码</p>
 <hr>
 <p><em>参考文献</em><br><a href="http://www.mybatis.org/mybatis-3/zh/getting-started.html" title="Mybatis中文文档" target="_blank" rel="noopener">Mybatis官方文档</a></p>
@@ -550,27 +550,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -598,6 +586,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -611,10 +627,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,19 +650,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
