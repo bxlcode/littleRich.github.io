@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/mybatis.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png">
-<meta property="og:updated_time" content="2018-08-10T14:38:26.507Z">
+<meta property="og:updated_time" content="2018-08-11T03:38:56.914Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta name="twitter:description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQL）更加灵活，SQL调优更加容易。">
@@ -233,7 +233,9 @@
 <p>&lt;collection&gt;…&lt;/collection&gt;标签表示返回的是一个集合，property传入pojo的集合属性名，ofType设置集合的泛型类型；最后将&lt;resultMap&gt;的id值传给&lt;select&gt;标签的resultMap即可。  </p>
 <hr>
 <p><em>※ 有个疑问</em><br>做到这里是不是发现问题了，如果五六张表级联查询，那Mybatis既不要层层嵌套，敲起来费劲的狠，所以在一些追求快速开发的项目里，一般都用Hibernate，但要是开发自己项目的话，还是用Mybatis慢慢写吧，据说查询效率要比Hibernate高很多。</p>
-<h3 id="0X07-逆向工程"><a href="#0X07-逆向工程" class="headerlink" title="0X07 逆向工程"></a>0X07 逆向工程</h3><p>上面所有的代码都已上传了：点击下载源代码</p>
+<h3 id="0X07-逆向工程"><a href="#0X07-逆向工程" class="headerlink" title="0X07 逆向工程"></a>0X07 逆向工程</h3><p>正如上面所说的，框架好是好，就是重复写类似代码很不爽，所以Mybatis官方就提供一个mapper自动生成的工具，用来生成po类和mapper映射文件。根据数据库表信息逆向生成mapper接口和映射文件（单表增删改查）和po类，这个过程被称为逆向工程（原来并不是程序反编译的意思[擦汗]）。<br>这个逆向工程功能我不是很喜欢用，就不写了吧，以后有更好的技巧再赘述哈。（PS：代码敲久了还是走动一下，最近眼睛红血丝暴起肿痛）</p>
+<h3 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h3><p>做事情要善事始终，最后来个总结咯。说了这么久的Mybatis，Hibernate就有些不高兴了，其实这个两个各有优势，没有孰好孰坏，只是看适合项目场景吧。Mybatis用法上和Hibernate有些相似的地方，但它并不是一个完全的ORM框架，因为Mybatis需要开发者自己编写SQL语句。这恰恰是我更喜欢Mybatis的原因，我觉的这样可操作性更强些。</p>
+<p>上面所有的代码都已上传了：<a href="https://download.csdn.net/download/u012308094/10597162" title="Mybatis入门Demo程序" target="_blank" rel="noopener">点击下载源代码</a></p>
 <hr>
 <p><em>参考文献</em><br><a href="http://www.mybatis.org/mybatis-3/zh/getting-started.html" title="Mybatis中文文档" target="_blank" rel="noopener">Mybatis官方文档</a></p>
 
@@ -514,26 +516,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -550,27 +532,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,6 +557,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -610,23 +616,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -650,7 +640,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
