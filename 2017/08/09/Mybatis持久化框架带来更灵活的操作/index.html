@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/mybatis.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180809/framework.png">
-<meta property="og:updated_time" content="2018-08-11T03:38:56.914Z">
+<meta property="og:updated_time" content="2018-08-11T07:15:05.118Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis持久化框架带来更灵活的操作">
 <meta name="twitter:description" content="摘要：原生JDBC大家都很熟悉，但是问题却很明显。比如没有数据库连接池，频繁的数据库连接释放造成系统资源浪费，还有硬编码问题等。相比于Hibernate，Mybatis更轻量级，因为Hibernate封装性更好，连SQL语句都不要我们写。但其实手动编写SQL相比Hibernate自动生成HQL（Hibernate SQL）更加灵活，SQL调优更加容易。">
@@ -220,7 +220,7 @@
 </mapper></li>
 </ul>
 <p>注意：如果Mapper.xml文件配置好了，按住Ctrl键点击resource后面的值是可以跳转过去的。<br>4、编写Junit测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private SqlSessionFactory sqlSessionFactory;</span><br><span class="line">@Before </span><br><span class="line">public void init() throws IOException &#123;</span><br><span class="line">	InputStream resource = Resources.getResourceAsStream(&quot;SqlMapConfig.xml&quot;);</span><br><span class="line">	sqlSessionFactory = new SqlSessionFactoryBuilder().build(resource);</span><br><span class="line">&#125;	</span><br><span class="line">@Test</span><br><span class="line">public void testMapper()&#123;</span><br><span class="line">	SqlSession session = null;</span><br><span class="line">	try &#123;</span><br><span class="line">		session = sqlSessionFactory.openSession();</span><br><span class="line">		//获取mapper接口的代理对象</span><br><span class="line">		UserMapper userMapper = session.getMapper(UserMapper.class);</span><br><span class="line">		userMapper.deleteUserById(33);//调用代理对象方法</span><br><span class="line">		session.commit();</span><br><span class="line">	&#125; catch (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;finally&#123;</span><br><span class="line">		if(session != null)&#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				session.close();</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">				// TODO: handle exception</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="0X05-动态SQL"><a href="#0X05-动态SQL" class="headerlink" title="0X05 动态SQL"></a>0X05 动态SQL</h3><p>对于SQL的多条件查询，在之前的JDBC还是Spring JdbcTenplant都是通过java代码拼接的方式的（PS：曾经在公司项目有个300多个条件的solr查询，是不是很可怕），这里Mybatis不再在java代码中拼接了，而是提供各种标签方法实现动态拼接SQL。<br>1、条件判定<br>这里直接举个示例看下就知道怎么用了，顺着也再讲一遍Mapper动态代理吧。在mapper映射文件添加动态查询语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByIdAndUsername&quot; parameterType=&quot;top.littlerich.pojo.User&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user</span><br><span class="line">	&lt;where&gt;</span><br><span class="line">		&lt;if test=&quot;id != null&quot;&gt;</span><br><span class="line">			and id=#&#123;id&#125;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">		&lt;if test=&quot;username!=null and username!=&apos;&apos;&quot;&gt;</span><br><span class="line">			and username like &apos;%$&#123;username&#125;%&apos;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">	&lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X05-动态SQL"><a href="#0X05-动态SQL" class="headerlink" title="0X05 动态SQL"></a>0X05 动态SQL</h3><p>对于SQL的多条件查询，在之前的JDBC还是Spring JdbcTenplant都是通过java代码拼接的方式的（PS：曾经在公司项目有个300多个条件的solr查询，是不是很可怕），这里Mybatis不再在java代码中拼接了，而是提供各种标签方法实现动态拼接SQL，遇到动态拼接SQL的情况，就要注意会不会引起SQL注入的问题，这里暂且不谈。<br>1、条件判定<br>这里直接举个示例看下就知道怎么用了，顺着也再讲一遍Mapper动态代理吧。在mapper映射文件添加动态查询语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByIdAndUsername&quot; parameterType=&quot;top.littlerich.pojo.User&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user</span><br><span class="line">	&lt;where&gt;</span><br><span class="line">		&lt;if test=&quot;id != null&quot;&gt;</span><br><span class="line">			and id=#&#123;id&#125;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">		&lt;if test=&quot;username!=null and username!=&apos;&apos;&quot;&gt;</span><br><span class="line">			and username like &apos;%$&#123;username&#125;%&apos;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">	&lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
 <p>&lt;if test=”条件”&gt;…&lt;/if&gt;这个用法与其它语言的相似；<br>&lt;where&gt;…&lt;/where&gt;标签可以自动帮我们在SQL语句后添加WHERE关键字，并且会自动处理掉第一个AND。<br>在Mapper接口文件中添加方法声明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;User&gt; findUserByIdAndUsername(User user) throws Exception;</span><br></pre></td></tr></table></figure></p>
 <p>最后再写个JUnit测试方法，代码没多大变化就不写了，请参照Mapper动态代理那部分。<br>2、遍历集合<br>向SQL传递数组或List时，Mybatis使用foreach进行遍历。如果我们想要写一个这样的SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from user where id in(1, 16, 28, 22)  //Where后条件尽量不要用OR，用IN替代可以大大提高执行效率</span><br></pre></td></tr></table></figure></p>
 <p>那么就需要遍历拼接集合组成in中的字符串，在mapper映射文件中使用foreach标签拼接：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findUserByIds&quot; parameterType=&quot;java.util.List&quot; resultType=&quot;top.littlerich.pojo.User&quot;&gt;</span><br><span class="line">	select * from user</span><br><span class="line">	&lt;where&gt;</span><br><span class="line">		&lt;if test=&quot;list!=null and list.size&gt;0&quot;&gt;</span><br><span class="line">			&lt;foreach collection=&quot;list&quot; item=&quot;id&quot; open=&quot; and id in(&quot; close=&quot;)&quot; separator=&quot;,&quot;&gt;</span><br><span class="line">				#&#123;id&#125;</span><br><span class="line">			&lt;/foreach&gt;</span><br><span class="line">		&lt;/if&gt;</span><br><span class="line">	&lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
@@ -233,8 +233,8 @@
 <p>&lt;collection&gt;…&lt;/collection&gt;标签表示返回的是一个集合，property传入pojo的集合属性名，ofType设置集合的泛型类型；最后将&lt;resultMap&gt;的id值传给&lt;select&gt;标签的resultMap即可。  </p>
 <hr>
 <p><em>※ 有个疑问</em><br>做到这里是不是发现问题了，如果五六张表级联查询，那Mybatis既不要层层嵌套，敲起来费劲的狠，所以在一些追求快速开发的项目里，一般都用Hibernate，但要是开发自己项目的话，还是用Mybatis慢慢写吧，据说查询效率要比Hibernate高很多。</p>
-<h3 id="0X07-逆向工程"><a href="#0X07-逆向工程" class="headerlink" title="0X07 逆向工程"></a>0X07 逆向工程</h3><p>正如上面所说的，框架好是好，就是重复写类似代码很不爽，所以Mybatis官方就提供一个mapper自动生成的工具，用来生成po类和mapper映射文件。根据数据库表信息逆向生成mapper接口和映射文件（单表增删改查）和po类，这个过程被称为逆向工程（原来并不是程序反编译的意思[擦汗]）。<br>这个逆向工程功能我不是很喜欢用，就不写了吧，以后有更好的技巧再赘述哈。（PS：代码敲久了还是走动一下，最近眼睛红血丝暴起肿痛）</p>
-<h3 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h3><p>做事情要善事始终，最后来个总结咯。说了这么久的Mybatis，Hibernate就有些不高兴了，其实这个两个各有优势，没有孰好孰坏，只是看适合项目场景吧。Mybatis用法上和Hibernate有些相似的地方，但它并不是一个完全的ORM框架，因为Mybatis需要开发者自己编写SQL语句。这恰恰是我更喜欢Mybatis的原因，我觉的这样可操作性更强些。</p>
+<h3 id="0X07-逆向工程"><a href="#0X07-逆向工程" class="headerlink" title="0X07 逆向工程"></a>0X07 逆向工程</h3><p>正如上面所说的，框架好是好，就是重复写类似代码很不爽，所以Mybatis官方就提供一个mapper自动生成的工具，用来生成po类和mapper映射文件。根据数据库表信息逆向生成mapper接口和映射文件（单表增删改查）和po类，这个过程被称为逆向工程（原来并不是程序反编译的意思[擦汗]）。注意:自动生成工具生成的方式是追加而不是覆盖,所以不可以重复生成,重复生成的文件有问题，如果想重复生成将原来生成的文件删除。<br>这个逆向工程功能我不是很喜欢用，就不写了吧，以后有更好的技巧再赘述哈。（PS：代码敲久了还是走动一下，最近眼睛红血丝暴起肿痛）</p>
+<h3 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h3><p>做事情要善事始终，最后来个总结咯。说了这么久的Mybatis，Hibernate就有些不高兴了，其实这两个各有优势，没有孰好孰坏，只是看适合项目场景吧。Mybatis用法上和Hibernate有些相似的地方，但它并不是一个完全的ORM框架，因为Mybatis需要开发者自己编写SQL语句。这恰恰是我更喜欢Mybatis的原因，我觉的这样可操作性更强些。</p>
 <p>上面所有的代码都已上传了：<a href="https://download.csdn.net/download/u012308094/10597162" title="Mybatis入门Demo程序" target="_blank" rel="noopener">点击下载源代码</a></p>
 <hr>
 <p><em>参考文献</em><br><a href="http://www.mybatis.org/mybatis-3/zh/getting-started.html" title="Mybatis中文文档" target="_blank" rel="noopener">Mybatis官方文档</a></p>
@@ -516,15 +516,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -544,6 +540,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
               </li>
              
@@ -557,14 +565,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -596,23 +596,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -640,10 +624,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
@@ -653,6 +633,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
              
               <li class="article-tag-list-item">
