@@ -6,19 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://littleRich.github.io">
-  <title>Category: 大数据开发 | 物联网科研团队</title>
+  <title>二级缓存终结者Redis用起来 | 物联网科研团队</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="专心致志，方能成功">
-<meta name="keywords" content="Android,移动安全,大数据,Hadoop,Spark,HDFS,Hive,分布式,数据分析,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,Java,后台,逆向分析,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="物联网科研团队">
-<meta property="og:url" content="http://littleRich.github.io/categories/大数据开发/index.html">
+  <meta name="description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是">
+<meta name="keywords" content="编译安装,Jedis,Redis持久化,主从复制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二级缓存终结者Redis用起来">
+<meta property="og:url" content="http://littleRich.github.io/2017/08/14/二级缓存终结者Redis用起来/index.html">
 <meta property="og:site_name" content="物联网科研团队">
-<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Myba">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/gcc.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/make.jpg">
+<meta property="og:updated_time" content="2018-08-13T14:59:38.221Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="物联网科研团队">
-<meta name="twitter:description" content="专心致志，方能成功">
+<meta name="twitter:title" content="二级缓存终结者Redis用起来">
+<meta name="twitter:description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Myba">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/gcc.jpg">
   
     <link rel="alternative" href="/atom.xml" title="物联网科研团队" type="application/atom+xml">
   
@@ -170,75 +174,212 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-二级缓存终结者Redis用起来" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/18/Hadoop环境搭建/" class="archive-article-date">
-  	<time datetime="2017-09-18T12:27:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-18</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/18/Hadoop环境搭建/">Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建</a>
+    <h1 class="article-title" itemprop="name">
+      二级缓存终结者Redis用起来
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/08/14/二级缓存终结者Redis用起来/" class="archive-article-date">
+  	<time datetime="2017-08-14T07:04:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Mybatis框架都有二级缓存功能，但Redis的优异性能使开发者纷纷丢弃框架原有的二级缓存功能而集成Redis进行缓存。<br><a id="more"></a></p>
+<h3 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h3><p>作为非关系型数据库最常用的数据库之一，Redis键值对数据库在内容缓存处理大量数据的高访问负载。它是由意大利一家创业公司于2009年用C语言开发的高性能键值对数据库，公司创始人不满足只将Redis用于自家产品上，决心开源发布让更多的人使用。谁都没想到，Redis短短几年就拥有了庞大的用户群体。</p>
+<h3 id="0X01-编译安装"><a href="#0X01-编译安装" class="headerlink" title="0X01 编译安装"></a>0X01 编译安装</h3><p>Redis的Linux运行环境比window系统上快很多，实际项目场景也大多部署在Linux上，所以这里我以Linux上的为例。<br>在Linux上安装Redis需要先将官网下载的源码进行编译，前言说到Redis是用C语言开发，编译依赖gcc环境，所以先检查是否有gcc编译环境，没有自行百度安装gcc吧。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/gcc.jpg" alt="检查是否已安装GCC"><br>1、官网源码下载<br>官网上有各个Redis版本（<a href="http://download.redis.io/releases/" title="Redis官网版本" target="_blank" rel="noopener">点击下载</a>），将其拷贝到/usr/local下再解压，进入解压缩的文件夹执行make编译命令，半分钟就可编译完成。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br><span class="line">sudo wget http://download.redis.io/releases/redis-stable.tar.gz  //可以换成其它版本</span><br><span class="line">sudo tar xzf redis-stable.tar.gz</span><br><span class="line">cd redis-stable</span><br><span class="line">sudo make   //编译</span><br><span class="line">sudo make PREFIX=/usr/local/redis install  //安装到指定目录</span><br></pre></td></tr></table></figure></p>
+<p>编译好后安装到指定目录位置，这里示例安装到/usr/local/redis/文件下，安装好后，自动创建的redis文件夹下有个bin文件夹，里面就是Redis的启动程序,这样Redis就算安装好了。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/make.jpg" alt="Redis安装目录bin下的文件列表"><br>另外为了便于后续的开发，将源码中Redis配置文件拷贝到安装目录下，源码目录下有一份配置文件redis.conf，将其拷贝到安装路径下,在该文件里改一些Redis的配置参数，比如运行端口等。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /usr/local/redis-stable/redis.conf /usr/local/redis/bin</span><br></pre></td></tr></table></figure></p>
+<p>2、启动Redis服务器，打开一个shell终端进入Redis安装目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/redis-server bin/redis.conf  //启动时可指定该配置文件，否者加载默认配置文件</span><br></pre></td></tr></table></figure></p>
+<p>3、启动Redis客户端连接Redis服务端，再打开一个shell终端进入Redis安装目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ bin/redis-cli -h 192.168.1.116 -p 6379  //不带连接参数则默认连接本机的Redis</span><br><span class="line">redis&gt; ping</span><br><span class="line">PONG</span><br></pre></td></tr></table></figure></p>
+<p>上面启动Redis服务器是在shell终端窗口启动的，一旦命令窗口关闭则redis-server程序也跟着关了，所以一般不推荐这么启动。其实Redis提供了后台模式的启动方式，在上面拷贝过来的redis.conf配置文件修改下就可转为后台模式启动。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># By default Redis does not run as a daemon. Use &apos;yes&apos; if you need it.</span><br><span class="line"># Note that Redis will write a pid file in /var/run/redis.pid when daemonized.</span><br><span class="line">daemonize yes //redis.conf中默认是关闭的</span><br></pre></td></tr></table></figure></p>
+<p>这样以后启动Redis窗口就不会弹出千层糕的图案即是后台启动方式。<br>4、关闭redis。强制终止Redis进程可能导致Redis持久化数据丢失，正确停止Redis的方式应该是向Redis发送shutdown命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-cli shutdown  //bin目录下执行</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X02-Jedis"><a href="#0X02-Jedis" class="headerlink" title="0X02 Jedis"></a>0X02 Jedis</h3><p>Jedis和其它数据库类似，除了提供命令行的操作之外，还提供各种语言的开发接口。Redis官网推荐使用Jedis和Redisson，但企业中用的最多要数jedis，我也只用过Jedis，所以就讲讲Jedis吧。<br>Jedis托管在github上（<a href="https://github.com/xetorthio/jedis" title="Jedis源码托管" target="_blank" rel="noopener">点击前往</a>）</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝咖啡<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/aboutme/wechatpay.png">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Hadoop环境搭建</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">编译安装</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式/伪分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Jedis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Redis持久化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">主从复制</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/大数据开发//" class="article-tag-list-link color1">大数据开发</a>
+        			<a href="/categories/J2EE//" class="article-tag-list-link color5">J2EE</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://littleRich.github.io/2017/08/14/二级缓存终结者Redis用起来/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/09/18/Hadoop环境搭建/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/08/09/Mybatis持久化框架带来更灵活的操作/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Mybatis持久化框架带来更灵活的操作</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -262,10 +403,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
 		root: "/",
