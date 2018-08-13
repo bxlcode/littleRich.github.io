@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/gcc.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/make.jpg">
-<meta property="og:updated_time" content="2018-08-13T12:19:51.307Z">
+<meta property="og:updated_time" content="2018-08-13T14:20:08.002Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="二级缓存终结者Redis用起来">
 <meta name="twitter:description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Myba">
@@ -197,8 +197,12 @@
         <p>摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Mybatis框架都有二级缓存功能，但Redis的优异性能使开发者纷纷丢弃框架原有的二级缓存功能而集成Redis进行缓存。<br><a id="more"></a></p>
 <h3 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h3><p>作为非关系型数据库最常用的数据库之一，Redis键值对数据库在内容缓存处理大量数据的高访问负载。它是由意大利一家创业公司于2009年用C语言开发的高性能键值对数据库，公司创始人不满足只将Redis用于自家产品上，决心开源发布让更多的人使用。谁都没想到，Redis短短几年就拥有了庞大的用户群体。</p>
 <h3 id="0X01-编译安装"><a href="#0X01-编译安装" class="headerlink" title="0X01 编译安装"></a>0X01 编译安装</h3><p>Redis的Linux运行环境比window系统上快很多，实际项目场景也大多部署在Linux上，所以这里我以Linux上的为例。<br>在Linux上安装Redis需要先将官网下载的源码进行编译，前言说到Redis是用C语言开发，编译依赖gcc环境，所以先检查先是否有gcc编译环境，没有自行百度安装gcc吧。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/gcc.jpg" alt="检查是否已安装GCC"><br>1、官网源码下载<br>官网上有各个Redis版本（<a href="http://download.redis.io/releases/" title="Redis官网版本" target="_blank" rel="noopener">点击下载</a>），将其拷贝到/usr/local下再解压，进入解压缩的文件夹执行make编译命令，半分钟就可编译完成。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br><span class="line">sudo wget http://download.redis.io/releases/redis-stable.tar.gz  //可以换成其它版本</span><br><span class="line">sudo tar xzf redis-stable.tar.gz</span><br><span class="line">cd redis-stable</span><br><span class="line">sudo make   //编译</span><br><span class="line">sudo make PREFIX=/usr/local/redis install  //安装到指定目录</span><br></pre></td></tr></table></figure></p>
-<p>编译好后安装到指定目录位置，这里示例安装到/usr/local/redis/文件下，安装好后，自动创建的redis文件夹下有个bin文件夹，里面就是Redis的启动程序。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/make.jpg" alt="Redis安装目录bin下的文件列表"></p>
-
+<p>编译好后安装到指定目录位置，这里示例安装到/usr/local/redis/文件下，安装好后，自动创建的redis文件夹下有个bin文件夹，里面就是Redis的启动程序,这样Redis就算安装好了。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/make.jpg" alt="Redis安装目录bin下的文件列表"><br>另外为了便于后续的开发，将源码中Redis配置文件拷贝到安装目录下，源码目录下有一份配置文件redis-conf，将其拷贝到安装路径下,在该文件里该一些Redis的配置参数，比如运行端口等。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /usr/local/redis-stable/redis.conf /usr/local/redis/bin</span><br></pre></td></tr></table></figure></p>
+<p>2、启动Redis服务器，打开一个shell终端进入Redis安装目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/redis-server bin/redis.conf  //启动时可指定该配置文件，否者加载默认配置文件</span><br></pre></td></tr></table></figure></p>
+<p>3、启动Redis客户端连接Redis服务端，再打开一个shell终端进入Redis安装目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ bin/redis-cli -h 192.168.1.116 -p 6379  //不带连接参数则默认连接本机的Redis</span><br><span class="line">redis&gt; ping</span><br><span class="line">PONG</span><br></pre></td></tr></table></figure></p>
+<p>上面启动Redis服务器是在shell终端窗口启动的，一旦命令窗口关闭则redis-server程序也跟着关了，所以一般不推荐这么启动。其实Redis提供了后台模式的启动方式，在上面拷贝过来的redis.conf配置文件修改下就可转为后台模式启动。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># By default Redis does not run as a daemon. Use &apos;yes&apos; if you need it.</span><br><span class="line"># Note that Redis will write a pid file in /var/run/redis.pid when daemonized.</span><br><span class="line">daemonize yes //redis.conf中默认是关闭的</span><br></pre></td></tr></table></figure></p>
+<p>这样以后启动Redis窗口就不会弹出千层糕的图案即是后台启动方式。<br>4、关闭redis。强制终止Redis进程可能导致Redis持久化数据丢失，正确停止Redis的方式应该是向Redis发送shutdown命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-cli shutdown  //bin目录下执行</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X02-Jedis"><a href="#0X02-Jedis" class="headerlink" title="0X02 Jedis"></a>0X02 Jedis</h3>
       
 
       
@@ -468,10 +472,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -492,6 +492,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
               </li>
              
@@ -505,46 +517,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CRUD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -568,6 +540,50 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
@@ -584,19 +600,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -613,10 +621,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
