@@ -18,7 +18,8 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/gcc.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/make.jpg">
-<meta property="og:updated_time" content="2018-08-14T03:12:21.604Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/hash.png">
+<meta property="og:updated_time" content="2018-08-14T08:47:45.083Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="二级缓存终结者Redis用起来">
 <meta name="twitter:description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Myba">
@@ -206,7 +207,9 @@
 <p>示例代码中把连接池给关闭了，实际项目开发中一般集成Spring，把JedisPool连接池和Jedis连接的生命周期都交给Spring管理，不用我们显示关闭。</p>
 <hr>
 <p><em>友情提示</em><br>Redis默认状态是守护状态下运行，只能本地连接，通过Jedis远程连接Redis服务器的时候一般会报JedisDataException：DENIED Redis is running in protected mode because protected mode is enabled, no bind address was specified异常。在这种情况下，还是要修改redis.conf配置文件就可以从外部连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protected mode no  //将守护模式关闭，并重新启动</span><br></pre></td></tr></table></figure></p>
-<h3 id="0X03-Redis数据类型"><a href="#0X03-Redis数据类型" class="headerlink" title="0X03 Redis数据类型"></a>0X03 Redis数据类型</h3>
+<h3 id="0X03-Redis数据类型"><a href="#0X03-Redis数据类型" class="headerlink" title="0X03 Redis数据类型"></a>0X03 Redis数据类型</h3><p>Redis中支持存储的数据类型有6个：String字符串、list列表、hash散列、set集合、zset有序集合，主要知道这个数据类型的使用场景就行了，具体各种使用命令怕是有点多，要用的时候再查下API文档吧（<a href="https://download.csdn.net/download/u012308094/10603288" title="Redis命令文档" target="_blank" rel="noopener">猛戳下载</a>）。<br>1、redis string简单动态字符串<br>redis中没有使用C语言的字符数组来表示字符串（遇到‘\0’字符表示字符串结束），而是自定义一个数据结构SDS（simple dynamic string）即简单动态字符串。<br>在redis源码中src目录下的sds.h头文件中定义SDS源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct sdshdr &#123;</span><br><span class="line">    //字符串长度</span><br><span class="line">	unsigned int len;</span><br><span class="line">	//buf数组中未使用的字节数量</span><br><span class="line">    unsigned int free;</span><br><span class="line">	//用于保存字符串</span><br><span class="line">    char buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>redis的字符串可以存储任何类型的数据，因为任何类型数据都可以表示成二进制，sds结构中的char buf[]就是存储了二进制数据。<br>2、hash<br>虽然string可以存任何类型的数据，但是在实际使用场景中还是有短板的。假设有User对象以JSON序列化的形式存储到Redis中，User对象有id，username、password、age、name等属性，存储的过程如下：User对象–&gt;json(string)–&gt;redis，如果在业务上只是更新age属性，其他的属性并不做更新我应该怎么做呢？ 如果仍然采用上边的方法在传输、处理时会造成资源浪费。<br>hash散列实现了字段和字段值的映射，注意字段值只能是字符串类型。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180814/hash.png" alt="hash数据结构"><br>一般应用于将redis作为分布式缓存,存储数据库中的数据对象。<br>3、list<br>列表类型（list）可以存储一个有序的字符串列表，常用的操作是向列表两端添加元素，或者获得列表的某一个片段。<br>redis中使用的是双向循环链表来实现的list,如果只从一端操作，可理解为栈结构。<br>4、set<br>和数学上的集合一样，集合中的每个元素无序不能重复，Redis内部是使用值为空的散列表实现，所有这些操作的时间复杂度都为0(1)。<br>Redis还提供了多个集合之间的交集、并集、差集的运算。<br>5、sorted set<br>在集合类型的基础上有序集合类型为集合中的每个元素都关联一个分数，这使得我们不仅可以完成插入、删除和判断元素是否存在在集合中，还能够获得分数最高或最低的前N个元素、获取指定分数范围内的元素等与分数有关的操作。</p>
+<h3 id="0X04-RDB持久化"><a href="#0X04-RDB持久化" class="headerlink" title="0X04 RDB持久化"></a>0X04 RDB持久化</h3>
       
 
       
@@ -488,15 +491,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -505,22 +500,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -540,19 +519,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -576,6 +551,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
@@ -589,22 +596,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,7 +619,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -645,6 +644,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
             
             <div class="clearfix"></div>
