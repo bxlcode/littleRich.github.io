@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/selector.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg">
-<meta property="og:updated_time" content="2018-08-17T07:37:54.151Z">
+<meta property="og:updated_time" content="2018-08-17T07:51:20.029Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="手把手教你写网络爬虫">
 <meta name="twitter:description" content="摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑。">
@@ -196,10 +196,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑。<br><a id="more"></a></p>
-<h3 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h3><p>很多人写爬虫程序都会在选语言上有疑问，其实大多数语言都能写爬虫，主要还是好不好写的问题。爬虫普遍还是用Python，不单单因为Python十几行能解决Java几十行代码写爬虫，还应为Python还有很多爬虫相关的依赖库，功能强大还好用，下面我也会介绍到。<br>Python语言是出了名的易学，有其它语言基础的就直接看看Python的数据结构：list、dict、tuple、set。我推荐个简单的快速入门教程：《<a href="https://download.csdn.net/download/u012308094/10610414" title="Python快速入门魔力手册" target="_blank" rel="noopener">Python快速入门魔力手册</a>》<br>Python的IDE工具还是用Pycharm，激活就按如下图就行了。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg" alt="pycharm5激活方式"></p>
+<h3 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h3><p>很多人写爬虫程序都会在选语言上有疑问，其实大多数语言都能写爬虫，主要还是好不好写的问题。爬虫普遍还是用Python，不单单因为Python十几行能解决Java几十行代码写爬虫，还应为Python还有很多爬虫相关的依赖库，功能强大还好用，下面我也会介绍到。<br>Python语言是出了名的易学，有其它语言基础的就直接看看Python的数据结构：list、dict、tuple、set。我推荐个简单的快速入门教程：《<a href="https://download.csdn.net/download/u012308094/10610414" title="Python快速入门魔力手册" target="_blank" rel="noopener">Python快速入门魔力手册</a>》<br>Python的IDE工具还是用Pycharm，激活就按如下图就行了，输入<em><a href="http://15.idea.lanyus.com/" target="_blank" rel="noopener">http://15.idea.lanyus.com/</a></em>。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg" alt="pycharm5激活方式"></p>
 <h3 id="0X01-网页元素选取"><a href="#0X01-网页元素选取" class="headerlink" title="0X01 网页元素选取"></a>0X01 网页元素选取</h3><p>如何唯一确定网页上标签的位置才能找到对应的数据，常用的有两种方法：<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/selector.jpg" alt="获取标签位置"><br>1、xpath方式<br>还记得大学学过的数据结构么？可以把一个网页看成以html标签为根节点的树，网页中任一标签都可以从根节点开始遍历到，xpath就表示从根节点到目标标签节点的路径。如下定位到一个列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/html/body/div[1]/ul</span><br></pre></td></tr></table></figure></p>
-<p>2、selector方式<br>如果说xpath就是按路径找，那么selector就是按长的模样找。它是按CSS样式来确定路径上的关键节点（带有CSS选择器的标签就是关键节点）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">body &gt; div.header &gt; img     //&quot;&gt;&quot;表示直接子节点，如果是“”空格表示任意子节点</span><br></pre></td></tr></table></figure></p>
-<h3 id="0X02-BeautifulSoup解析网页"><a href="#0X02-BeautifulSoup解析网页" class="headerlink" title="0X02 BeautifulSoup解析网页"></a>0X02 BeautifulSoup解析网页</h3><p>先要下载安装BeautifulSoup库并导入到项目中。只要BeautifulSoup传入网页源码就能解析网页中的元素。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg" alt="BeautifulSoup解析网页"><br>BeautifulSoup传入的第一参数就是要解析的网页，第二个参数就是解析网页所需的规则，BeautifulSoup有多个规则：html.parser、lxml HTML、lxml XML、html5lib。<br>注意：Beautiful只能用selector定位元素位置。</p>
+<p>2、selector方式<br>如果说xpath就是按路径找，那么selector就是按长的模样找。它是按CSS样式来确定路径上的关键节点（带有CSS选择器的标签就是关键节点）。selector除了xpath的路径信息，还多了长的样子来更快速的定位。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">body &gt; div.header &gt; img     //&quot;&gt;&quot;表示直接子节点，如果是“”空格表示任意子节点</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X02-BeautifulSoup解析网页"><a href="#0X02-BeautifulSoup解析网页" class="headerlink" title="0X02 BeautifulSoup解析网页"></a>0X02 BeautifulSoup解析网页</h3><p>先要下载安装BeautifulSoup库并导入到项目中。只要往BeautifulSoup传入网页源码就能解析网页中的元素。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg" alt="BeautifulSoup解析网页"><br>BeautifulSoup传入的第一参数就是要解析的网页，第二个参数就是解析网页所需的规则，BeautifulSoup有多个规则：html.parser、lxml HTML、lxml XML、html5lib。<br>注意：Beautiful只能用selector定位元素位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Soup = BeautifulSoup(f.read(), &apos;html.parser&apos;)</span><br><span class="line">titles = Soup.select(&apos;ul &gt; li &gt; div.article-info &gt; h3 &gt; a&apos;)</span><br><span class="line">text = title.get_text()     //获取标签间文本数据</span><br><span class="line">title.get(&apos;href&apos;)           //获取标签内的属性值</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -470,6 +470,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
@@ -494,34 +498,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
               </li>
              
@@ -542,6 +518,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -555,6 +543,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -590,6 +590,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
@@ -611,22 +627,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
               </li>
              
               <li class="article-tag-list-item">
