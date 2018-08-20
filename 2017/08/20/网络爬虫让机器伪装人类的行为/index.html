@@ -6,19 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://littleRich.github.io">
-  <title>Archives: 2017/9 | 物联网科研团队</title>
+  <title>网络爬虫让机器伪装人类的行为 | 物联网科研团队</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="专心致志，方能成功">
-<meta name="keywords" content="Android,移动安全,大数据,Hadoop,Spark,HDFS,Hive,分布式,数据分析,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,Java,后台,逆向分析,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="物联网科研团队">
-<meta property="og:url" content="http://littleRich.github.io/archives/2017/09/index.html">
+  <meta name="description" content="摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑，找出网页规律技巧。">
+<meta name="keywords" content="爬虫原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络爬虫让机器伪装人类的行为">
+<meta property="og:url" content="http://littleRich.github.io/2017/08/20/网络爬虫让机器伪装人类的行为/index.html">
 <meta property="og:site_name" content="物联网科研团队">
-<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:description" content="摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑，找出网页规律技巧。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/selector.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg">
+<meta property="og:updated_time" content="2018-08-20T11:30:02.820Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="物联网科研团队">
-<meta name="twitter:description" content="专心致志，方能成功">
+<meta name="twitter:title" content="网络爬虫让机器伪装人类的行为">
+<meta name="twitter:description" content="摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑，找出网页规律技巧。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg">
   
     <link rel="alternative" href="/atom.xml" title="物联网科研团队" type="application/atom+xml">
   
@@ -170,75 +175,198 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-网络爬虫让机器伪装人类的行为" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/18/Hadoop环境搭建/" class="archive-article-date">
-  	<time datetime="2017-09-18T12:27:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-18</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/18/Hadoop环境搭建/">Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建</a>
+    <h1 class="article-title" itemprop="name">
+      网络爬虫让机器伪装人类的行为
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/08/20/网络爬虫让机器伪装人类的行为/" class="archive-article-date">
+  	<time datetime="2017-08-20T04:57:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑，找出<strong>网页规律技巧</strong>。<br><a id="more"></a></p>
+<h3 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h3><p>很多人写爬虫程序都会在选语言上有疑问，其实大多数语言都能写爬虫来模拟我们平常访问HTTP请求响应的过程，主要还是好不好写的问题。爬虫普遍还是用Python，不单单因为Python十几行能解决Java几十行代码写爬虫，还应为Python还有很多爬虫相关的依赖库，功能强大还好用，下面我也会介绍到。<br>Python语言是出了名的易学，有其它语言基础的就直接看看Python的数据结构：list、dict、tuple、set。我推荐个简单的快速入门教程：《<a href="https://download.csdn.net/download/u012308094/10610414" title="Python快速入门魔力手册" target="_blank" rel="noopener">Python快速入门魔力手册</a>》<br>Python的IDE工具还是用Pycharm，激活就按如下图就行了，输入<em><a href="http://15.idea.lanyus.com/" target="_blank" rel="noopener">http://15.idea.lanyus.com/</a></em>。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg" alt="pycharm5激活方式"></p>
+<h3 id="0X01-网页元素选取"><a href="#0X01-网页元素选取" class="headerlink" title="0X01 网页元素选取"></a>0X01 网页元素选取</h3><p>如何唯一确定网页上标签的位置才能找到对应的数据，一句话就是找目标标签的唯一特性，常用的有两种方法：<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/selector.jpg" alt="获取标签位置"><br>1、xpath方式<br>还记得大学学过的数据结构么？可以把一个网页看成以html标签为根节点的树，网页中任一标签都可以从根节点开始遍历到，xpath就表示从根节点到目标标签节点的路径。如下定位到一个列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/html/body/div[1]/ul</span><br></pre></td></tr></table></figure></p>
+<p>2、selector方式<br>如果说xpath就是按路径找，那么selector就是按长的模样找。它是按CSS样式来确定路径上的关键节点（带有CSS选择器的标签就是关键节点）。selector除了xpath的路径信息，还多了长的样子来更快速的定位。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">body &gt; div.header &gt; img     //&quot;&gt;&quot;表示直接子节点，如果是“”空格表示任意子节点</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X02-BeautifulSoup解析网页"><a href="#0X02-BeautifulSoup解析网页" class="headerlink" title="0X02 BeautifulSoup解析网页"></a>0X02 BeautifulSoup解析网页</h3><p>先要下载安装BeautifulSoup库并导入到项目中。只要往BeautifulSoup传入网页源码就能解析网页中的元素。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg" alt="BeautifulSoup解析网页"><br>BeautifulSoup传入的第一参数就是要解析的网页，第二个参数就是解析网页所需的规则，BeautifulSoup有多个规则：html.parser、lxml HTML、lxml XML、html5lib。<br>注意：Beautiful只能用selector定位元素位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Soup = BeautifulSoup(f.read(), &apos;html.parser&apos;)</span><br><span class="line">titles = Soup.select(&apos;ul &gt; li &gt; div.article-info &gt; h3 &gt; a&apos;)</span><br><span class="line">text = title.get_text()     //获取标签间文本数据</span><br><span class="line">title.get(&apos;href&apos;)           //获取标签内的属性值</span><br></pre></td></tr></table></figure></p>
+<p>更多BeautifulSoup用法可以查阅<a href="https://www.crummy.com/software/BeautifulSoup/bs3/documentation.zh.html" title="BeautifulSoup中文文档" target="_blank" rel="noopener">BeautifulSoup中文文档</a>，后续用到再说。</p>
+<h3 id="反爬技巧"><a href="#反爬技巧" class="headerlink" title="反爬技巧"></a>反爬技巧</h3><p>1、当遇到JS控制网页元素加载内容时，比如图片懒加载，简单的解决办法是爬取手机上的网页，因为手机版网页为了兼容适配，JS不会写太复杂，会直接一次性加载网页内容。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝咖啡<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/aboutme/wechatpay.png">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Hadoop环境搭建</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式/伪分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">爬虫原理</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/大数据开发//" class="article-tag-list-link color1">大数据开发</a>
+        			<a href="/categories/大数据//" class="article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://littleRich.github.io/2017/08/20/网络爬虫让机器伪装人类的行为/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/09/18/Hadoop环境搭建/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/08/14/二级缓存终结者Redis用起来/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">二级缓存终结者Redis用起来</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -262,8 +390,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
