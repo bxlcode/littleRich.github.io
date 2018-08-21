@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/activate.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/selector.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg">
-<meta property="og:updated_time" content="2018-08-21T05:43:57.246Z">
+<meta property="og:updated_time" content="2018-08-21T05:47:18.764Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络爬虫让机器伪装人类的行为">
 <meta name="twitter:description" content="摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑，找出网页规律技巧。">
@@ -203,14 +203,14 @@
 <p>上面是定位一个img标签的写法，意思就是id为content的标签开始，后面的数个层级中带有header类选择器的div标签，在该div标签的下一层级有img标签。<br>更多高级用法可以查查文档：<a href="http://www.cheat-sheets.org/saved-copy/Locators_table_1_0_2.pdf" title="Xpath，CSS的语法说明" target="_blank" rel="noopener">Xpath、CSS的语法大全</a></p>
 <h3 id="0X02-requests-BeautifulSoup解析网页"><a href="#0X02-requests-BeautifulSoup解析网页" class="headerlink" title="0X02 requests + BeautifulSoup解析网页"></a>0X02 requests + BeautifulSoup解析网页</h3><p>先要下载安装requests和beautifulsoup4库并导入到项目中。用requests去请求获取网页源数据，再往BeautifulSoup传入网页源码就能解析网页中的元素。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg" alt="BeautifulSoup解析网页"><br>BeautifulSoup传入的第一参数就是要解析的网页，第二个参数就是解析网页所需的规则，BeautifulSoup有多个规则：html.parser、lxml HTML、lxml XML、html5lib。<br>注意：Beautiful只能用selector定位元素位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Soup = BeautifulSoup(f.read(), &apos;html.parser&apos;)</span><br><span class="line">titles = Soup.select(&apos;ul &gt; li &gt; div.article-info &gt; h3 &gt; a&apos;)</span><br><span class="line">text = title.get_text()     //获取标签间文本数据</span><br><span class="line">title.get(&apos;href&apos;)           //获取标签内的属性值</span><br></pre></td></tr></table></figure></p>
 <p>更多BeautifulSoup用法可以查阅<a href="https://www.crummy.com/software/BeautifulSoup/bs3/documentation.zh.html" title="BeautifulSoup中文文档" target="_blank" rel="noopener">BeautifulSoup中文文档</a>，后续用到再说。</p>
-<h3 id="0X03-抓取异步加载动态数据"><a href="#0X03-抓取异步加载动态数据" class="headerlink" title="0X03 抓取异步加载动态数据"></a>0X03 抓取异步加载动态数据</h3><p>异步加载是网页先被请求回来，再通过Ajax获取网页中的各个模块中的数据，使用JS填充到各个模块中。所以直接一次请求网页是获取不到实际数据，我暂时的解决方案还是通过查找对应Ajax的请求URL获取数据。下面我举了个例子：抓取异步更新分页数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from bs4 import BeautifulSoup  # 报错就先安装包：File -&gt; Default Setting -&gt; Project Interpreter -&gt; 下拉选择本地安装Python -&gt; 点加号 -&gt; 搜索要安装的包 -&gt; Install Package</span><br><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line">import json	</span><br><span class="line">url = &apos;https://knewone.com/discover?page=&apos;	</span><br><span class="line">def url_open(url):</span><br><span class="line">    req = requests.get(url)</span><br><span class="line">    return req	</span><br><span class="line">def get_page(url,data=None):</span><br><span class="line">    wb_data = requests.get(url)</span><br><span class="line">    soup = BeautifulSoup(wb_data.text,&apos;lxml&apos;)</span><br><span class="line">    # print (soup.text)</span><br><span class="line">    imgs = soup.select(&apos;a.cover-inner &gt; img&apos;)</span><br><span class="line">    titles = soup.select(&apos;section.content &gt; h4 &gt; a&apos;)</span><br><span class="line">    links = soup.select(&apos;section.content &gt; h4 &gt; a&apos;)</span><br><span class="line">    likes = soup.select(&apos;span.fanciers_count&apos;)</span><br><span class="line">    if data==None:</span><br><span class="line">        for img,title,link, like in zip(imgs,titles,links, likes):</span><br><span class="line">            data = &#123;</span><br><span class="line">                &apos;img&apos;:img.get(&apos;src&apos;),</span><br><span class="line">                &apos;title&apos;:title.get(&apos;title&apos;),</span><br><span class="line">                &apos;link&apos;:link.get(&apos;href&apos;),</span><br><span class="line">                &apos;like&apos;:like.get_text()</span><br><span class="line">            &#125;</span><br><span class="line">            print(json.dumps(data, ensure_ascii=False))</span><br><span class="line">            save_imgs(&apos;C:/Users/littleRich/Desktop/test1/&apos;, img.get(&apos;src&apos;))   # 先手动创建test文件夹用于存图片	</span><br><span class="line">def get_more_pages(start,end):</span><br><span class="line">    for one in range(start,end):</span><br><span class="line">        try:</span><br><span class="line">            get_page(url+str(one))</span><br><span class="line">            time.sleep(2)</span><br><span class="line">        except Exception as e:</span><br><span class="line">            print (e.message)	</span><br><span class="line">def save_imgs(folder, img_addr):</span><br><span class="line">    filename = img_addr.split(&apos;/&apos;)[-1][:-16]   # [:-16]表示截取从头开始到倒数第十六个字符之前</span><br><span class="line">    img = url_open(img_addr).content   # 获取图片流数据</span><br><span class="line">    with open(folder + filename, &apos;wb&apos;) as f:</span><br><span class="line">        f.write(img)	</span><br><span class="line">get_more_pages(1,5000)  # 爬取5000页异步加载数据</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X03-抓取异步加载动态数据"><a href="#0X03-抓取异步加载动态数据" class="headerlink" title="0X03 抓取异步加载动态数据"></a>0X03 抓取异步加载动态数据</h3><p>异步加载是网页先被请求回来，再通过Ajax获取网页中的各个模块中的数据，使用JS填充到各个模块中。所以直接一次请求网页是获取不到实际数据，我暂时的解决方案还是通过查找对应Ajax的请求URL获取数据。下面我举了个例子：抓取异步更新分页数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from bs4 import BeautifulSoup  # 报错就先安装包：File -&gt; Default Setting -&gt; Project Interpreter -&gt; 下拉选择本地安装Python -&gt; 点加号 -&gt; 搜索要安装的包 -&gt; Install Package</span><br><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line">import json	</span><br><span class="line">url = &apos;https://knewone.com/discover?page=&apos;	</span><br><span class="line">def get_page(url,data=None):</span><br><span class="line">    wb_data = requests.get(url)</span><br><span class="line">    soup = BeautifulSoup(wb_data.text,&apos;lxml&apos;)</span><br><span class="line">    # print (soup.text)</span><br><span class="line">    imgs = soup.select(&apos;a.cover-inner &gt; img&apos;)</span><br><span class="line">    titles = soup.select(&apos;section.content &gt; h4 &gt; a&apos;)</span><br><span class="line">    links = soup.select(&apos;section.content &gt; h4 &gt; a&apos;)</span><br><span class="line">    likes = soup.select(&apos;span.fanciers_count&apos;)</span><br><span class="line">    if data==None:</span><br><span class="line">        for img,title,link, like in zip(imgs,titles,links, likes):</span><br><span class="line">            data = &#123;</span><br><span class="line">                &apos;img&apos;:img.get(&apos;src&apos;),</span><br><span class="line">                &apos;title&apos;:title.get(&apos;title&apos;),</span><br><span class="line">                &apos;link&apos;:link.get(&apos;href&apos;),</span><br><span class="line">                &apos;like&apos;:like.get_text()</span><br><span class="line">            &#125;</span><br><span class="line">            print(json.dumps(data, ensure_ascii=False))</span><br><span class="line">            save_imgs(&apos;C:/Users/littleRich/Desktop/test1/&apos;, img.get(&apos;src&apos;))   # 先手动创建test文件夹用于存图片</span><br><span class="line">def url_open(url):</span><br><span class="line">    req = requests.get(url)</span><br><span class="line">    return req	</span><br><span class="line">def get_more_pages(start,end):</span><br><span class="line">    for one in range(start,end):</span><br><span class="line">        try:</span><br><span class="line">            get_page(url+str(one))</span><br><span class="line">            time.sleep(2)</span><br><span class="line">        except Exception as e:</span><br><span class="line">            print (e.message)	</span><br><span class="line">def save_imgs(folder, img_addr):</span><br><span class="line">    filename = img_addr.split(&apos;/&apos;)[-1][:-16]   # [:-16]表示截取从头开始到倒数第十六个字符之前</span><br><span class="line">    img = url_open(img_addr).content   # 获取图片流数据</span><br><span class="line">    with open(folder + filename, &apos;wb&apos;) as f:</span><br><span class="line">        f.write(img)	</span><br><span class="line">get_more_pages(1,5000)  # 爬取5000页异步加载数据</span><br></pre></td></tr></table></figure></p>
 <h3 id="反爬技巧"><a href="#反爬技巧" class="headerlink" title="反爬技巧"></a>反爬技巧</h3><p>1、当遇到JS控制网页元素加载内容时，比如图片懒加载，简单的解决办法是爬取手机上的网页，因为手机版网页为了兼容适配，JS不会写太复杂，会直接一次性加载网页内容。</p>
 <hr>
 <p><em>参考文献</em></p>
 <ul>
+<li><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" title="Requests帮助文档" target="_blank" rel="noopener">Requests官方文档（中文）</a></li>
 <li><a href="https://beautifulsoup.readthedocs.io/zh_CN/latest/" title="Beautiful Soup" target="_blank" rel="noopener">Beautiful Soup官方文档（中文）</a></li>
 <li><a href="http://www.cheat-sheets.org/saved-copy/Locators_groups_1_0_2.pdf" title="选择器写法" target="_blank" rel="noopener">Xpath，CSS的语法说明（英文）</a></li>
-<li><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" title="Requests帮助文档" target="_blank" rel="noopener">Requests官方文档（中文）</a></li>
 <li><a href="http://files.blogjava.net/sunchaojin/http1.3.pdf" title="超文本传输协议HTTP1.1" target="_blank" rel="noopener">超文本传输协议-HTTP1.1（中文）</a></li>
 </ul>
 
@@ -495,14 +495,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -531,6 +523,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
@@ -556,6 +556,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,26 +608,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
              
               <li class="article-tag-list-item">
