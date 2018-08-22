@@ -20,7 +20,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/selector.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/beautifulsoup.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/ajax.jpg">
-<meta property="og:updated_time" content="2018-08-22T14:22:00.033Z">
+<meta property="og:updated_time" content="2018-08-22T14:38:18.299Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络爬虫让机器伪装人类的行为">
 <meta name="twitter:description" content="摘要：之前在公司做过好几个项目都需要网络爬虫，像舆情分析什么的前提就是爬取各大贴吧论坛上的数据。特别在学术在想要对某个问题进行大数据分析，常常碰到的问题就是没数据作分析。本篇文章就由浅入深的说说我所熟知的爬虫那些坑，找出网页规律技巧。">
@@ -206,8 +206,8 @@
 <p>更多BeautifulSoup用法可以查阅<a href="https://www.crummy.com/software/BeautifulSoup/bs3/documentation.zh.html" title="BeautifulSoup中文文档" target="_blank" rel="noopener">BeautifulSoup中文文档</a>，后续用到再说。</p>
 <h3 id="0X03-抓取异步加载动态数据"><a href="#0X03-抓取异步加载动态数据" class="headerlink" title="0X03 抓取异步加载动态数据"></a>0X03 抓取异步加载动态数据</h3><p>异步加载是网页先被请求回来，再通过Ajax获取网页中的各个模块中的数据，使用JS填充到各个模块中。所以直接一次请求网页是获取不到实际数据，我暂时的解决方案还是通过查找对应Ajax的请求URL获取数据。下面我举了个例子：抓取异步更新分页数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from bs4 import BeautifulSoup  # 报错就先安装包：File -&gt; Default Setting -&gt; Project Interpreter -&gt; 下拉选择本地安装Python -&gt; 点加号 -&gt; 搜索要安装的包 -&gt; Install Package</span><br><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line">import json	</span><br><span class="line">url = &apos;https://knewone.com/discover?page=&apos;	</span><br><span class="line">def get_page(url,data=None):</span><br><span class="line">    wb_data = requests.get(url)</span><br><span class="line">    soup = BeautifulSoup(wb_data.text,&apos;lxml&apos;)</span><br><span class="line">    # print (soup.text)</span><br><span class="line">    imgs = soup.select(&apos;a.cover-inner &gt; img&apos;)</span><br><span class="line">    titles = soup.select(&apos;section.content &gt; h4 &gt; a&apos;)</span><br><span class="line">    links = soup.select(&apos;section.content &gt; h4 &gt; a&apos;)</span><br><span class="line">    likes = soup.select(&apos;span.fanciers_count&apos;)</span><br><span class="line">    if data==None:</span><br><span class="line">        for img,title,link, like in zip(imgs,titles,links, likes):</span><br><span class="line">            data = &#123;</span><br><span class="line">                &apos;img&apos;:img.get(&apos;src&apos;),</span><br><span class="line">                &apos;title&apos;:title.get(&apos;title&apos;),</span><br><span class="line">                &apos;link&apos;:link.get(&apos;href&apos;),</span><br><span class="line">                &apos;like&apos;:like.get_text()</span><br><span class="line">            &#125;</span><br><span class="line">            print(json.dumps(data, ensure_ascii=False))</span><br><span class="line">            save_imgs(&apos;C:/Users/littleRich/Desktop/test1/&apos;, img.get(&apos;src&apos;))   # 先手动创建test文件夹用于存图片</span><br><span class="line">def get_more_pages(start,end):</span><br><span class="line">    for one in range(start,end):</span><br><span class="line">        try:</span><br><span class="line">            get_page(url+str(one))</span><br><span class="line">            time.sleep(2)</span><br><span class="line">        except Exception as e:</span><br><span class="line">            print (e.message)	</span><br><span class="line">def save_imgs(folder, img_addr):  # 下载图片</span><br><span class="line">    filename = img_addr.split(&apos;/&apos;)[-1][:-16]   # [:-16]表示截取从头开始到倒数第十六个字符之前</span><br><span class="line">    img = requests.get(img_addr).content   # 获取图片流数据</span><br><span class="line">    with open(folder + filename, &apos;wb&apos;) as f:    # 打开文件</span><br><span class="line">        f.write(img)	</span><br><span class="line">get_more_pages(1,5000)  # 爬取5000页异步加载数据</span><br></pre></td></tr></table></figure></p>
 <p>通过分析网页发现，上拉网页翻页异步加载数据后，网页会用Ajax请求新页面数据，再通过JS把请求回来的标签数据填充到原网页的指定位置。所以我们就用BeautifulSoup解析Ajax请求回来的数据<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180820/ajax.jpg" alt="异步请求数据分析"></p>
-<h3 id="0X04-多进程爬虫"><a href="#0X04-多进程爬虫" class="headerlink" title="0X04 多进程爬虫"></a>0X04 多进程爬虫</h3><p>Python的多进程是用multiprocessing第三方库实现，导入库中的Pool函数即可使用多进程啦。在Pool中可以配置进程池的个数什么的，一般我是用默认的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Pool</span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    pool = Pool()</span><br><span class="line">    pool.map(放在多进程中跑的函数, 向第一个参数的函数中传递的参数)</span><br></pre></td></tr></table></figure></p>
-<p>需要说明pool的map函数，这个方法很神奇，在map函数的第二个参数是向第一个参数传入函数名的参数，即第二个参数是第一个参数函数的传入的值，关键是一个list，list中的每个值依次传入第一参数的函数中，这样第一个参数的函数就会在进程池中不断的跑。（我擦，说的乱七八糟，汗！！！）下面还是举个爬取58同城所有商品链接的例子吧。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line">from multiprocessing import Pool</span><br><span class="line"># 多个待爬取链接入口</span><br><span class="line">channel_list= &apos;&apos;&apos;</span><br><span class="line">    http://bj.58.com/shouji/</span><br><span class="line">    http://bj.58.com/shoujihao/</span><br><span class="line">    http://bj.58.com/tongxunyw/</span><br><span class="line">    http://bj.58.com/diannao/</span><br><span class="line">    http://bj.58.com/bijiben/</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">#提取所有的商品的链接</span><br><span class="line">def get_links_from(channel, pages):</span><br><span class="line">    # http://bj.58.com/pbdnipad/pn2/?PGTID=0d3065d1-0000-1c3b-ecfd-c058ada2e844&amp;ClickID=1</span><br><span class="line">    list_view = &apos;&#123;&#125;/pn&#123;&#125;/&apos;.format(channel, str(pages))</span><br><span class="line">    web_data = requests.get(list_view)</span><br><span class="line">    time.sleep(5)</span><br><span class="line">    soup = BeautifulSoup(web_data.text, &apos;lxml&apos;)</span><br><span class="line">    if soup.find(&apos;td&apos;, &apos;t&apos;): # 判断是否为最后一个页面是没有商品的,没有找到就返回None</span><br><span class="line">        for link in soup.select(&apos;td.t  a.t&apos;):</span><br><span class="line">            item_link = link.get(&apos;href&apos;).split(&apos;?&apos;)[0]</span><br><span class="line">            print (item_link)</span><br><span class="line">    else: # 最后都是没有数据页</span><br><span class="line">        pass</span><br><span class="line"># 控制爬取页码</span><br><span class="line">def get_all_links_from(channel):  </span><br><span class="line">    for i in range(1,100):</span><br><span class="line">        get_links_from(channel,i)</span><br><span class="line"># 实现多进程爬取</span><br><span class="line">if __name__ == &apos;__main__&apos;:   </span><br><span class="line">    pool = Pool()</span><br><span class="line">    pool.map(get_all_links_from, channel_list.split())</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X04-多进程爬虫"><a href="#0X04-多进程爬虫" class="headerlink" title="0X04 多进程爬虫"></a>0X04 多进程爬虫</h3><p>Python的多进程是用multiprocessing第三方库实现，导入库中的Pool函数即可使用多进程啦。在Pool中可以配置进程池的个数什么的，一般我是用默认的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Pool</span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    pool = Pool()</span><br><span class="line">    pool.map(func, iterable[chunksize=None])  # func就是要在多进程中跑的函数</span><br></pre></td></tr></table></figure></p>
+<p>需要说明pool的map函数，这个方法很神奇，在map函数的第二个参数是向第一个参数传入函数名的参数，即第二个参数是第一个参数函数的传入的值，关键是一个list，list中的每个值依次传入第一参数的函数中，这样第一个参数的函数就会在进程池中不断的跑。（我擦，说的乱七八糟，汗！！！）下面还是举个爬取58同城所有商品链接的例子吧。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line">from multiprocessing import Pool</span><br><span class="line"># 多个待爬取链接入口</span><br><span class="line">channel_list= &apos;&apos;&apos;</span><br><span class="line">    http://bj.58.com/shouji/</span><br><span class="line">    http://bj.58.com/shoujihao/</span><br><span class="line">    http://bj.58.com/tongxunyw/</span><br><span class="line">    http://bj.58.com/diannao/</span><br><span class="line">    http://bj.58.com/bijiben/</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"># 提取所有的商品的链接</span><br><span class="line">def get_links_from(channel, pages):</span><br><span class="line">    # http://bj.58.com/pbdnipad/pn2/?PGTID=0d3065d1-0000-1c3b-ecfd-c058ada2e844&amp;ClickID=1</span><br><span class="line">    list_view = &apos;&#123;&#125;/pn&#123;&#125;/&apos;.format(channel, str(pages))</span><br><span class="line">    web_data = requests.get(list_view)</span><br><span class="line">    time.sleep(5)</span><br><span class="line">    soup = BeautifulSoup(web_data.text, &apos;lxml&apos;)</span><br><span class="line">    if soup.find(&apos;td&apos;, &apos;t&apos;): # 判断是否为最后一个页面是没有商品的,没有找到就返回None</span><br><span class="line">        for link in soup.select(&apos;td.t  a.t&apos;):</span><br><span class="line">            item_link = link.get(&apos;href&apos;).split(&apos;?&apos;)[0]</span><br><span class="line">            print (item_link)</span><br><span class="line">    else: # 最后都是没有数据页</span><br><span class="line">        pass</span><br><span class="line"># 控制爬取页码</span><br><span class="line">def get_all_links_from(channel):  </span><br><span class="line">    for i in range(1,100):</span><br><span class="line">        get_links_from(channel,i)</span><br><span class="line"># 实现多进程爬取</span><br><span class="line">if __name__ == &apos;__main__&apos;:   </span><br><span class="line">    pool = Pool()</span><br><span class="line">    pool.map(get_all_links_from, channel_list.split())</span><br></pre></td></tr></table></figure></p>
 <h3 id="0X05-大规模爬虫架构"><a href="#0X05-大规模爬虫架构" class="headerlink" title="0X05 大规模爬虫架构"></a>0X05 大规模爬虫架构</h3><p>对于爬取的大规模数据一般我们都把抓取到的数据存储在MongoDB文档数据库中，主要由于爬取的数据不像关系型数据库中表关系字段那么规规矩矩，而且MongoDB中存储的数据结构与Python中的字典类似（数据格式跟json也一样），存储就很方便了。在Python中操作MongoDB也挺简单的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import pymongo</span><br><span class="line">client = pymongo.MongoClient(&apos;localhost&apos;, 27017)</span><br><span class="line">testdb = client[&apos;test&apos;]   # 创建数据库</span><br><span class="line">url_list = testdb[&apos;url_list&apos;]  # 数据库中的表</span><br><span class="line">url_list.insert_one(&#123;&apos;url&apos;: xxx&#125;)  # 插入数据</span><br></pre></td></tr></table></figure></p>
 <p>再说说大规模爬虫的架构设计，这部分后续我开源个爬虫框架再详细讲。</p>
 <h3 id="反爬技巧"><a href="#反爬技巧" class="headerlink" title="反爬技巧"></a>反爬技巧</h3><p>1、当遇到JS控制网页元素加载内容时，比如图片懒加载，简单的解决办法是爬取手机上的网页，因为手机版网页为了兼容适配，JS不会写太复杂，会直接一次性加载网页内容。<br>2、适当增加请求间隔时长<br>3、代理</p>
@@ -501,6 +501,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
@@ -537,6 +549,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
               </li>
              
@@ -557,6 +585,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
@@ -573,67 +613,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -654,6 +638,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
               </li>
              
               <li class="article-tag-list-item">
