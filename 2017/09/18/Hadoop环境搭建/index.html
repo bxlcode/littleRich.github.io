@@ -17,7 +17,7 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true">
-<meta property="og:updated_time" content="2018-08-24T03:04:40.335Z">
+<meta property="og:updated_time" content="2018-08-24T08:19:12.846Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
@@ -194,24 +194,24 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>&emsp;&emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。<br>&emsp;&emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装完好的大数据开发环境完整版，虚拟机快照文件已共享到百度云盘上，文末贴出。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true" alt="大数据核心技术Hadoop"><br><a id="more"></a></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Hadoop是一个叫Doug Cutting的大牛对Google发表的三篇论文GFS、MapReduce、BigTable进行开源实现（握草，送上我的膝盖！），针对海量数据存储处理的不同场景提出了一系列的编程模型，如上面那张图里所列的Hadoop生态相关开源组件。从零开发的海量数据处理框架少不了这三部分：<br>1、海量数据的存储（HDFS）<br>2、海量数据的分析（MapReduce）<br>3、资源管理调度（YARN）<br>正因为Hadoop帮我们解决了大数据的存储问题、数据处理过程的资源调度问题和数据分析模型，我们不再关心大文件是存储在哪些分布式节点上，或者大量计算时调用多少CPU算力和内存开销等关键底层问题，而是把精力集中在大数据的处理分析业务流程上。<br>目前Hadoop 有两个主要版本，资源管理调度模块YARN也是在第二个版本才独立抽取出来的，所以现在一般都用第二个Hadoop大版本2.x.x。</p>
-<h3 id="0X00-运行环境"><a href="#0X00-运行环境" class="headerlink" title="0X00 运行环境"></a>0X00 运行环境</h3><p>本教程使用 Ubuntu 16.04 64位 作为系统环境（其它Ubuntu版本均可），请自行安装系统。估计大多数学习者都是在VM或者VirtualBox虚拟机上安装Linux系统，当然这个操作也差不多，只是记得要在BIOS开启虚拟化技术支持，并在虚拟机上勾选虚拟化配置，这样系统在虚拟机上就可以正常运行了。<br>在window上RPC远程执行的工具：WinSCP(文件传输)和SecureCRT(shell终端)</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Hadoop是一个叫Doug Cutting的大牛对Google发表的三篇论文<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-File-System%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-File-System" target="_blank" rel="noopener">GFS</a>、<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-MapReduce%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-Mapreduce" target="_blank" rel="noopener">MapReduce</a>、<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-Bigtable%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-Bigtable" target="_blank" rel="noopener">BigTable</a>进行开源实现（握草，送上我的膝盖！），针对海量数据存储处理的不同场景提出了一系列的编程模型，如上面那张图里所列的Hadoop生态相关开源组件。一个从零开发的海量数据处理框架少不了这三部分：<br>1、海量数据的存储（HDFS）<br>2、海量数据的分析（MapReduce）<br>3、资源管理调度（YARN）<br>正因为Hadoop帮我们解决了大数据的存储问题、数据处理过程的资源调度问题和数据分析模型，我们不再关心大文件是存储在哪些分布式节点上，或者大量计算时调用多少CPU算力和内存开销等关键底层问题，而是把精力集中在大数据的处理分析业务流程上。<br>目前Hadoop 有两个主要版本，资源管理调度模块YARN也是在第二个版本才独立抽取出来的，所以现在一般都用第二个Hadoop大版本2.x.x。</p>
+<h3 id="0X00-环境准备"><a href="#0X00-环境准备" class="headerlink" title="0X00 环境准备"></a>0X00 环境准备</h3><p>本博文使用 Ubuntu 16.04 64位 作为系统环境（其它Ubuntu版本均可），请自行安装系统。估计大多数学习者都是在VM或者VirtualBox虚拟机上安装Linux系统，当然这个操作也差不多，只是记得要在BIOS开启虚拟化技术支持，并在虚拟机上勾选虚拟化配置，这样系统在虚拟机上就可以正常运行了。<br>在window上RPC远程执行的工具：WinSCP(文件传输)和SecureCRT(shell终端)</p>
 <p>注意：在Ubuntu终端窗口中，复制粘贴的快捷键需要加上 shift，即粘贴是 ctrl+shift+v。</p>
-<h1 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h1><h2 id="账户配置"><a href="#账户配置" class="headerlink" title="账户配置"></a>账户配置</h2><p>账户名推荐统一命名hadoop</p>
-<h2 id="更新apt"><a href="#更新apt" class="headerlink" title="更新apt"></a>更新apt</h2><p>用 hadoop 用户登录后，我们先更新一下 apt，后续我们使用 apt 安装软件，如果没更新可能有一些软件安装不了。按 ctrl+alt+t 打开终端窗口，执行如下命令:<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></p>
-<h2 id="文本编辑器"><a href="#文本编辑器" class="headerlink" title="文本编辑器"></a>文本编辑器</h2><p>后续需要更改一些配置文件，我比较喜欢用的是 vim（vi增强版，基本用法相同），建议安装一下（如果你实在还不会用 vi/vim 的，请将后面用到 vim 的地方改为 gedit，这样可以使用文本编辑器进行修改，并且每次文件更改完成后请关闭整个 gedit 程序，否则会占用终端）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vim</span><br></pre></td></tr></table></figure></p>
+<h4 id="账户配置"><a href="#账户配置" class="headerlink" title="账户配置"></a>账户配置</h4><p>账户名推荐统一命名hadoop</p>
+<h4 id="更新apt"><a href="#更新apt" class="headerlink" title="更新apt"></a>更新apt</h4><p>用 hadoop用户登录后，我们先更新一下apt，后续我们使用 apt 安装软件，如果没更新可能有一些软件安装不了。按 ctrl+alt+t 打开终端窗口，执行如下命令:<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></p>
+<h4 id="文本编辑器"><a href="#文本编辑器" class="headerlink" title="文本编辑器"></a>文本编辑器</h4><p>后续需要更改一些配置文件，我比较喜欢用的是 vim（vi增强版，基本用法相同），建议安装一下（如果你实在还不会用 vi/vim 的，请将后面用到 vim的地方改为gedit，这样可以使用文本编辑器进行修改，并且每次文件更改完成后请关闭整个gedit程序，否则会占用终端）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vim</span><br></pre></td></tr></table></figure></p>
 <p>安装软件时若需要确认，在提示处输入 y 即可。  </p>
-<h2 id="安装SSH、配置SSH无密码登陆"><a href="#安装SSH、配置SSH无密码登陆" class="headerlink" title="安装SSH、配置SSH无密码登陆"></a>安装SSH、配置SSH无密码登陆</h2><p>集群、单节点模式都需要用到 SSH 登陆（类似于远程登陆，你可以登录某台 Linux 主机，并且在上面运行命令），Ubuntu 默认已安装了 SSH client，此外还需要安装 SSH server：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-server</span><br></pre></td></tr></table></figure></p>
+<h4 id="安装配置SSH无密码登陆"><a href="#安装配置SSH无密码登陆" class="headerlink" title="安装配置SSH无密码登陆"></a>安装配置SSH无密码登陆</h4><p>集群、单节点模式都需要用到SSH登陆（类似于远程登陆，你可以登录某台Linux主机，并且在上面运行命令），Ubuntu默认已安装了SSH client，此外还需要安装 SSH server：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-server</span><br></pre></td></tr></table></figure></p>
 <p>安装后，可以使用如下命令登陆本机：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh localhost</span><br></pre></td></tr></table></figure></p>
-<p>此时会有如下提示(SSH首次登陆提示)，输入 yes 。然后按提示输入密码 hadoop，这样就登陆到本机了。但这样登陆是需要每次输入密码的，我们需要配置成SSH无密码登陆比较方便。首先退出刚才的 ssh，就回到了我们原先的终端窗口，然后利用 ssh-keygen 生成密钥，并将密钥加入到授权中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exit                           # 退出刚才的 ssh localhost  </span><br><span class="line">cd ~/.ssh/                     # 若没有该目录，请先执行一次ssh localhost  </span><br><span class="line">ssh-keygen -t rsa              # 会有提示，都按回车就可以  </span><br><span class="line">cat ./id_rsa.pub &gt;&gt; ./authorized_keys  # 加入授权</span><br></pre></td></tr></table></figure></p>
-<p>此时再用 ssh localhost 命令，无需输入密码就可以直接登陆了。<br>注意：~的含义，在 Linux 系统中，~ 代表的是用户的主文件夹，即 “/home/用户名” 这个目录，如你的用户名为 hadoop，则 ~ 就代表 “/home/hadoop/”。 此外，命令中的 # 后面的文字是注释。  </p>
-<h1 id="安装Java环境"><a href="#安装Java环境" class="headerlink" title="安装Java环境"></a>安装Java环境</h1><p>1.去oracle官网下载,<a href="http://www.oracle.com/technetwork/cn/java/javase/downloads/jdk8-downloads-2133151-zhs.html" target="_blank" rel="noopener">链接点此</a>。也可以使用wget <a href="http://download.oracle.com/otn-pub/java/jdk/8u111-b14/jdk-8u111-linux-x64.tar.gz" target="_blank" rel="noopener">http://download.oracle.com/otn-pub/java/jdk/8u111-b14/jdk-8u111-linux-x64.tar.gz</a> 安装包在你执行这个命令时所在的文件夹位置。<br>2.解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf jdk-8u111-linux-x64.tar.gz</span><br></pre></td></tr></table></figure></p>
-<p>3.移动到自己想放的位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/lib/jdk    </span><br><span class="line">mv jdk1.8.0_111  /usr/lib/jdk/jdk1.8</span><br></pre></td></tr></table></figure></p>
-<p>4.设置环境变量：<br>　方案一：修改全局配置文件，作用于所有用户：vim /etc/profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jdk/jdk1.8</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br></pre></td></tr></table></figure></p>
-<p>　方案二：修改当前用户配置文件，只作用于当前用户：vim ~/.bashrc 设置与上一样<br>5.使修改的配置立刻生效：source /etc/profile 或者 source ~/.bashrc<br>6.检查是否安装成功：java -version<br>这样，Hadoop 所需的 Java 运行环境就安装好了。 </p>
-<h1 id="安装-Hadoop-2"><a href="#安装-Hadoop-2" class="headerlink" title="安装 Hadoop 2"></a>安装 Hadoop 2</h1><p>Hadoop 2 可以通过 <a href="http://mirror.bit.edu.cn/apache/hadoop/common/" target="_blank" rel="noopener">http://mirror.bit.edu.cn/apache/hadoop/common/</a> 或者 <a href="http://mirrors.cnnic.cn/apache/hadoop/common/" target="_blank" rel="noopener">http://mirrors.cnnic.cn/apache/hadoop/common/</a> 下载，一般选择下载最新的稳定版本，即下载 “stable” 下的 hadoop-2.x.y.tar.gz 这个格式的文件，这是编译好的，另一个包含 src 的则是 Hadoop 源代码，需要进行编译才可使用。<br>本文涉及的文件均通过浏览器下载，默认保存在 “下载” 目录中（若不是请自行更改 tar 命令的相应目录）。另外，本教程选择的是 2.8.2 版本，如果你用的不是 2.8.2 版本，则将所有命令中出现的 2.8.2 更改为你所使用的版本。<br>我们选择将 Hadoop 安装至 /usr/local/ 中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxf ~/下载/hadoop-2.8.2.tar.gz -C /usr/local    # 解压到/usr/local中</span><br><span class="line">cd /usr/local/</span><br><span class="line">sudo mv ./hadoop-2.8.2/ ./hadoop    # 将文件夹名改为hadoop</span><br><span class="line">sudo chown -R hadoop ./hadoop       # 修改文件权限</span><br></pre></td></tr></table></figure></p>
-<p>Hadoop 解压后即可使用。输入如下命令来检查 Hadoop 是否可用，成功则会显示 Hadoop 版本信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hadoop</span><br><span class="line">./bin/hadoop version</span><br></pre></td></tr></table></figure></p>
-<h3 id="相对路径与绝对路径的区别"><a href="#相对路径与绝对路径的区别" class="headerlink" title="相对路径与绝对路径的区别"></a>相对路径与绝对路径的区别</h3><p>请务必注意命令中的相对路径与绝对路径，本文后续出现的 ./bin/…，./etc/… 等包含 ./ 的路径，均为相对路径，以 /usr/local/hadoop 为当前目录。例如在 /usr/local/hadoop 目录中执行 ./bin/hadoop version 等同于执行 /usr/local/hadoop/bin/hadoop version。可以将相对路径改成绝对路径来执行，但如果你是在主文件夹 ~ 中执行 ./bin/hadoop version，执行的会是 /home/hadoop/bin/hadoop version，就不是我们所想要的了。</p>
+<p>此时会有如下提示(SSH首次登陆提示)，输入yes 。然后按提示输入密码hadoop，这样就登陆到本机了。但这样登陆是需要每次输入密码的，我们需要配置成SSH无密码登陆比较方便。首先退出刚才的ssh，就回到了我们原先的终端窗口，然后利用ssh-keygen生成密钥，并将密钥加入到授权中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exit                           # 退出刚才的 ssh localhost  </span><br><span class="line">cd ~/.ssh/                     # 若没有该目录，请先执行一次ssh localhost  </span><br><span class="line">ssh-keygen -t rsa              # 会有提示，都按回车就可以  </span><br><span class="line">cat ./id_rsa.pub &gt;&gt; ./authorized_keys  # 加入授权</span><br></pre></td></tr></table></figure></p>
+<p>此时再用ssh localhost命令，无需输入密码就可以直接登陆了。<br>注意：~的含义，在 Linux 系统中，~代表的是用户的主文件夹，即 “/home/用户名” 这个目录，如你的用户名为hadoop，则‘~’就代表 “/home/hadoop/”。 此外，命令中的‘#’后面的文字是注释。  </p>
+<h3 id="0X01-JDK安装配置"><a href="#0X01-JDK安装配置" class="headerlink" title="0X01 JDK安装配置"></a>0X01 JDK安装配置</h3><p>1.去oracle官网下载,<a href="http://www.oracle.com/technetwork/cn/java/javase/downloads/jdk8-downloads-2133151-zhs.html" target="_blank" rel="noopener">链接点此</a>。<br>2.解压到指定文件夹下即可使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf jdk-8u111-linux-x64.tar.gz -C /usr/lib/jdk/jdk1.8</span><br></pre></td></tr></table></figure></p>
+<p>3.和Window一样没有配置环境变量，就只能在jdk文件夹下使用，所有还需要给jdk配置环境变量。将jdk路径添加到全局配置文件中，作用于所有用户：vim /etc/profile。（如果只想给当前用户使用就只添加到用户目录下的.bashrc文件，打开命令：vim ~/.bashrc）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jdk/jdk1.8</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH     # 后两条可以不加</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br></pre></td></tr></table></figure></p>
+<p>4.使修改的配置立刻生效：source /etc/profile 或者 source ~/.bashrc<br>5.检查是否安装成功：java -version，打印出jdk版本信息就安装完成了。</p>
+<h3 id="0X02-安装Hadoop"><a href="#0X02-安装Hadoop" class="headerlink" title="0X02 安装Hadoop"></a>0X02 安装Hadoop</h3><p>1、国内的镜像收集了Hadoop安装包【<a href="https://mirrors.cnnic.cn/apache/hadoop/common/" title="Hadoop安装包" target="_blank" rel="noopener">猛戳下载</a>】，一般选择下载最新的稳定版本，即下载stable目录下的hadoop-2.x.y.tar.gz这个格式的文件，这是编译好的，另一个包含src的则是Hadoop源代码，需要进行编译才可使用。<br>一般将Hadoop解压安装至/usr/local/中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxf ~/下载/hadoop-2.8.2.tar.gz -C /usr/local    # 解压到/usr/local中</span><br><span class="line">cd /usr/local/</span><br><span class="line">sudo mv ./hadoop-2.8.2/ ./hadoop    # 将文件夹名改为hadoop</span><br><span class="line">sudo chown -R hadoop ./hadoop       # 修改文件权限</span><br></pre></td></tr></table></figure></p>
+<p>Hadoop解压后即可使用。输入如下命令来检查Hadoop是否可用，成功则会显示Hadoop版本信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hadoop</span><br><span class="line">./bin/hadoop version</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><em>拓展一下</em><br>请务必注意命令中的相对路径与绝对路径，本文后续出现的 ./bin/…，./etc/… 等包含 ./ 的路径，均为相对路径，以 /usr/local/hadoop 为当前目录。例如在/usr/local/hadoop目录中执行./bin/hadoop version 等同于执行/usr/local/hadoop/bin/hadoop version。可以将相对路径改成绝对路径来执行，但如果你是在主文件夹’~’中执行./bin/hadoop version，执行的会是 /home/hadoop/bin/hadoop version，就不是我们所想要的了。</p>
 <h2 id="Hadoop单机配置-非分布式"><a href="#Hadoop单机配置-非分布式" class="headerlink" title="Hadoop单机配置(非分布式)"></a>Hadoop单机配置(非分布式)</h2><p>Hadoop 默认模式为非分布式模式，无需进行其他配置即可运行。非分布式即单 Java 进程，方便进行调试。</p>
 <p>现在我们可以执行例子来感受下 Hadoop 的运行。Hadoop 附带了丰富的例子（运行 ./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar 可以看到所有例子），包括 wordcount、terasort、join、grep 等。</p>
 <p>在此我们选择运行 grep 例子，我们将 input 文件夹中的所有文件作为输入，筛选当中符合正则表达式 dfs[a-z.]+ 的单词并统计出现的次数，最后输出结果到 output 文件夹中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hadoop</span><br><span class="line">mkdir ./input</span><br><span class="line">cp ./etc/hadoop/*.xml ./input   # 将配置文件作为输入文件</span><br><span class="line">./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep ./input ./output &apos;dfs[a-z.]+&apos;</span><br><span class="line">cat ./output/*          # 查看运行结果</span><br></pre></td></tr></table></figure></p>
@@ -489,6 +489,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -505,39 +517,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -557,6 +541,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
@@ -566,6 +566,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -589,30 +605,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
@@ -622,6 +614,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,6 +638,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -658,18 +670,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
             
             <div class="clearfix"></div>
