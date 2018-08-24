@@ -17,7 +17,10 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true">
-<meta property="og:updated_time" content="2018-08-24T10:40:34.542Z">
+<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_dir.jpg">
+<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hdfs_format.jpg">
+<meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/jps.jpg">
+<meta property="og:updated_time" content="2018-08-24T15:16:23.048Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
@@ -204,24 +207,27 @@
 <p>安装后，可以使用如下命令登陆本机：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh localhost</span><br></pre></td></tr></table></figure></p>
 <p>此时会有如下提示(SSH首次登陆提示)，输入yes 。然后按提示输入密码hadoop，这样就登陆到本机了。但这样登陆是需要每次输入密码的，我们需要配置成SSH无密码登陆比较方便。首先退出刚才的ssh，就回到了我们原先的终端窗口，然后利用ssh-keygen生成密钥，并将密钥加入到授权中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exit                           # 退出刚才的 ssh localhost  </span><br><span class="line">cd ~/.ssh/                     # 若没有该目录，请先执行一次ssh localhost  </span><br><span class="line">ssh-keygen -t rsa              # 会有提示，都按回车就可以  </span><br><span class="line">cat ./id_rsa.pub &gt;&gt; ./authorized_keys  # 加入授权</span><br></pre></td></tr></table></figure></p>
 <p>此时再用ssh localhost命令，无需输入密码就可以直接登陆了。<br>注意：~的含义，在 Linux 系统中，~代表的是用户的主文件夹，即 “/home/用户名” 这个目录，如你的用户名为hadoop，则‘~’就代表 “/home/hadoop/”。 此外，命令中的‘#’后面的文字是注释。  </p>
-<h3 id="0X01-JDK安装配置"><a href="#0X01-JDK安装配置" class="headerlink" title="0X01 JDK安装配置"></a>0X01 JDK安装配置</h3><p>1.去oracle官网下载,<a href="http://www.oracle.com/technetwork/cn/java/javase/downloads/jdk8-downloads-2133151-zhs.html" target="_blank" rel="noopener">链接点此</a>。<br>2.解压到指定文件夹下即可使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf jdk-8u111-linux-x64.tar.gz -C /usr/lib/jdk/jdk1.8</span><br></pre></td></tr></table></figure></p>
-<p>3.和Window一样没有配置环境变量，就只能在jdk文件夹下使用，所有还需要给jdk配置环境变量。将jdk路径添加到全局配置文件中，作用于所有用户：vim /etc/profile。（如果只想给当前用户使用就只添加到用户目录下的.bashrc文件，打开命令：vim ~/.bashrc）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jdk/jdk1.8</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH     # 后两条可以不加</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X01-JDK安装配置"><a href="#0X01-JDK安装配置" class="headerlink" title="0X01 JDK安装配置"></a>0X01 JDK安装配置</h3><p>1.去oracle官网下载,<a href="http://www.oracle.com/technetwork/cn/java/javase/downloads/jdk8-downloads-2133151-zhs.html" target="_blank" rel="noopener">链接点此</a>。<br>2.解压到指定文件夹下即可使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf jdk-8u111-linux-x64.tar.gz -C /usr/local/</span><br></pre></td></tr></table></figure></p>
+<p>3.和Window一样没有配置环境变量，就只能在jdk文件夹下使用，所有还需要给jdk配置环境变量。将jdk路径添加到全局配置文件中，作用于所有用户：vim /etc/profile。（如果只想给当前用户使用就只添加到用户目录下的.bashrc文件，打开命令：vim ~/.bashrc）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/jdk1.8.0_111</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH     # 后两条可以不加</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br></pre></td></tr></table></figure></p>
 <p>4.使修改的配置立刻生效：source /etc/profile 或者 source ~/.bashrc<br>5.检查是否安装成功：java -version，打印出jdk版本信息就安装完成了。</p>
 <h3 id="0X02-安装Hadoop"><a href="#0X02-安装Hadoop" class="headerlink" title="0X02 安装Hadoop"></a>0X02 安装Hadoop</h3><p>1、国内的镜像收集了Hadoop安装包【<a href="https://mirrors.cnnic.cn/apache/hadoop/common/" title="Hadoop安装包" target="_blank" rel="noopener">猛戳下载</a>】，一般选择下载最新的稳定版本，即下载stable目录下的hadoop-2.x.y.tar.gz这个格式的文件，这是编译好的，另一个包含src的则是Hadoop源代码，需要进行编译才可使用。<br>一般将Hadoop解压安装至/usr/local/中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxf ~/下载/hadoop-2.8.2.tar.gz -C /usr/local    # 解压到/usr/local中</span><br><span class="line">cd /usr/local/</span><br><span class="line">sudo mv ./hadoop-2.8.2/ ./hadoop    # 将文件夹名改为hadoop</span><br><span class="line">sudo chown -R hadoop ./hadoop       # 修改文件权限</span><br></pre></td></tr></table></figure></p>
 <p>Hadoop解压后即可使用。输入如下命令来检查Hadoop是否可用，成功则会显示Hadoop版本信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hadoop</span><br><span class="line">./bin/hadoop version</span><br></pre></td></tr></table></figure></p>
+<p>为了在任意路径下都能调用hadoop命令，同样将其添加到系统环境变量中:/etc/profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_HOME=/usr/local/hadoop-2.8.2</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</span><br></pre></td></tr></table></figure></p>
+<p>再执行一下source /etc/profile命令即可生效。</p>
 <hr>
 <p><em>拓展一下</em><br>请务必注意命令中的相对路径与绝对路径，本文后续出现的 ./bin/…，./etc/… 等包含 ./ 的路径，均为相对路径，以 /usr/local/hadoop 为当前目录。例如在/usr/local/hadoop目录中执行./bin/hadoop version 等同于执行/usr/local/hadoop/bin/hadoop version。可以将相对路径改成绝对路径来执行，但如果你是在主文件夹’~’中执行./bin/hadoop version，执行的会是 /home/hadoop/bin/hadoop version，就不是我们所想要的了。</p>
-<h3 id="0X03-Hadoop单机配置-非分布式"><a href="#0X03-Hadoop单机配置-非分布式" class="headerlink" title="0X03 Hadoop单机配置(非分布式)"></a>0X03 Hadoop单机配置(非分布式)</h3><p>Hadoop默认模式为非分布式模式，无需进行其他配置即可运行。非分布式即单Java进程，方便进行调试。</p>
-<p>现在我们可以执行例子来感受下Hadoop的运行。Hadoop附带了丰富的例子（运行 ./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar 可以看到所有例子），包括 wordcount、terasort、join、grep 等。</p>
-<p>在此我们选择运行 grep 例子，我们将 input 文件夹中的所有文件作为输入，筛选当中符合正则表达式 dfs[a-z.]+ 的单词并统计出现的次数，最后输出结果到 output 文件夹中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hadoop</span><br><span class="line">mkdir ./input</span><br><span class="line">cp ./etc/hadoop/*.xml ./input   # 将配置文件作为输入文件</span><br><span class="line">./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep ./input ./output &apos;dfs[a-z.]+&apos;</span><br><span class="line">cat ./output/*          # 查看运行结果</span><br></pre></td></tr></table></figure></p>
-<h2 id="Hadoop伪分布式配置"><a href="#Hadoop伪分布式配置" class="headerlink" title="Hadoop伪分布式配置"></a>Hadoop伪分布式配置</h2><p>Hadoop 可以在单节点上以伪分布式的方式运行，Hadoop 进程以分离的 Java 进程来运行，节点既作为 NameNode 也作为 DataNode，同时，读取的是 HDFS 中的文件。</p>
-<p>Hadoop 的配置文件位于 /usr/local/hadoop/etc/hadoop/ 中，伪分布式需要修改2个配置文件 core-site.xml 和 hdfs-site.xml 。Hadoop的配置文件是 xml 格式，每个配置以声明 property 的 name 和 value 的方式来实现。</p>
-<p>修改配置文件 core-site.xml (通过 gedit 编辑会比较方便: gedit ./etc/hadoop/core-site.xml)，将当中的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
-<p>修改为下面配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">             &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">             &lt;value&gt;file:/usr/local/hadoop/tmp&lt;/value&gt;</span><br><span class="line">             &lt;description&gt;Abase for other temporary directories.&lt;/description&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">             &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">             &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
-<p>同样的，修改配置文件 hdfs-site.xml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">             &lt;name&gt;dfs.replication&lt;/name&gt;</span><br><span class="line">             &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">             &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">             &lt;value&gt;file:/usr/local/hadoop/tmp/dfs/name&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">             &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">             &lt;value&gt;file:/usr/local/hadoop/tmp/dfs/data&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
-<p>配置完成后，执行 NameNode 的格式化:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/hdfs namenode -format</span><br></pre></td></tr></table></figure></p>
-<p>接着开启 NameNode 和 DataNode 守护进程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./sbin/start-dfs.sh</span><br></pre></td></tr></table></figure></p>
-<p>成功启动后，可以访问 Web 界面 <a href="http://localhost:50070" target="_blank" rel="noopener">http://localhost:50070</a> 查看 NameNode 和 Datanode 信息，还可以在线查看 HDFS 中的文件。</p>
+<h3 id="0X03-Hadoop单机配置-非分布式"><a href="#0X03-Hadoop单机配置-非分布式" class="headerlink" title="0X03 Hadoop单机配置(非分布式)"></a>0X03 Hadoop单机配置(非分布式)</h3><p>Hadoop默认模式为非分布式模式，无需进行其他配置即可运行。非分布式即单Java进程，方便进行调试。<br>现在我们可以执行例子来感受下Hadoop的运行。Hadoop附带了丰富的例子（运行 ./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar 可以看到所有例子），包括 wordcount、terasort、join、grep等。<br>在此我们选择运行grep例子，我们将input文件夹中的所有文件作为输入，筛选当中符合正则表达式 dfs[a-z.]+ 的单词并统计出现的次数，最后输出结果到output文件夹中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hadoop</span><br><span class="line">mkdir ./input</span><br><span class="line">cp ./etc/hadoop/*.xml ./input   # 将配置文件作为输入文件</span><br><span class="line">./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep ./input ./output &apos;dfs[a-z.]+&apos;</span><br><span class="line">cat ./output/*          # 查看运行结果</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X04-Hadoop伪分布式配置"><a href="#0X04-Hadoop伪分布式配置" class="headerlink" title="0X04 Hadoop伪分布式配置"></a>0X04 Hadoop伪分布式配置</h3><p>Hadoop可以在单节点上以伪分布式的方式运行，Hadoop进程以分离的Java进程来运行，节点既作为NameNode也作为DataNode，同时，读取的是 HDFS中的文件。<br>注意：hadoop2.x的配置文件在$HADOOP_HOME/etc/hadoop中。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_dir.jpg" alt="Hadoop配置目录"><br>伪分布式需要修改2个配置文件core-site.xml和hdfs-site.xml。Hadoop的配置文件是xml格式，在文件中的&lt;configuration&gt;&lt;/configuration&gt;标签中添加相应配置，每个配置以声明property的name和value的方式来实现。<br>1、core-site.xml<br>修改配置文件$HADOOP_HOME/etc/hadoop/core-site.xml，本文件配置Hadoop的名称节点。（PS：数据节点不用配置，在哪个节点上启动数据节点命令，默认本地就是数据节点）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;!-- 指定HADOOP所使用的文件系统schema（URI），HDFS的老大（NameNode）的地址 --&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">         &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">         &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">	&lt;!-- 指定hadoop运行时产生文件的存储目录 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">         &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">         &lt;value&gt;file:/usr/local/hadoop/tmp&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;  </span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>2、同样的，修改配置文件 hdfs-site.xml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;!-- 指定HDFS副本的数量 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">         &lt;name&gt;dfs.replication&lt;/name&gt;</span><br><span class="line">         &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">         &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">         &lt;value&gt;file:/usr/local/hadoop/tmp/dfs/name&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">         &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">         &lt;value&gt;file:/usr/local/hadoop/tmp/dfs/data&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>3、mapred-site.xml<br>先把Hadoop中默认的mapred-site.xml.template另存为mapred-site.xml。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv mapred-site.xml.template mapred-site.xml</span><br></pre></td></tr></table></figure></p>
+<p>这样在该文件中配置指定MapReduce运行于YARN上。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;mapreduce.framework.name&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;yarn&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure></p>
+<p>4、yarn-site.xml<br>配置指定YARN的资源管理器和shuffle。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 指定YARN的老大（ResourceManager）的地址 --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;localhost&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;!-- reducer获取数据的方式 --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line"> &lt;/property&gt;</span><br></pre></td></tr></table></figure></p>
+<p>配置完成后，第一次启动Hadoop必须先对NameNode进行格式化，就像刚买回来的U盘要先格式一样，这里是对HDFS文件系统进行格式化。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/hdfs namenode -format   # 或者hadoop namenode -format</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hdfs_format.jpg" alt="HDFS格式化"><br>这样Hadoop的伪分布式就部署好了。接着就启动Hadoop啦，先开启NameNode和DataNode守护进程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 先启动HDFS</span><br><span class="line">./sbin/start-dfs.sh</span><br><span class="line"># 再启动YARN</span><br><span class="line">./sbin/start-yarn.sh</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><em>发现Hadoop的一个BUG</em><br>启动Hadoop的过程中不时的会报JAVA_HOME未找到异常，即使在shell终端验证JAVA_HOME已配置好了。没办法，只能强行把Hadoop中的Java配置修改成JDK的安装路径。在$HADOOP_HOME/etc/hadoop/hadoop-env.sh修改如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/jdk1.8.0_181</span><br></pre></td></tr></table></figure></p>
+<p>这样启动Hadoop的时候就不会报找不到JAVA_HOME异常了。<br>成功启动后，可以使用jps命令查看各个模块是否成功启动。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/jps.jpg" alt="使用JPS命令验证"></p>
+<p>可以访问 Web 界面 <a href="http://localhost:50070" target="_blank" rel="noopener">http://localhost:50070</a> 查看 NameNode 和 Datanode 信息，还可以在线查看 HDFS 中的文件。</p>
 <h3 id="Hadoop配置文件说明"><a href="#Hadoop配置文件说明" class="headerlink" title="Hadoop配置文件说明"></a>Hadoop配置文件说明</h3><p>Hadoop 的运行方式是由配置文件决定的（运行 Hadoop 时会读取配置文件），因此如果需要从伪分布式模式切换回非分布式模式，需要删除 core-site.xml 中的配置项。</p>
 <p>此外，伪分布式虽然只需要配置 fs.defaultFS 和 dfs.replication 就可以运行（官方教程如此），不过若没有配置 hadoop.tmp.dir 参数，则默认使用的临时目录为 /tmp/hadoo-hadoop，而这个目录在重启时有可能被系统清理掉，导致必须重新执行 format 才行。所以我们进行了设置，同时也指定 dfs.namenode.name.dir 和 dfs.datanode.data.dir，否则在接下来的步骤中可能会出错。</p>
 <hr>
@@ -488,6 +494,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -500,7 +510,43 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,15 +574,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -564,63 +614,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -644,19 +646,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
