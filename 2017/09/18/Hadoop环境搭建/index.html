@@ -17,7 +17,7 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true">
-<meta property="og:updated_time" content="2017-12-09T05:44:49.221Z">
+<meta property="og:updated_time" content="2018-08-24T03:04:40.335Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
@@ -194,9 +194,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>&emsp;&emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。<br>&emsp;&emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装完好的大数据开发环境完整版，虚拟机快照文件已共享到百度云盘上，文末贴出。<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20171201/hadoop_desc.png?raw=true" alt="大数据核心技术Hadoop"><br><a id="more"></a></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Hadoop 有两个主要版本，Hadoop 1.x.y 和 Hadoop 2.x.y 系列。Hadoop 2.x 版本在不断更新，本教程均可适用。如果需安装 0.20，1.2.1这样的版本，本教程也可以作为参考，主要差别在于配置项，配置请参考官网教程或其他教程。<br>参考资料<br>  1、<a href="http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html" title="Apache官方配置教程" target="_blank" rel="noopener">Hadoop官方安装教程</a><br>  2、<a href="http://www.powerxing.com/install-hadoop-simplify/" title="给力星博客" target="_blank" rel="noopener">厦大林子雨版配置教程</a></p>
-<hr>
-<h1 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h1><p>本教程使用 Ubuntu 16.04 64位 作为系统环境（其它Ubuntu版本均可），请自行安装系统。估计大多数学习者都是在VM或者VirtualBox虚拟机上安装Linux系统，当然这个操作也差不多，只是记得要在BIOS开启虚拟化技术支持，并在虚拟机上勾选虚拟化配置，这样系统在虚拟机上就可以正常运行了。<br>在window上RPC远程执行的工具：WinSCP(文件传输)和SecureCRT(shell终端)</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Hadoop是一个叫Doug Cutting的大牛对Google发表的三篇论文GFS、MapReduce、BigTable进行开源实现（握草，送上我的膝盖！），针对海量数据存储处理的不同场景提出了一系列的编程模型，如上面那张图里所列的Hadoop生态相关开源组件。从零开发的海量数据处理框架少不了这三部分：<br>1、海量数据的存储（HDFS）<br>2、海量数据的分析（MapReduce）<br>3、资源管理调度（YARN）<br>正因为Hadoop帮我们解决了大数据的存储问题、数据处理过程的资源调度问题和数据分析模型，我们不再关心大文件是存储在哪些分布式节点上，或者大量计算时调用多少CPU算力和内存开销等关键底层问题，而是把精力集中在大数据的处理分析业务流程上。<br>目前Hadoop 有两个主要版本，资源管理调度模块YARN也是在第二个版本才独立抽取出来的，所以现在一般都用第二个Hadoop大版本2.x.x。</p>
+<h3 id="0X00-运行环境"><a href="#0X00-运行环境" class="headerlink" title="0X00 运行环境"></a>0X00 运行环境</h3><p>本教程使用 Ubuntu 16.04 64位 作为系统环境（其它Ubuntu版本均可），请自行安装系统。估计大多数学习者都是在VM或者VirtualBox虚拟机上安装Linux系统，当然这个操作也差不多，只是记得要在BIOS开启虚拟化技术支持，并在虚拟机上勾选虚拟化配置，这样系统在虚拟机上就可以正常运行了。<br>在window上RPC远程执行的工具：WinSCP(文件传输)和SecureCRT(shell终端)</p>
 <p>注意：在Ubuntu终端窗口中，复制粘贴的快捷键需要加上 shift，即粘贴是 ctrl+shift+v。</p>
 <h1 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h1><h2 id="账户配置"><a href="#账户配置" class="headerlink" title="账户配置"></a>账户配置</h2><p>账户名推荐统一命名hadoop</p>
 <h2 id="更新apt"><a href="#更新apt" class="headerlink" title="更新apt"></a>更新apt</h2><p>用 hadoop 用户登录后，我们先更新一下 apt，后续我们使用 apt 安装软件，如果没更新可能有一些软件安装不了。按 ctrl+alt+t 打开终端窗口，执行如下命令:<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></p>
@@ -226,6 +225,8 @@
 <p>成功启动后，可以访问 Web 界面 <a href="http://localhost:50070" target="_blank" rel="noopener">http://localhost:50070</a> 查看 NameNode 和 Datanode 信息，还可以在线查看 HDFS 中的文件。</p>
 <h3 id="Hadoop配置文件说明"><a href="#Hadoop配置文件说明" class="headerlink" title="Hadoop配置文件说明"></a>Hadoop配置文件说明</h3><p>Hadoop 的运行方式是由配置文件决定的（运行 Hadoop 时会读取配置文件），因此如果需要从伪分布式模式切换回非分布式模式，需要删除 core-site.xml 中的配置项。</p>
 <p>此外，伪分布式虽然只需要配置 fs.defaultFS 和 dfs.replication 就可以运行（官方教程如此），不过若没有配置 hadoop.tmp.dir 参数，则默认使用的临时目录为 /tmp/hadoo-hadoop，而这个目录在重启时有可能被系统清理掉，导致必须重新执行 format 才行。所以我们进行了设置，同时也指定 dfs.namenode.name.dir 和 dfs.datanode.data.dir，否则在接下来的步骤中可能会出错。</p>
+<hr>
+<p><em>参考资料</em><br>1、<a href="http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html" title="Apache官方配置教程" target="_blank" rel="noopener">Hadoop官方安装教程</a><br>2、<a href="http://www.powerxing.com/install-hadoop-simplify/" title="给力星博客" target="_blank" rel="noopener">厦大林子雨版配置教程</a></p>
 
       
 
@@ -281,7 +282,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/大数据开发//" class="article-tag-list-link color1">大数据开发</a>
+        			<a href="/categories/大数据//" class="article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
@@ -488,6 +489,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
@@ -504,15 +517,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -529,14 +538,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CURD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,34 +589,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Hook进阶</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Xposed插件开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">虚拟定位</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
@@ -632,15 +605,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -669,6 +638,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Hook进阶</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Xposed插件开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">虚拟定位</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
             
             <div class="clearfix"></div>
