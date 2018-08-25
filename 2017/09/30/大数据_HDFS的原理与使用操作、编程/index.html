@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://littleRich.github.io">
-  <title>Category: 模块编译 | Qingfu Xu&#39;s Blog</title>
+  <title>HDFS的原理与使用操作、编程 | Qingfu Xu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="专心致志，方能成功">
-<meta name="keywords" content="Android,移动安全,大数据,Hadoop,Spark,HDFS,Hive,分布式,数据分析,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,Java,后台,逆向分析,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Qingfu Xu&#39;s Blog">
-<meta property="og:url" content="http://littleRich.github.io/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/模块编译/index.html">
+  <meta name="description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环">
+<meta name="keywords" content="Hadoop环境搭建,分布式&#x2F;伪分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS的原理与使用操作、编程">
+<meta property="og:url" content="http://littleRich.github.io/2017/09/30/大数据_HDFS的原理与使用操作、编程/index.html">
 <meta property="og:site_name" content="Qingfu Xu&#39;s Blog">
-<meta property="og:description" content="专心致志，方能成功">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-25T12:32:12.749Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Qingfu Xu&#39;s Blog">
-<meta name="twitter:description" content="专心致志，方能成功">
+<meta name="twitter:title" content="HDFS的原理与使用操作、编程">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
   
     <link rel="alternative" href="/atom.xml" title="Qingfu Xu&#39;s Blog" type="application/atom+xml">
   
@@ -170,87 +171,197 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-大数据_HDFS的原理与使用操作、编程" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/05/在Ubuntu-14.04.3X64编译Android6_r1源码/" class="archive-article-date">
-  	<time datetime="2016-11-05T08:45:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-05</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/05/在Ubuntu-14.04.3X64编译Android6_r1源码/">在Ubuntu14.04_X64编译官方Android6.0.0_r1源码(完整版)</a>
+    <h1 class="article-title" itemprop="name">
+      HDFS的原理与使用操作、编程
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/09/30/大数据_HDFS的原理与使用操作、编程/" class="archive-article-date">
+  	<time datetime="2017-09-30T12:31:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。<br>&emsp;&emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装完好的大数据开发环境完整版，虚拟机快照文件已共享到百度云盘上，文末贴出。<br>![大数据核心技术Hadoop][hadoop_desc]<br><a id="more"></a></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Hadoop是一个叫Doug Cutting的大牛对Google发表的三篇论文<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-File-System%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-File-System" target="_blank" rel="noopener">GFS</a>、<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-MapReduce%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-Mapreduce" target="_blank" rel="noopener">MapReduce</a>、<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-Bigtable%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-Bigtable" target="_blank" rel="noopener">BigTable</a>进行开源实现（握草，送上我的膝盖！），针对海量数据存储处理的不同场景提出了一系列的编程模型，如上面那张图里所列的Hadoop生态相关开源组件。一个从零开发的海量数据处理框架少不了这三部分：<br>1、海量数据的存储（HDFS）<br>2、海量数据的分析（MapReduce）<br>3、资源管理调度（YARN）<br>正因为Hadoop帮我们解决了大数据的存储问题、数据处理过程的资源调度问题和数据分析模型，我们不再关心大文件是存储在哪些分布式节点上，或者大量计算时调用多少CPU算力和内存开销等关键底层问题，而是把精力集中在大数据的处理分析业务流程上。<br>目前Hadoop 有两个主要版本，资源管理调度模块YARN也是在第二个版本才独立抽取出来的，所以现在一般都用第二个Hadoop大版本2.x.x。其实很多公司基于Apache Hadoop衍生出来了很多Hadoop发行版，目前最流行的第三方大数据平台要数Cloudera的版本了（简称“CDH”），提供强大的部署、管理和监控工具，公司里很多项目会用CDH部署大数据平台就很方便了。Impala实时处理框架也是Cloudera开发的。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝咖啡<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/aboutme/wechatpay.png">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Android源码编译</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Hadoop环境搭建</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式/伪分布式</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/AOSP源码下载//" class="article-tag-list-link color4">AOSP源码下载</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/AOSP源码下载/OpenJdk8//" class="article-tag-list-link color4">OpenJdk8</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64//" class="article-tag-list-link color1">VMware Workstation Pro + Ubuntu14.04_x64</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/模块编译//" class="article-tag-list-link color5">模块编译</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/AOSP源码下载/OpenJdk8/VMware-Workstation-Pro-Ubuntu14-04-x64/模块编译/Android-Studio导入源码//" class="article-tag-list-link color4">Android Studio导入源码</a>
+        			<a href="/categories/大数据//" class="article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://littleRich.github.io/2017/09/30/大数据_HDFS的原理与使用操作、编程/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2018/03/14/MYSQL常用命令整理/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          MYSQL常用命令锦集【课堂归纳版】
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/09/18/大数据_Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Ubuntu16.04下Hadoop全分布式和伪分布式环境搭建</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -274,10 +385,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
 		root: "/",
