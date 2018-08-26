@@ -6,20 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://littleRich.github.io">
-  <title>分布式文件系统HDFS的实现机制、读取流程和编程 | Qingfu Xu&#39;s Blog</title>
+  <title>分布式文件系统HDFS的实现机制和编程 | Qingfu Xu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环">
-<meta name="keywords" content="HDFS总体架构,读写分析,RPC机制">
+  <meta name="description" content="&amp;emsp;&amp;emsp;Hadoop分布式文件系统（Hadoop Distributed File System, HDFS）是针对GFS的开源实现，可以以较低的成本利用现有机器实现大流量和大数据量的读写。">
+<meta name="keywords" content="HDFS总体架构,读写流程,RPC机制">
 <meta property="og:type" content="article">
-<meta property="og:title" content="分布式文件系统HDFS的实现机制、读取流程和编程">
+<meta property="og:title" content="分布式文件系统HDFS的实现机制和编程">
 <meta property="og:url" content="http://littleRich.github.io/2017/09/30/大数据_HDFS的原理与使用操作、编程/index.html">
 <meta property="og:site_name" content="Qingfu Xu&#39;s Blog">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Hadoop分布式文件系统（Hadoop Distributed File System, HDFS）是针对GFS的开源实现，可以以较低的成本利用现有机器实现大流量和大数据量的读写。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-26T04:43:06.939Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/frameset.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/secondary.jpg">
+<meta property="og:updated_time" content="2018-08-26T11:07:01.971Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分布式文件系统HDFS的实现机制、读取流程和编程">
-<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。&amp;emsp;&amp;emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装">
+<meta name="twitter:title" content="分布式文件系统HDFS的实现机制和编程">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop分布式文件系统（Hadoop Distributed File System, HDFS）是针对GFS的开源实现，可以以较低的成本利用现有机器实现大流量和大数据量的读写。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/frameset.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Qingfu Xu&#39;s Blog" type="application/atom+xml">
   
@@ -178,7 +181,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      分布式文件系统HDFS的实现机制、读取流程和编程
+      分布式文件系统HDFS的实现机制和编程
     </h1>
   
 
@@ -191,8 +194,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>&emsp;&emsp;Hadoop环境搭建做为大数据学习的准备工作，却往往会成为新手的一道门槛，很是打击学习热情。对于集群环境搭建也要重复配置，这中间繁杂步骤也容易忘，故写篇文章记录，以便下次环境搭建使用。<br>&emsp;&emsp;本教程采用Ubuntu16.04下搭建Hadoop开发环境。有时间文章会进一步完善，如果在window下用VirtualBox虚拟机上装Ubuntu方式，可采用我已安装完好的大数据开发环境完整版，虚拟机快照文件已共享到百度云盘上，文末贴出。<br><a id="more"></a></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Hadoop是一个叫Doug Cutting的大牛对Google发表的三篇论文<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-File-System%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-File-System" target="_blank" rel="noopener">GFS</a>、<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-MapReduce%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-Mapreduce" target="_blank" rel="noopener">MapReduce</a>、<a href="http://blog.bizcloudsoft.com/wp-content/uploads/Google-Bigtable%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf" title="Google-Bigtable" target="_blank" rel="noopener">BigTable</a>进行开源实现（握草，送上我的膝盖！），针对海量数据存储处理的不同场景提出了一系列的编程模型，如上面那张图里所列的Hadoop生态相关开源组件。一个从零开发的海量数据处理框架少不了这三部分：<br>1、海量数据的存储（HDFS）<br>2、海量数据的分析（MapReduce）<br>3、资源管理调度（YARN）<br>正因为Hadoop帮我们解决了大数据的存储问题、数据处理过程的资源调度问题和数据分析模型，我们不再关心大文件是存储在哪些分布式节点上，或者大量计算时调用多少CPU算力和内存开销等关键底层问题，而是把精力集中在大数据的处理分析业务流程上。<br>目前Hadoop 有两个主要版本，资源管理调度模块YARN也是在第二个版本才独立抽取出来的，所以现在一般都用第二个Hadoop大版本2.x.x。其实很多公司基于Apache Hadoop衍生出来了很多Hadoop发行版，目前最流行的第三方大数据平台要数Cloudera的版本了（简称“CDH”），提供强大的部署、管理和监控工具，公司里很多项目会用CDH部署大数据平台就很方便了。Impala实时处理框架也是Cloudera开发的。</p>
+        <p>&emsp;&emsp;Hadoop分布式文件系统（Hadoop Distributed File System, HDFS）是针对GFS的开源实现，可以以较低的成本利用现有机器实现大流量和大数据量的读写。<br><a id="more"></a></p>
+<h3 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h3><p>分布式文件系统的设计一般采用C/S模式，客户端以特定的通信协议通过网络与服务器建立连接，提出文件访问请求。<br>和Window的文件系统类似，分布式文件系统也采用了块的概念，文件被切分成若干个块进行存储到集群中的不同机器上（不怕TB级大文件存不下），HDFS默认块大小是128M，读的时候再拼接封装成一个文件。与普通文件系统不同的是，HDFS对一个文件或文件末尾段小于一个数据块大小时，并不会占用整个数据块的存储空间。</p>
+<h3 id="0X01-HDFS的架构"><a href="#0X01-HDFS的架构" class="headerlink" title="0X01 HDFS的架构"></a>0X01 HDFS的架构</h3><p>HDFS在物理结构上是由计算机集群中的多个节点构成的，如下图所示。这么多散乱的机器肯定得有个头来管理吧，没错，HDFS也是采用主从结构，主节点（HDFS中称为NameNode）和多个从节点（HDFS中称为DataNode）。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/frameset.jpg" alt="HDFS整体架构"><br>NameNode不存储用户数据，作为老大只管辖整体系统能平稳运行就行了。用户要操作HDFS中的文件肯定就要向NameNode请求，老大同意记下了才能具体找相应的从节点操作数据，所以老大那里有所有数据块的点名册（数据块与数据节点的映射关系）。因此客户端只有访问名称节点才能找到请求的文件块所在的位置，进而到相应节点位置读取所需文件块。<br>DataNode作为小弟，不用像NameNode老大管那么多，只负责存取具体数据，还要定期向名称节点发送心跳包，报告自己的状态。<br>注意：用户上传数据到HDFS上时，虽然先向NameNode请示，但是具体切块还是由HDFS客户端自己来，完了还是由HDFS客户端按NameNode分配的存储位置写入到对应从节点上；读数据时，HDFS客户端从名称节点获取文件被切分的块和数据节点的映射关系，然后去相应数据节点读文件块，再拼接成一个完整的文件。<br>上面说的NameNode老大有个记录本来管理底下的一群DataNode小弟所拥有的数据块信息，通过分析Hadoop源码发现，这个记录本就叫FsImage，里面存放了很多的元数据，包括数据块名、冗余备份数、各个块存放节点位置等。<br>这么说HDFS客户端实质都是查NameNode的FsImage文件，那么大数据肯定要求高响应度，要做到快速读到FsImage文件，定然不能把FsImage文件存储在硬盘上（硬盘速度太慢），最好的方法就是把它加载到内存里，这样响应HDFS客户端的查询够快吧。但是万一断电了，FsImage就没了，整个HDFS分布式就瘫痪了。没办法还是把FsImage文件备份到硬盘里，下次断电重启还可以恢复。<br>我擦，万一FsImage文件在备份到硬盘的过程中就断电了咋整？解决方案就需要读写分离了，内存中的FsImage文件只提供HDFS客户端查询服务（即读操作），把新增的那部分元数据直接写入硬盘中即可，这样就避免了还要把内存中的FsImage备份到硬盘的操作了。<br>所以NameNode需要新增一个文件来专门记录HDFS系统上新增数据的元数据，其实这个文件就是EditLog（记录元数据和操作日志），注意这个文件是实时写入到硬盘的。NameNode告诉HDFS客户端应该如何把要上传的文件存储到各个节点上时，同时也把这些信息（即元数据）记录到EditLog文件中，当HDFS客户端完成了相应操作后反馈给NameNode。HDFS客户端没做好的话，NameNode就把刚才记录到EditLog中的元数据删了；要是按要求做好了，说明EditLog中新增的元数据有效，那就更新到内存的FsImage中去，这样就可以查询到新增的数据了。<br>这样上面的问题都很好的解决了，当名称节点重启时，会将硬盘备份的FsImage加载到内存中，再追加EditLog中的元数据，使得FsImage保持最新，把最新的FsImage备份到硬盘中去，然后把EditLog清空。<br>但是如果上次HDFS运行有大量的写操作，EditLog中的元数据就很多，HDFS启动过程中的合并操作就需要很长时间，所以就不能让EditLog变得特别大。当EditLog达到一定文件大小时就跟FsImage合并起来，但这个工作又不能由NameNode亲自做（做了就又出现上面说的问题了），所以就引入了SecondaryNameNode（第二名称节点）来做这个事。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/secondary.jpg" alt="第二名称节点工作过程示意图"><br>集群中再部署一个节点作为第二名称节点，定时与名称节点通信，请求其停止往EditLog写入新的元数据了，暂时把新的元数据写到一个新的EditLog.new文件中。然后第二名称节点就把名称节点中的FsImage文件和EditLog文件拉回到本地，对二者进行合并操作，即把新的元数据加入到FsImage中，或是把已被删除的数据在FsImage中也去除掉，使得FsImage保持最新。合并结束后，第二名称节点就会把合并后最新的FsImage文件发送给名称节点。名称节点收到后，会用最新的FsImage替换旧的FsImage文件，同时用EditLog.new替换EditLog文件。就算FsImage替换过程宕机了，下次还可以到第二名称节点进行恢复。</p>
 
       
 
@@ -236,7 +240,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读写分析</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读写流程</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -459,34 +463,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">常用命令</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -512,6 +488,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CURD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">常用命令</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,6 +547,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
               </li>
              
@@ -563,7 +571,67 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读写流程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">RPC机制</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -584,70 +652,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Xposed教程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读写分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">RPC机制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
