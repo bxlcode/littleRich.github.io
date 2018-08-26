@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/frameset.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/secondary.jpg">
-<meta property="og:updated_time" content="2018-08-26T13:46:25.691Z">
+<meta property="og:updated_time" content="2018-08-26T13:51:27.628Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式文件系统HDFS的实现机制和编程实践">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop分布式文件系统（Hadoop Distributed File System, HDFS）是针对GFS的开源实现，可以以较低的成本利用现有机器实现大流量和大数据量的读写。">
@@ -200,14 +200,14 @@
 <h3 id="0X02-HDFS常用操作命令"><a href="#0X02-HDFS常用操作命令" class="headerlink" title="0X02 HDFS常用操作命令"></a>0X02 HDFS常用操作命令</h3><p>HDFS有很多命令来操作文件系统，其中fs命令可以说是HDFS最常用的命令，利用fs命令可以查看HDFS文件系统的目录结构、上传下载数据、文件系统空间等。该命令具体如下，发现和Linux操作本地文件系统的命令基本类似。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@localhost ~]$ hadoop fs</span><br><span class="line">Usage: hadoop fs [generic options]</span><br><span class="line">        [-appendToFile &lt;localsrc&gt; ... &lt;dst&gt;]</span><br><span class="line">        [-cat [-ignoreCrc] &lt;src&gt; ...]</span><br><span class="line">        [-checksum &lt;src&gt; ...]</span><br><span class="line">        [-chgrp [-R] GROUP PATH...]</span><br><span class="line">        [-chmod [-R] &lt;MODE[,MODE]... | OCTALMODE&gt; PATH...]</span><br><span class="line">        [-chown [-R] [OWNER][:[GROUP]] PATH...]</span><br><span class="line">        [-copyFromLocal [-f] [-p] [-l] [-d] &lt;localsrc&gt; ... &lt;dst&gt;]</span><br><span class="line">        [-copyToLocal [-f] [-p] [-ignoreCrc] [-crc] &lt;src&gt; ... &lt;localdst&gt;]</span><br><span class="line">        [-count [-q] [-h] [-v] [-t [&lt;storage type&gt;]] [-u] [-x] &lt;path&gt; ...]</span><br><span class="line">        [-cp [-f] [-p | -p[topax]] [-d] &lt;src&gt; ... &lt;dst&gt;]</span><br><span class="line">        [-createSnapshot &lt;snapshotDir&gt; [&lt;snapshotName&gt;]]</span><br><span class="line">        [-deleteSnapshot &lt;snapshotDir&gt; &lt;snapshotName&gt;]</span><br><span class="line">        [-df [-h] [&lt;path&gt; ...]]</span><br><span class="line">        [-du [-s] [-h] [-x] &lt;path&gt; ...]</span><br><span class="line">        [-expunge]</span><br><span class="line">        [-find &lt;path&gt; ... &lt;expression&gt; ...]</span><br><span class="line">        [-get [-f] [-p] [-ignoreCrc] [-crc] &lt;src&gt; ... &lt;localdst&gt;]</span><br><span class="line">        [-getfacl [-R] &lt;path&gt;]</span><br><span class="line">        [-getfattr [-R] &#123;-n name | -d&#125; [-e en] &lt;path&gt;]</span><br><span class="line">        [-getmerge [-nl] [-skip-empty-file] &lt;src&gt; &lt;localdst&gt;]</span><br><span class="line">        [-help [cmd ...]]</span><br><span class="line">        [-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [&lt;path&gt; ...]]</span><br><span class="line">        [-mkdir [-p] &lt;path&gt; ...]</span><br><span class="line">        [-moveFromLocal &lt;localsrc&gt; ... &lt;dst&gt;]</span><br><span class="line">        [-moveToLocal &lt;src&gt; &lt;localdst&gt;]</span><br><span class="line">        [-mv &lt;src&gt; ... &lt;dst&gt;]</span><br><span class="line">        [-put [-f] [-p] [-l] [-d] &lt;localsrc&gt; ... &lt;dst&gt;]</span><br><span class="line">        [-renameSnapshot &lt;snapshotDir&gt; &lt;oldName&gt; &lt;newName&gt;]</span><br><span class="line">        [-rm [-f] [-r|-R] [-skipTrash] [-safely] &lt;src&gt; ...]</span><br><span class="line">        [-rmdir [--ignore-fail-on-non-empty] &lt;dir&gt; ...]</span><br><span class="line">        [-setfacl [-R] [&#123;-b|-k&#125; &#123;-m|-x &lt;acl_spec&gt;&#125; &lt;path&gt;]|[--set &lt;acl_spec&gt; &lt;path&gt;]]</span><br><span class="line">        [-setfattr &#123;-n name [-v value] | -x name&#125; &lt;path&gt;]</span><br><span class="line">        [-setrep [-R] [-w] &lt;rep&gt; &lt;path&gt; ...]</span><br><span class="line">        [-stat [format] &lt;path&gt; ...]</span><br><span class="line">        [-tail [-f] &lt;file&gt;]</span><br><span class="line">        [-test -[defsz] &lt;path&gt;]</span><br><span class="line">        [-text [-ignoreCrc] &lt;src&gt; ...]</span><br><span class="line">        [-touchz &lt;path&gt; ...]</span><br><span class="line">        [-truncate [-w] &lt;length&gt; &lt;path&gt; ...]</span><br><span class="line">        [-usage [cmd ...]]</span><br></pre></td></tr></table></figure></p>
 <p>总结了几个比较常用的命令：</p>
 <ul>
-<li>hadoop fs -ls <path></path>。显示HDFS中指定路径下文件的详细信息，注意这里的path指HDFS文件系统下的路径。</li>
-<li>hadoop fs -cat <path></path>。输出path指定的文件内容</li>
-<li>hadoop fs -tail [-f] <path></path>。输出path路径下文件的最后1KB内容，-f选项用于持续输出文件中新增加的数据流内容。这个命令一般拿来看日志的。</li>
-<li>hadoop fs -touchz <path></path>。创建一个path指定的空文件。</li>
-<li>hadoop fs -mkdir [-p] <paths>。创建paths指定的一个或多个文件夹，-p选项用于递归创建子文件夹。</paths></li>
-<li>hadoop fs -put <localsrc> <dst>。将Linux本地文件localsrc复制到HDFS文件系统的dst路径下。</dst></localsrc></li>
-<li>hadoop fs -get <src> <localdst>。从HDFS文件系统的src文件路径下拷贝到Linux本地文件localdst。</localdst></src></li>
-<li>hadoop fs -rm [-r] <path></path>。删除path指定的文件夹及其下的所有文件，-r选项表示递归删除子目录。<br><em>注意：上面的path指的是HDFS文件系统下的uri，比如说根目录就是hdfs:///</em></li>
+<li>hadoop fs -ls &lt;path&gt;。显示HDFS中指定路径下文件的详细信息，注意这里的path指HDFS文件系统下的路径。</li>
+<li>hadoop fs -cat &lt;path&gt;。输出path指定的文件内容</li>
+<li>hadoop fs -tail [-f] &lt;path&gt;。输出path路径下文件的最后1KB内容，-f选项用于持续输出文件中新增加的数据流内容。这个命令一般拿来看日志的。</li>
+<li>hadoop fs -touchz &lt;path&gt;。创建一个path指定的空文件。</li>
+<li>hadoop fs -mkdir [-p] &lt;paths&gt;。创建paths指定的一个或多个文件夹，-p选项用于递归创建子文件夹。</li>
+<li>hadoop fs -put &lt;localsrc&gt; &lt;dst&gt;。将Linux本地文件localsrc复制到HDFS文件系统的dst路径下。</li>
+<li>hadoop fs -get &lt;src&gt; &lt;localdst&gt;。从HDFS文件系统的src文件路径下拷贝到Linux本地文件localdst。</li>
+<li>hadoop fs -rm [-r] &lt;path&gt;。删除path指定的文件夹及其下的所有文件，-r选项表示递归删除子目录。<br><em>注意：上面的path指的是HDFS文件系统下的uri，比如说根目录就是hdfs:///</em></li>
 </ul>
 <h3 id="0X03-HDFS的JAVA客户端编程"><a href="#0X03-HDFS的JAVA客户端编程" class="headerlink" title="0X03 HDFS的JAVA客户端编程"></a>0X03 HDFS的JAVA客户端编程</h3>
       
@@ -475,34 +475,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -512,6 +484,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,6 +515,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
@@ -540,6 +540,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -563,19 +579,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">拦截器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OGNL表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,10 +592,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,6 +611,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
               </li>
              
@@ -623,7 +627,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -652,22 +668,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Maven配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">项目构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">坐标和依赖</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
               </li>
              
               <li class="article-tag-list-item">
