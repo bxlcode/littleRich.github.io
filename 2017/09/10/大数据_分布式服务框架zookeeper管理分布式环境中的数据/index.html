@@ -20,7 +20,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/group.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/zookeeper.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/zkcli.jpg">
-<meta property="og:updated_time" content="2018-08-28T03:41:49.830Z">
+<meta property="og:updated_time" content="2018-08-28T03:57:16.246Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式服务框架zookeeper--管理分布式环境中的数据">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;ZooKeeper是一个开放源码的分布式应用程序协调服务,就是为我们开发的分布式应用程序提供协调服务，比如说维护分布式环境的配置、主从协调、域名服务等，使我们能更好的管理监听分布式上的所有节点工作状态。">
@@ -206,8 +206,8 @@
 <h4 id="队列管理"><a href="#队列管理" class="headerlink" title="队列管理"></a>队列管理</h4><p>就是一个队列。</p>
 <h3 id="0X02-Zookeeper集群部署"><a href="#0X02-Zookeeper集群部署" class="headerlink" title="0X02 Zookeeper集群部署"></a>0X02 Zookeeper集群部署</h3><p>1、至少准备三台Linux系统，没有的话就用虚拟机吧，并把防火墙都关了:systemctl stop firewalld.service。<br>2、官网下载Zookeeper安装包【<a href="https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/" title="Zookeeper安装包" target="_blank" rel="noopener">猛戳下载</a>】，解压的目录结构如下，这是编译好的版本，可以把那些xxx.xml项目构建文件和源码删了。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/zookeeper.jpg" alt="目录结构"><br>3、因为Zookeeper是用Java写的，所以还得需要JRE环境，安装配置JDK看我其它文章写过，这里就不啰嗦了；<br>4、在/tmp目录下新建一个zookeeper目录，并在zookeeper目录下新建一个data目录；<br>5、将安装包解压到特定目录，首先配置zoo.cfg文件。将$zookeeper/conf下的zoo-sample.cfg文件拷贝一份，文件名改为zoo.cfg，然后就在这个文件添加Zookeeper集群的所有节点信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">cp zoo-sample.cfg zoo.cfg</span><br><span class="line">---------------------------------</span><br><span class="line"># The number of milliseconds of each tick</span><br><span class="line">tickTime=2000</span><br><span class="line"># The number of ticks that the initial </span><br><span class="line"># synchronization phase can take</span><br><span class="line">initLimit=10  # 对于从节点最初连接到主节点时的超时时间，单位为tick值的倍数</span><br><span class="line"># The number of ticks that can pass between </span><br><span class="line"># sending a request and getting an acknowledgement</span><br><span class="line">syncLimit=5   # 对于主节点与从节点进行同步操作时的超时时间，单位为tick值的倍数</span><br><span class="line"># the directory where the snapshot is stored.</span><br><span class="line"># do not use /tmp for storage, /tmp here is just </span><br><span class="line"># example sakes.</span><br><span class="line">dataDir=/tmp/zookeeper </span><br><span class="line"># the port at which the clients will connect</span><br><span class="line">clientPort=2181  # 表示客户端所连接的服务器所监听的端口号，默认是2181。即zookeeper对外提供访问的端口号。</span><br><span class="line"># the maximum number of client connections.</span><br><span class="line"># increase this if you need to handle more clients</span><br><span class="line">#maxClientCnxns=60</span><br><span class="line">#</span><br><span class="line"># Be sure to read the maintenance section of the </span><br><span class="line"># administrator guide before turning on autopurge.</span><br><span class="line">#</span><br><span class="line"># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</span><br><span class="line">#</span><br><span class="line"># The number of snapshots to retain in dataDir</span><br><span class="line">#autopurge.snapRetainCount=3</span><br><span class="line"># Purge task interval in hours</span><br><span class="line"># Set to &quot;0&quot; to disable auto purge feature</span><br><span class="line">#autopurge.purgeInterval=1</span><br><span class="line">server.1=192.168.1.200:2888:3888  # 2888为leader选举通信端口号，3888为leader与follower间通信端口号</span><br><span class="line">server.2=192.168.1.201:2888:3888</span><br><span class="line">server.3=192.168.1.202:2888:3888</span><br></pre></td></tr></table></figure></p>
 <p>其中：<br>dataDir=/tmp/zookeeper: 用于配置内存数据库保存的模糊快照的目录。即刚刚创建的data文件夹就是在此目录中。文件信息都存放在data目录下；<br>最底下三行就是Zookeeper集群的机器清单，序号代表各个机器编号。<br>6、新建myid文件。<br>在三个linux机器上刚刚创建的data目录下新建一个myid文件，在文件写入上面的对应编号。比如192.168.1.200机器就在myid文件中输入1即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; myid   # 在上面配的dataDir目录下执行该命令，注意序号要对应</span><br></pre></td></tr></table></figure></p>
-<p>7、配置环境变量/etc/profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export ZOOKEEPER_HOME=/home/hadoop/app/zookeeper-3.4.12</span><br><span class="line">export PATH=$PATH:$ZOOKEEPER_HOME/bin:$ZOOKEEPER_HOME/conf</span><br></pre></td></tr></table></figure></p>
-<p>保存后，执行source /etc/profile立即生效。<br>8、启动Zookeeper<br>分别在3台机器上$zookeeper/bin目录下启动；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh start来启动。</span><br><span class="line">zkServer.sh restart　　(重启)</span><br><span class="line">zkServer.sh status　　(查看状态)</span><br><span class="line">zkServer.sh stop　　(关闭)</span><br><span class="line">zkServer.sh start-foreground　　(以打印日志方式启动)</span><br></pre></td></tr></table></figure></p>
+<p>7、配置Zookeeper环境变量/etc/profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export ZOOKEEPER_HOME=/home/hadoop/app/zookeeper-3.4.12</span><br><span class="line">export PATH=$PATH:$ZOOKEEPER_HOME/bin:$ZOOKEEPER_HOME/conf</span><br></pre></td></tr></table></figure></p>
+<p>保存后，执行source /etc/profile立即生效。<br>8、启动Zookeeper<br>分别在3台机器上$zookeeper/bin目录下启动；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh start # 启动</span><br><span class="line">zkServer.sh restart　　(重启)</span><br><span class="line">zkServer.sh status　　(查看状态)</span><br><span class="line">zkServer.sh stop　　(关闭)</span><br><span class="line">zkServer.sh start-foreground　　(以打印日志方式启动)</span><br></pre></td></tr></table></figure></p>
 <hr>
 <p>启动的时候如果报权限问题，那就是Zookeeper的数据文件夹不是当前用户所有，修改下权限就好了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R hadoop:hadoop /tmp/zookeeper</span><br></pre></td></tr></table></figure></p>
 <p>9、验证是否成功启动Zookeeper<br>在$Zookeeper/bin目录下，执行命令：zkCli.sh -server，即可连接到其中一台Zookeeper服务器。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/zkcli.jpg" alt="连接到Zookeeper"><br>成功连接后，系统会输出ZooKeeper的相关配置信息和相关环境，并在屏幕上输出Welcome to ZooKeeper!等信息。</p>
@@ -473,10 +473,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -489,6 +485,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -498,6 +498,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">常用命令</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -514,18 +538,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CURD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -549,31 +561,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">常用命令</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -590,14 +578,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,15 +601,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读写流程</a>
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">RPC机制</a>
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -650,6 +638,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读写流程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">RPC机制</a>
               </li>
              
               <li class="article-tag-list-item">
