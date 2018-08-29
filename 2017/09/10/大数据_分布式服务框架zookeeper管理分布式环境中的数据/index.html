@@ -24,7 +24,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/help.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/watch.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/depend.png">
-<meta property="og:updated_time" content="2018-08-28T14:29:53.814Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/outline.png">
+<meta property="og:updated_time" content="2018-08-29T09:37:53.685Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式服务框架zookeeper--管理分布式环境中的数据">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;ZooKeeper是一个开放源码的分布式应用程序协调服务,就是为我们开发的分布式应用程序提供协调服务，比如说维护分布式环境的配置、主从协调、域名服务等，使我们能更好的管理监听分布式上的所有节点工作状态。">
@@ -225,7 +226,9 @@
 <li>EPHEMERAL：临时目录节点，一旦创建这个节点的客户端与服务器端口也就是 session过期超时，这种节点会被自动删除 </li>
 <li>EPHEMERAL_SEQUENTIAL：临时自动编号节点<br>其它的节点操作都是从Zookeeper对象调的，有兴趣可以试试就清楚了。</li>
 </ol>
-<h3 id="0X06"><a href="#0X06" class="headerlink" title="0X06"></a>0X06</h3>
+<h3 id="0X06-Zookeeper监控分布式应用系统服务器上下线"><a href="#0X06-Zookeeper监控分布式应用系统服务器上下线" class="headerlink" title="0X06 Zookeeper监控分布式应用系统服务器上下线"></a>0X06 Zookeeper监控分布式应用系统服务器上下线</h3><p>开头说了很多的应用场景，现在我们来实现一个具体应用场景，监听分布式应用系统服务器的上下线，主要还是运用Zookeeper的两大主要功能：数据存储和节点变化感知。<br>对于分布式应用系统肯定有好几台服务器做集群，客户端与服务端建立连接时都会先选出最优的负载均衡节点，一旦服务器某个节点宕机，可以重新建立可用节点进行连接。总之，客户端能实时洞察到服务器各个节点的上下线变化。</p>
+<h4 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h4><p>服务器集群中的每个节点一启动就去Zookeeper上注册，创建一个服务器IP等信息的临时znode。当该服务器节点宕机下线了，Zookeeper就会把这个znode删除，这样会产生事件，客户端才能监听到。<br><img src="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180827/outline.png" alt="实现机制"><br>客户端启动的时候就去连接Zookeeper，获取分布式应用系统的所有可用节点信息，选择一个节点进行连接。（可以获取到服务器的IP或服务器的连接数量，通过各个节点的连接数量进行负载均衡）<br>一旦服务器集群中有某个节点下线了，就会通知到注册监听的客户端，回调客户端的监听器中的process方法，然后在process方法内重新获取服务器可用列表并连接，并继续注册监听。</p>
+
       
 
       
@@ -487,10 +490,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -500,6 +499,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -527,6 +546,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -543,22 +578,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
@@ -568,18 +587,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -603,6 +610,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Hook进阶</a>
               </li>
              
@@ -623,10 +634,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
@@ -643,19 +650,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -671,11 +670,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
               </li>
              
               <li class="article-tag-list-item">
