@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Qingfu Xu&#39;s Blog">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;从大学时的啥语言都碰碰，到后来决心以Java作为主要开发语言，才渐渐懂得语言并不是主要的，关键还是要懂得各语言之间的融会贯通，只要数据结构和设计模式精通了，语言只是换种方式表达而已。所以今日的博文并不是来安利大家入坑Java的啦，只是总结些Java新手普通比较晦涩难懂的内容，其实也是我大学早年遇到的坑。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-01T03:55:43.367Z">
+<meta property="og:updated_time" content="2018-09-01T04:00:51.688Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面对Java新手必吹的牛批汇总">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;从大学时的啥语言都碰碰，到后来决心以Java作为主要开发语言，才渐渐懂得语言并不是主要的，关键还是要懂得各语言之间的融会贯通，只要数据结构和设计模式精通了，语言只是换种方式表达而已。所以今日的博文并不是来安利大家入坑Java的啦，只是总结些Java新手普通比较晦涩难懂的内容，其实也是我大学早年遇到的坑。">
@@ -196,27 +196,12 @@
 <h3 id="0X01-多线程和锁"><a href="#0X01-多线程和锁" class="headerlink" title="0X01 多线程和锁"></a>0X01 多线程和锁</h3><p>在一个进程中，可以开启多个线程同时去完成某些任务，比如Servlet每收到一个用户请求就创建一个线程处理。多线程运行的原理其实并不是同时运行的，这就涉及到CPU在线程中的时间片切换问题了。在某个时刻点上，CPU一次只能处理一个程序，它给每个线程执行的时间片都是固定的，然后轮询的依次执行每个线程，在这些线程之间高速切换。<br>实现线程有两种方式：继承Thread的方式和实现Runnable接口的方式。在Thread(Runnalble target)构造函数不光可以传入Runnable接口的对象，还可以传入一个Thread类的对象，这样做完全可以将一个Thread对象中的run()方法交由其他的线程进行调用（Thread是实现了Runnable接口了的）。一般我是这是这么理解的：Runnable看成一个任务，而Thread看成是一个执行任务的人。<br>说多线程定然少不了线程同步的问题。synchronized关键字可以用来定义同步函数或者同步代码块，对于synchronized来说，每个对象都是一把锁。正常情况下，被锁住的同步代码块只能执行完才能释放锁，不然就是同步代码块内发生异常，此时JVM强行让线程把锁释放。那如果被锁住的同步代码块陷入死循环且不出异常，那其他等待线程就会一直无期限的等待下去。<br>所以就出现了更灵活的锁机制Lock接口，它和synchronized最大的区别是用完必须主动释放锁，否者就会出现死锁。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.util.concurrent.locks;</span><br><span class="line">public interface Lock &#123;</span><br><span class="line">    void lock();</span><br><span class="line">    void lockInterruptibly() throws InterruptedException;</span><br><span class="line">    boolean tryLock();</span><br><span class="line">    boolean tryLock(long time, TimeUnit unit) throws InterruptedException;</span><br><span class="line">    void unlock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>Lock接口有两个实现类ReentrantLock和ReentrantReadWriteLock，其中ReentrantReadWriteLock有点像数据库锁同步的2PL两段锁协议机制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class X &#123;</span><br><span class="line">   private final ReentrantLock lock = new ReentrantLock();</span><br><span class="line">   // ...</span><br><span class="line">   public void m() &#123; </span><br><span class="line">     lock.lock();  // block until condition holds</span><br><span class="line">     try &#123;</span><br><span class="line">       // ... method body</span><br><span class="line">     &#125; finally &#123;</span><br><span class="line">       lock.unlock()</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
 <p>synchronized在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象发生；而Lock在发生异常时，如果没有主动通过unLock()去释放锁，则很可能造成死锁现象，因此使用Lock时需要在finally块中释放锁。<br>我看过一篇博文讲并发编程挺详细的，不妨看看。【<a href="https://www.cnblogs.com/dolphin0520/p/3923167.html" target="_blank" rel="noopener">看看就看看</a>】</p>
-<h4 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h4><p>在JDK5版本引入高级并发特性，大多数的特性在java.util.concurrent包中，充分利用CPU的多核处理的功能以编写大规模并发多线程应用。<br>Java中的线程池有5种：</p>
-<ol>
-<li><p>SingleThreadExecutor：只有一个线程的线程池，因此所有提交的任务是顺序执行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newSingleThreadExecutor()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>CachedThreadPool：线程池里有很多线程需要同时执行，老的可用线程将被新的任务触发重新执行，如果线程超过60秒内没任务执行，那么将被终止并从池中删除。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newCachedThreadPool()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>FixedThreadPool：拥有固定线程数的线程池，如果没有任务执行，那么线程会一直等待。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executor.newFixedThreadPool(4)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
+<h4 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h4><p>在JDK5版本引入高级并发特性，大多数的特性在java.util.concurrent包中，充分利用CPU的多核处理的功能以编写大规模并发多线程应用。<br>Java中的线程池有5种：<br>1、SingleThreadExecutor：只有一个线程的线程池，因此所有提交的任务是顺序执行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newSingleThreadExecutor()</span><br></pre></td></tr></table></figure></p>
+<p>2、 CachedThreadPool：线程池里有很多线程需要同时执行，老的可用线程将被新的任务触发重新执行，如果线程超过60秒内没任务执行，那么将被终止并从池中删除。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newCachedThreadPool()</span><br></pre></td></tr></table></figure></p>
+<p>3、FixedThreadPool：拥有固定线程数的线程池，如果没有任务执行，那么线程会一直等待。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executor.newFixedThreadPool(4)</span><br></pre></td></tr></table></figure></p>
 <p>在构造函数中的参数4是线程池的大小，一般设置大小是CPU的核数量，可以通过Java的Runtime获取底层信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int cpuNums = Runtime.getRuntime().availableProcessors();</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li><p>ScheduledThreadPool：用来调度即将执行任务的线程池，放入线程池中的任务不会立马被执行，而是在一定周期内才执行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newScheduledThreadPool()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>SingleThreadScheduledPool:只有一个线程，用来调度任务在指定时间执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newSingleThreadScheduledExecutor()</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
+<p>4、ScheduledThreadPool：用来调度即将执行任务的线程池，放入线程池中的任务不会立马被执行，而是在一定周期内才执行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newScheduledThreadPool()</span><br></pre></td></tr></table></figure></p>
+<p>5、SingleThreadScheduledPool:只有一个线程，用来调度任务在指定时间执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newSingleThreadScheduledExecutor()</span><br></pre></td></tr></table></figure></p>
 <p>按上面几种方式创建一个线程池后，就可以往线程池中丢任务执行了，像上面说的Runnable就是任务了。但是Runnable添加的任务是不会反馈执行结果的，有些时候我们又想要获取任务执行后的返回值，这就要用Callable任务了。（PS：我在蚂蚁金服被面过这个题）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService pool = Executors.newCachedThreadPool();</span><br><span class="line">for(int i = 1; i &lt; 5; i++)&#123;    //往任务池中丢4个任务</span><br><span class="line">	pool.execute(new Runnable() &#123;</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			System.out.println(&quot;thread name: &quot; + Thread.currentThread().getName());</span><br><span class="line">			try &#123;</span><br><span class="line">				Thread.sleep(1000);</span><br><span class="line">			&#125; catch (InterruptedException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line">pool.shutdown();</span><br></pre></td></tr></table></figure></p>
 <p>ExecutorService接口有几个非常重要的方法：</p>
 <ul>
@@ -509,6 +494,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
               </li>
              
@@ -521,15 +510,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -549,19 +538,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -598,10 +587,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -673,6 +658,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
               </li>
              
@@ -698,18 +695,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">
