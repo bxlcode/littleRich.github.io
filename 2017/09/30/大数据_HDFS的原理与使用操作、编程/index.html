@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/frameset.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/littleRich/littleRich.github.io/master/images/20180826/secondary.jpg">
-<meta property="og:updated_time" content="2018-09-04T09:08:40.503Z">
+<meta property="og:updated_time" content="2018-09-04T09:25:12.039Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式文件系统HDFS的实现机制和编程实践">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Hadoop分布式文件系统（Hadoop Distributed File System, HDFS）是针对GFS的开源实现，可以以较低的成本利用现有机器实现大流量和大数据量的读写。">
@@ -209,7 +209,7 @@
 <li>hadoop fs -get &lt;src&gt; &lt;localdst&gt;。从HDFS文件系统的src文件路径下拷贝到Linux本地文件localdst。</li>
 <li>hadoop fs -rm [-r] &lt;path&gt;。删除path指定的文件夹及其下的所有文件，-r选项表示递归删除子目录。<br><em>注意：上面的path指的是HDFS文件系统下的uri，比如说hdfs:///就是根目录的绝对路径，那‘/’就是相对路径</em></li>
 </ul>
-<h3 id="0X03-HDFS的JAVA客户端编程"><a href="#0X03-HDFS的JAVA客户端编程" class="headerlink" title="0X03 HDFS的JAVA客户端编程"></a>0X03 HDFS的JAVA客户端编程</h3><p>在Windows下Eclipse连接Hadoop需要一些配置才行，如果直接在CentOS上安装Eclipse开发就没那么麻烦了。这里我在win10上开发可以借鉴下面两个配置教程：<br><a href="http://www.cnblogs.com/baixl/p/4154429.html" target="_blank" rel="noopener">Widows下Eclipse连接Hadoop</a><br><a href="https://www.cnblogs.com/marost/p/4372778.html" target="_blank" rel="noopener">Windows下Eclipse连接Hadoop常出现的错误</a><br>其实也可以编译相应版本源码，再把编译好的版本配置到windows上，这样才是最完美的。需要的操作有1、Eclipse安装插件；2、在插件中添加本地解压的Hadoop；3、window环境变量添加本地解压的Hadoop；4、hadoop.dll和winutils.exe文件替换。<br><strong>注意</strong>：之前在core-site.xml、mapred-site.xml、hdfs-site.xml中配置的value都用的localhost，要统一改成Linux的IP才行。<br>上面这些配置好了估计就没什么大问题了。</p>
+<h3 id="0X03-HDFS的JAVA客户端编程"><a href="#0X03-HDFS的JAVA客户端编程" class="headerlink" title="0X03 HDFS的JAVA客户端编程"></a>0X03 HDFS的JAVA客户端编程</h3><p>在Windows下Eclipse连接Hadoop需要一些配置才行，如果直接在CentOS上安装Eclipse开发就没那么麻烦了。这里我在win10上开发可以借鉴下面两个配置教程：<br><a href="http://www.cnblogs.com/baixl/p/4154429.html" target="_blank" rel="noopener">Widows下Eclipse连接Hadoop</a><br><a href="https://www.cnblogs.com/marost/p/4372778.html" target="_blank" rel="noopener">Windows下Eclipse连接Hadoop常出现的错误</a><br><a href="https://www.cnblogs.com/999-/p/6840682.html" target="_blank" rel="noopener">eclipse中集成hadoop插件</a><br>其实也可以编译相应版本源码，再把编译好的版本配置到windows上，这样才是最完美的。需要的操作有1、Eclipse安装插件；2、在插件中添加本地解压的Hadoop；3、window环境变量添加本地解压的Hadoop；4、hadoop.dll和winutils.exe文件替换。<br><strong>注意</strong>：之前在core-site.xml、mapred-site.xml、hdfs-site.xml中配置的value都用的localhost，要统一改成Linux的IP才行。<br>上面这些配置好了估计就没什么大问题了。</p>
 
       
 
@@ -476,6 +476,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -488,26 +492,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
@@ -517,26 +501,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">octopress</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -568,7 +532,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+                <a href="javascript:void(0)" class="js-tag color4">Hibernate框架搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">一级缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">事务管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CURD</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -584,7 +560,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">动态代理DAO</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动态SQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">关联查询</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -608,15 +616,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">去信任</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -648,22 +656,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">应用场景</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">集群部署</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
               </li>
              
@@ -689,6 +681,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">动态代理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">应用场景</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">集群部署</a>
               </li>
              
               <li class="article-tag-list-item">
