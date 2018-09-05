@@ -23,7 +23,7 @@
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/images/20161020/init_hexo.png?raw=true">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/sousuo.png">
 <meta property="og:image" content="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/search_result.png">
-<meta property="og:updated_time" content="2018-08-28T09:00:35.848Z">
+<meta property="og:updated_time" content="2018-09-05T09:57:46.440Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="程序员如何建立自己的个人品牌（持续更新）">
 <meta name="twitter:description" content="摘要:&amp;emsp;&amp;emsp;本文是一篇关于如何在 Windows 下搭建一个独立博客的教程，里面介绍了如何使用 GitHub Pages 和 Hexo 搭建一个属于自己的博客，并配置它的过程。">
@@ -230,7 +230,14 @@
 <p>二、 每个网页的标题,添加title标签，否则默认显示为未命名标题。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>许庆富的小黑屋<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;接着就可以到各大搜索引擎来提交网站了，打开你需要提交的搜索引擎，在搜索栏搜索我们网站的域名，一般搜索结果就会提示添加到库中，按照提示操作即可。这里我整理了几个常用的搜索引擎添加站点链接：<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/sousuo.png" alt="各大搜索引擎"><br>Google搜索：<a href="https://www.google.com/webmasters/tools/submit-url?hl=zh-CN" target="_blank" rel="noopener">https://www.google.com/webmasters/tools/submit-url?hl=zh-CN</a><br>360搜索：<a href="http://info.so.360.cn/site_submit.html" target="_blank" rel="noopener">http://info.so.360.cn/site_submit.html</a><br>百度搜索：<a href="http://www.baidu.com/search/url_submit.html" target="_blank" rel="noopener">http://www.baidu.com/search/url_submit.html</a>　<br>搜狗搜索：<a href="http://fankui.help.sogou.com/index.php/web/web/index/type/1" target="_blank" rel="noopener">http://fankui.help.sogou.com/index.php/web/web/index/type/1</a><br>bing搜索：<a href="http://cn.bing.com/webmaster/submitsitepage.aspx" target="_blank" rel="noopener">http://cn.bing.com/webmaster/submitsitepage.aspx</a><br>向 Bing 提交网站地图(sitemap）:<a href="http://www.bing.com/webmaster/ping.aspx?sitemap=www.***.com/sitemap.xml" target="_blank" rel="noopener">http://www.bing.com/webmaster/ping.aspx?sitemap=www.***.com/sitemap.xml</a><br>把链接中星号改成自己的域名就是啦，还可以通过网站的Robots.txt引导蜘蛛爬你的地图,在Robots.txt增加下面语句，把<strong><em>改为自己的域名<br>Sitemap： <a href="http://www" target="_blank" rel="noopener">http://www</a>.</em></strong>.com/sitemap.xml<br><img src="https://github.com/littleRich/littleRich.github.io/blob/master/images/20161020/search_result.png" alt="搜索引擎搜索结果">  </p>
 <hr>
+<p><em>更新时间：20180905</em></p>
+<h3 id="使用Gitment评论功能"><a href="#使用Gitment评论功能" class="headerlink" title="使用Gitment评论功能"></a>使用Gitment评论功能</h3><p>之前接入的评论功能，都因为各种原因被放弃了，比如多说、网易云跟帖等，目前发现最好用的评论功能要数GitHub的Issue模块，所以我现在都是集成Gitment评论模块。<br>Gitment 基于 GitHub Issues 的评论系统。支持在前端直接引入，不需要任何后端代码。可以在页面进行登录、查看、评论、点赞等操作，同时有完整的 Markdown / GFM 和代码高亮支持。尤为适合各种基于 GitHub Pages 的静态博客或项目页面。<br>Gitment官方Demo Page：<a href="https://imsun.github.io/gitment/" target="_blank" rel="noopener">Gitment Demo</a><br>1、注册 OAuth Application<br><a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">【点击此处】</a> 来注册一个新的 OAuth Application。其他内容可以随意填写，但要确保填入正确的 callback URL（一般是评论页面对应的域名，如 <a href="http://littleRich.top）。注册好了之后会得到一个" target="_blank" rel="noopener">http://littleRich.top）。注册好了之后会得到一个</a> client ID 和一个 client secret，这个将被用于之后的用户登录。<br>2、引入 Gitment<br>在Hexo的根目录下执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save gitment</span><br></pre></td></tr></table></figure></p>
+<p>注意:如果是自己的网页可以添加JS代码，具体方法可以参照博客【<a href="https://imsun.net/posts/gitment-introduction/" target="_blank" rel="noopener">去看看</a>】<br>3、在_config.yaml添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gitment:</span><br><span class="line">  enable: true</span><br><span class="line">  id: &apos;&apos; #页面 ID, 可选。默认为 location.href</span><br><span class="line">  owner: &apos;littleRich&apos;</span><br><span class="line">  repo: &apos;littleRich.github.io&apos; #存储评论的 repo</span><br><span class="line">  client_id: &apos;&apos; #你的 Client ID</span><br><span class="line">  client_secret: &apos;&apos; #你的 Client secret</span><br></pre></td></tr></table></figure></p>
+<p>4、修改comment.ejs中的id获取方式，默认id是URL，但是遇到文章标题太长就会报错，所以这里id改为文章发表时间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id: &apos;&lt;%= page.date %&gt;&apos;</span><br></pre></td></tr></table></figure></p>
+<p>5、 初始化评论<br>页面发布后，你需要访问页面并使用你的 GitHub 账号登录（请确保你的账号是第二步所填 repo 的 owner），点击初始化按钮。之后其他用户即可在该页面发表评论。</p>
+<hr>
 <p><em>写博客常用工具</em><br>Snipaste截图工具【<a href="https://zh.snipaste.com/download.html" title="截图工具" target="_blank" rel="noopener">点击下载</a>】</p>
+<p><em>参考文献</em><br><a href="https://imsun.net/posts/gitment-introduction/" target="_blank" rel="noopener">Gitment：使用 GitHub Issues 搭建评论系统</a><br><a href="http://xichen.pub/2018/01/31/2018-01-31-gitment/" target="_blank" rel="noopener">添加Gitment评论系统踩过的坑</a></p>
 
       
 
@@ -508,6 +515,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
               </li>
              
@@ -520,7 +543,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+                <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">常用命令</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -540,27 +571,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">常用命令</a>
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,6 +600,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,18 +632,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">octopress</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -652,6 +675,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">HDFS总体架构</a>
               </li>
              
@@ -664,19 +699,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -693,26 +720,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">动态代理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
               </li>
              
               <li class="article-tag-list-item">
