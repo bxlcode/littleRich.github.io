@@ -5,14 +5,14 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://github.com/littleRich">
+  <link rel="dns-prefetch" href="http://littleRich.github.io">
   <title>基于Xposed框架Hook定位功能来破解QQ的LBS红包 | Qingfu Xu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="本文首发于 http://littleRich.top，原文地址：http://littlerich.top/2017/01/17/%E5%9F%BA%E4%BA%8EXposed%E6%A1%86%E6%9E%B6Hook%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E6%9D%A5%E7">
 <meta name="keywords" content="Hook进阶,逆向分析,Xposed插件开发,虚拟定位,Xposed教程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于Xposed框架Hook定位功能来破解QQ的LBS红包">
-<meta property="og:url" content="http://github.com/littleRich/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/index.html">
+<meta property="og:url" content="http://littleRich.github.io/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/index.html">
 <meta property="og:site_name" content="Qingfu Xu&#39;s Blog">
 <meta property="og:description" content="本文首发于 http://littleRich.top，原文地址：http://littlerich.top/2017/01/17/%E5%9F%BA%E4%BA%8EXposed%E6%A1%86%E6%9E%B6Hook%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E6%9D%A5%E7%A0%B4%E8%A7%A3QQ%E7%9A%84LBS%E7%BA%A2%E">
 <meta property="og:locale" content="zh-CN">
@@ -238,7 +238,7 @@
 <p>根据上面分析，所有我们可以根据APP的ApplicationContext来加载Dex分包中的字节码文件。总结一点：如果Hook Apk中类代码（SDK自带的API不用），我们就先获取APP的Context上下文，再加载类加载器。示例代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">findAndHookMethod(<span class="string">"android.app.Application"</span>, loadPackageParam.classLoader, <span class="string">"attach"</span>, Context.class, <span class="keyword">new</span> XC_MethodHook()&#123;  </span><br><span class="line">	<span class="meta">@override</span>  </span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">afterHookedMethod</span><span class="params">(MethodHookParam param)</span> <span class="keyword">throws</span> Throwable </span>&#123;  </span><br><span class="line">		Context context = (Context)param.args[<span class="number">0</span>];  </span><br><span class="line">		hookMultiDex(context.getClassLoader());  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 执行Hook应用内代码  </span></span><br><span class="line"><span class="comment"> * /  </span></span><br><span class="line"><span class="comment">private void hookMultiDex(ClassLoader classLoader) &#123;  </span></span><br><span class="line"><span class="comment">        Class&lt;?&gt; pluginNearby = null;  </span></span><br><span class="line"><span class="comment">        try &#123;  </span></span><br><span class="line"><span class="comment">            pluginNearby = classLoader.loadClass("com.tencent.mm.plugin.nearby.ui.NearbyFriendsUI");  </span></span><br><span class="line"><span class="comment">        &#125;catch (Exception e)&#123;  </span></span><br><span class="line"><span class="comment">            e.printStackTrace();  </span></span><br><span class="line"><span class="comment">        &#125;  </span></span><br><span class="line"><span class="comment">        XposedHelpers.findAndHookMethod(pluginNearby, "Gy", new XC_MethodHook() &#123;  </span></span><br><span class="line"><span class="comment">            <span class="doctag">@Override</span>  </span></span><br><span class="line"><span class="comment">            protected void afterHookedMethod(MethodHookParam param) throws Throwable &#123;  </span></span><br><span class="line"><span class="comment">                super.afterHookedMethod(param);  </span></span><br><span class="line"><span class="comment">                Log.e(TAG, "com.tencent.mm.plugin.nearby.ui.NearbyFriendsUI");  </span></span><br><span class="line"><span class="comment">                for (int i = 0; i &lt; param.args.length; i++)&#123;  </span></span><br><span class="line"><span class="comment">                    parseObject(param.args[i]);  </span></span><br><span class="line"><span class="comment">                &#125;  </span></span><br><span class="line"><span class="comment">            &#125;  </span></span><br><span class="line"><span class="comment">        &#125;);  </span></span><br><span class="line"><span class="comment">    &#125;</span></span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;这个只是Hook系统的GPS定位返回的经纬度，相应的可以Hook系统的基站定位、WIFI定位和AGPS定位模块代码，这里我给出这些要Hook位置的类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">android.telephony.TelephonyManager</span><br><span class="line">android.telephony.PhoneStateListener</span><br><span class="line">android.net.wifi.WifiManager</span><br><span class="line">android.net.wifi.WifiInfo</span><br><span class="line">android.net.NetworkInfo</span><br><span class="line">android.telephony.CellInfo</span><br><span class="line">LocationManager.class</span><br><span class="line">android.location.LocationManager</span><br></pre></td></tr></table></figure></p>
 <p>只要知道定位的实现代码，就可以Hook修改定位的返回值，跟上面Hook修改GPS定位的类似，就不粘代码了，省的贴太多代码不好看，不懂的可以跟我要源码一起探讨探讨。  </p>
-<p>安装包下载：<a href="https://github.com/littleRich/littleRich.github.io/blob/images/20170117/hooklocation-debug.apk">抢LBS红包.apk</a></p>
+<p>安装包下载：<a href="https://github.com/littleRich/littleRich.github.io/blob/images/20170117/hooklocation-debug.apk" target="_blank" rel="noopener">抢LBS红包.apk</a></p>
 <p>下面推荐几篇分析Xposed的不错文章：<br>Xposed (一) Android hook框架入门<a href="https://my.oschina.net/wisedream/blog/471292" title="Xposed框架使用入门" target="_blank" rel="noopener">https://my.oschina.net/wisedream/blog/471292</a></p>
 
       
@@ -362,7 +362,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://github.com/littleRich/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://littleRich.github.io/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -426,7 +426,7 @@
 <script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: "http://github.com/littleRich/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/",
+  id: "http://littleRich.github.io/2017/01/17/基于Xposed框架Hook定位功能来破解QQ的LBS红包/",
   owner: 'littleRich',
   repo: 'littleRich.github.io',
   oauth: {
@@ -530,7 +530,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -546,18 +554,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
               </li>
              
@@ -567,6 +563,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -586,6 +586,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -599,6 +611,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -622,38 +654,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
@@ -663,18 +663,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -710,11 +698,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">应用场景</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集群部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -731,18 +743,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -5,14 +5,14 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://github.com/littleRich">
+  <link rel="dns-prefetch" href="http://littleRich.github.io">
   <title>二级缓存终结者Redis用起来 | Qingfu Xu&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是">
 <meta name="keywords" content="编译安装,Jedis,Redis持久化,主从复制">
 <meta property="og:type" content="article">
 <meta property="og:title" content="二级缓存终结者Redis用起来">
-<meta property="og:url" content="http://github.com/littleRich/2017/08/14/二级缓存终结者Redis用起来/index.html">
+<meta property="og:url" content="http://littleRich.github.io/2017/08/14/二级缓存终结者Redis用起来/index.html">
 <meta property="og:site_name" content="Qingfu Xu&#39;s Blog">
 <meta property="og:description" content="摘要：随着互联网web2.0网站的兴起，影响服务器的高并发和秒级响应性能的不再是网络带宽或者计算资源，而是传统数据库无法应付高并发负载，每秒上万次SQL查询还勉强顶得住，但是应付上万次SQL写数据请求，硬盘IO就无法承受了。类似CPU与硬盘由于存取速度差别太大，在两者之间加了内存作为缓冲，基于内存的Redis的出现就是为了解决快速响应与后台处理速度的缓存策略。虽然很多像Hibernate、Myba">
 <meta property="og:locale" content="zh-CN">
@@ -206,7 +206,7 @@
 <p>上面启动Redis服务器是在shell终端窗口启动的，一旦命令窗口关闭则redis-server程序也跟着关了，所以一般不推荐这么启动。其实Redis提供了后台模式的启动方式，在上面拷贝过来的redis.conf配置文件修改下就可转为后台模式启动。（PS：学习的话就不用这么调了）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># By default Redis does not run as a daemon. Use &apos;yes&apos; if you need it.</span><br><span class="line"># Note that Redis will write a pid file in /var/run/redis.pid when daemonized.</span><br><span class="line">daemonize yes //redis.conf中默认是关闭的</span><br></pre></td></tr></table></figure></p>
 <p>这样以后启动Redis窗口就不会弹出千层糕的图案即是后台启动方式。<br>4、关闭redis。强制终止Redis进程可能导致Redis持久化数据丢失，正确停止Redis的方式应该是向Redis发送shutdown命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-cli shutdown  //bin目录下执行</span><br></pre></td></tr></table></figure></p>
 <p>推荐一款Redis可视化工具<a href="https://download.csdn.net/download/u012308094/10606093" title="Redis可视化管理工具" target="_blank" rel="noopener">RedisDesktopManager</a>，方便连接Redis服务器查看数据。</p>
-<h3 id="0X02-Jedis"><a href="#0X02-Jedis" class="headerlink" title="0X02 Jedis"></a>0X02 Jedis</h3><p>Jedis和其它数据库类似，除了提供命令行的操作之外，还提供各种语言的开发接口。Redis官网推荐使用Jedis和Redisson，但企业中用的最多要数jedis，我也只用过Jedis，所以就讲讲Java操作Redis数据库的方式吧。<br>Jedis托管在github上（<a href="https://github.com/xetorthio/jedis" title="Jedis源码托管">点击前往</a>）<br>1、创建web项目，导入Jedis依赖包<a href="http://central.maven.org/maven2/redis/clients/jedis/2.9.0/jedis-2.9.0.jar" title="jedis" target="_blank" rel="noopener">jedis-2.9.0.jar</a>和<a href="http://central.maven.org/maven2/org/apache/commons/commons-pool2/2.6.0/commons-pool2-2.6.0.jar" title="pool" target="_blank" rel="noopener">commons-pool2-2.3.jar</a>，如果是Maven项目就自行去Maven仓库找依赖坐标吧。<br>2、编写测试代码。可以直接通过单实例Jedis对象连接Redis服务，但是这样不能对Redis连接进行共享，最优的方式使用连接池提高资源利用率，使用JedisPool连接Redis服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testJedisPool() throws Exception&#123;</span><br><span class="line">	//创建连接池</span><br><span class="line">	JedisPool pool = new JedisPool(&quot;192.168.1.115&quot;, 6379);</span><br><span class="line">	//获取连接</span><br><span class="line">	Jedis jedis = pool.getResource();</span><br><span class="line">	//存入</span><br><span class="line">	jedis.set(&quot;username&quot;, &quot;littleRich&quot;);</span><br><span class="line">	//取出</span><br><span class="line">	System.out.println(jedis.get(&quot;uername&quot;));</span><br><span class="line">	//使用连接时,连接使用完后一定要关闭,关闭后连接会自动回到连接池供别人使用,如果一直不关闭则连接被耗尽之后就会死机</span><br><span class="line">	jedis.close();</span><br><span class="line">	//关闭连接池</span><br><span class="line">	pool.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="0X02-Jedis"><a href="#0X02-Jedis" class="headerlink" title="0X02 Jedis"></a>0X02 Jedis</h3><p>Jedis和其它数据库类似，除了提供命令行的操作之外，还提供各种语言的开发接口。Redis官网推荐使用Jedis和Redisson，但企业中用的最多要数jedis，我也只用过Jedis，所以就讲讲Java操作Redis数据库的方式吧。<br>Jedis托管在github上（<a href="https://github.com/xetorthio/jedis" title="Jedis源码托管" target="_blank" rel="noopener">点击前往</a>）<br>1、创建web项目，导入Jedis依赖包<a href="http://central.maven.org/maven2/redis/clients/jedis/2.9.0/jedis-2.9.0.jar" title="jedis" target="_blank" rel="noopener">jedis-2.9.0.jar</a>和<a href="http://central.maven.org/maven2/org/apache/commons/commons-pool2/2.6.0/commons-pool2-2.6.0.jar" title="pool" target="_blank" rel="noopener">commons-pool2-2.3.jar</a>，如果是Maven项目就自行去Maven仓库找依赖坐标吧。<br>2、编写测试代码。可以直接通过单实例Jedis对象连接Redis服务，但是这样不能对Redis连接进行共享，最优的方式使用连接池提高资源利用率，使用JedisPool连接Redis服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testJedisPool() throws Exception&#123;</span><br><span class="line">	//创建连接池</span><br><span class="line">	JedisPool pool = new JedisPool(&quot;192.168.1.115&quot;, 6379);</span><br><span class="line">	//获取连接</span><br><span class="line">	Jedis jedis = pool.getResource();</span><br><span class="line">	//存入</span><br><span class="line">	jedis.set(&quot;username&quot;, &quot;littleRich&quot;);</span><br><span class="line">	//取出</span><br><span class="line">	System.out.println(jedis.get(&quot;uername&quot;));</span><br><span class="line">	//使用连接时,连接使用完后一定要关闭,关闭后连接会自动回到连接池供别人使用,如果一直不关闭则连接被耗尽之后就会死机</span><br><span class="line">	jedis.close();</span><br><span class="line">	//关闭连接池</span><br><span class="line">	pool.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>示例代码中把连接池给关闭了，实际项目开发中一般集成Spring，把JedisPool连接池和Jedis连接的生命周期都交给Spring管理，不用我们显示关闭。</p>
 <hr>
 <p><em>友情提示</em><br>Redis默认状态是守护状态下运行，只能本地连接，通过Jedis远程连接Redis服务器的时候一般会报JedisDataException：DENIED Redis is running in protected mode because protected mode is enabled, no bind address was specified异常。在这种情况下，还是要修改redis.conf配置文件就可以从外部连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protected mode no  //将守护模式关闭，并重新启动</span><br></pre></td></tr></table></figure></p>
@@ -336,7 +336,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://github.com/littleRich/2017/08/14/二级缓存终结者Redis用起来/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://littleRich.github.io/2017/08/14/二级缓存终结者Redis用起来/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -400,7 +400,7 @@
 <script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: "http://github.com/littleRich/2017/08/14/二级缓存终结者Redis用起来/",
+  id: "http://littleRich.github.io/2017/08/14/二级缓存终结者Redis用起来/",
   owner: 'littleRich',
   repo: 'littleRich.github.io',
   oauth: {
@@ -504,7 +504,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
+                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,18 +528,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Smali语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android逆向分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">源码审计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">文件结构</a>
               </li>
              
@@ -541,6 +537,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">装机配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">自动化开源库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -560,6 +560,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">框架集成</a>
               </li>
              
@@ -573,6 +585,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">值栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -596,38 +628,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">触发器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编译安装</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Jedis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Redis持久化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git之旅</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">分布式数据库</a>
               </li>
              
@@ -637,18 +637,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">去信任</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -684,11 +672,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Hadoop环境搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式/伪分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">应用场景</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集群部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Android源码编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -705,18 +717,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">依赖版本冲突</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">爬虫原理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">requests + BeautifulSoup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异步加载</a>
               </li>
              
               <li class="article-tag-list-item">
